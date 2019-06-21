@@ -2,7 +2,10 @@
 automation bot for MCT
 
 ## Dependencies
+Windows
 `py -3 -m pip install -U discord.py`
+Linux
+`python3 -m pip install -U discord.py`
 
 ## Planned channels
 ### Semester 1-3
