@@ -1,6 +1,9 @@
 # MCT-Project-Disc
 automation bot for MCT
 
+## Dependencies
+`py -3 -m pip install -U discord.py`
+
 ## Planned channels
 ### Semester 1-3
 Categorieën voor elke semester tot 3.
