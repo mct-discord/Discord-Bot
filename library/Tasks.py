@@ -4,7 +4,7 @@ from discord.ext import commands, tasks
 class Tasks(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.ping.start()
+        # self.ping.start()  # Disabled for spam right now
 
     def cog_unload(self):
         self.ping.cancel()
