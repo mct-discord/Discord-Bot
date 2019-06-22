@@ -10,7 +10,9 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('Logged on as', self.bot.user)
-        await self.bot.change_presence(activity=discord.Activity(name="Crunching some data", type=0))
+        await self.bot.change_presence(activity=discord.Game(name="Crunching some data"))
+
+
 
     # Sends DM to a new member
     @commands.Cog.listener()
