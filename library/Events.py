@@ -1,5 +1,6 @@
 from discord import DMChannel
 from discord.ext import commands
+import discord
 
 
 class Events(commands.Cog):
@@ -9,6 +10,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('Logged on as', self.bot.user)
+        await self.bot.change_presence(activity=discord.Activity(name="Crunching some data", type=0))
 
     # Sends DM to a new member
     @commands.Cog.listener()
