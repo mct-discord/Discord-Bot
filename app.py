@@ -1,6 +1,6 @@
-from library.Events import Events
-from library.Commands import Commands
-from library.Tasks import Tasks
+from library.events import Events
+from library.commands import Commands
+from library.tasks import Tasks
 from discord.ext import commands
 import configparser
 import os
