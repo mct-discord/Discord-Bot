@@ -160,10 +160,10 @@ class Flow:
             await user.send('**If you are following extra modules send me this command to add them.\n```!addModule```**')
 
         except asyncio.TimeoutError:
-            await user.send('We didn\'t get your answer try again with \n```!start```')
+            await user.send('We didn\'t get your answer try again with \n```!setup```')
         else:
             await user.send(
-                'If you want to redo this process you can enter the following command anytime here or on the server.```!start```')
+                'If you want to redo this process you can enter the following command anytime here or on the server.```!setup```')
 
     async def add_module(self, ctx):
         channel = ctx.channel
@@ -430,7 +430,7 @@ class Flow:
 
         else:
             await user.send(
-                'If you want to redo this process you can enter the following command anytime here or on the server.```!start```')
+                'If you want to redo this process you can enter the following command anytime here or on the server.```!setup```')
 
     async def add_role(self, usr, name=None, uid=None):
         if name or uid:
