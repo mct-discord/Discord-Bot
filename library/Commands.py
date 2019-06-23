@@ -98,14 +98,13 @@ class Commands(commands.Cog):
 
             msg = await channel.send('**Do you wish to sign up for individual modules?**')
             reactions = ['✅', '❎']
-            print(reactions)
             for emoji in reactions:
                 await msg.add_reaction(emoji)
 
             reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
             if reaction.emoji == '✅':
                 msg = await channel.send(
-                    '**What year is your module?**')
+                    '**What year is your module in?**')
                 reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2]]
 
                 for emoji in reactions:
