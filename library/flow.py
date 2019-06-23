@@ -51,7 +51,7 @@ class Flow:
                 await channel.send('**We signed you up for *year 1.***')
                 # Give first year permissions
             elif reaction.emoji == self.emoji_numbers[1]:
-                # Give second year year permissions
+                # Give second year permissions
                 msg = await channel.send(
                     '**Your year requires you to choose a sub category.**\nWhat will you choose?\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI')
                 reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3]]
@@ -71,7 +71,7 @@ class Flow:
                 else:
                     raise Exception()
             elif reaction.emoji == self.emoji_numbers[2]:
-                # Give second year year permissions
+                # Give third year permissions
                 msg = await channel.send(
                     '**Your year requires you to choose a sub category.**\nWhat will you choose?\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI')
                 reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3]]
@@ -128,9 +128,8 @@ class Flow:
                     else:
                         raise Exception()
                 elif reaction.emoji == self.emoji_numbers[2]:
-                    # Give second year year permissions
                     msg = await channel.send(
-                        '**Your year requires you to choose a sub category.**\nWhat will you choose?\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI')
+                        '**What course is your module in?.**\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI')
                     reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
                                  self.emoji_numbers[3]]
 
