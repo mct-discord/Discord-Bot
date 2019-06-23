@@ -20,3 +20,4 @@ bot.add_cog(Tasks(bot))
 
 # Run the bot
 bot.run(config.get('discord', 'token'))
+bot.rem

@@ -4,32 +4,20 @@ import asyncio
 
 
 class Flow:
-    role_whitelist = [591659288053940272,
-                      555375267275603968, 591653678776057882]
+    role_whitelist = [591659288053940272, 555375267275603968, 591653678776057882]
     emoji_numbers = ['1⃣', '2⃣', '3⃣', '4⃣', '6⃣', '7⃣', '8⃣', '9⃣', '0⃣']
-    modules = [[[591723123171393552, 591721912187486228, 591722865175560203, 591723051381686272, 591723086185889995],
-                [591724086355558420, 591723225977978912, 591723267266445350, 591723296404406307,
-                    591723365878988800]],
+    modules = [[[591723123171393552, 591721912187486228, 591722865175560203, 591723051381686272, 591723086185889995], 
+                [591724086355558420, 591723225977978912, 591723267266445350, 591723296404406307, 591723365878988800]],
                [[591723388154806490, 591723418223771658, 591723436452217044, 591723479011950622, 591723509764456457],
-                   {'Web & App': [591723663477440522, 591723688567504896, 591723719123140641, 591723750576357400,
-                                  591723630811938816],
-                    'AI Engineer': [591723531969101824, 591723568400957461, 591723605054980107,
-                                    591723719123140641, 591723630811938816],
-                    'IoT Infrastructure': [591723587983900692, 591723786643046401, 591723817127116840,
-                                           591723897418809368, 591723630811938816],
-                    'Smart Tech & AI': [591723531969101824, 591723568400957461, 591723587983900692, 591723605054980107,
-                                        591723630811938816]}],
+                   {'Web & App': [591723663477440522, 591723688567504896, 591723719123140641, 591723750576357400, 591723630811938816],
+                    'AI Engineer': [591723531969101824, 591723568400957461, 591723605054980107, 591723719123140641, 591723630811938816],
+                    'IoT Infrastructure': [591723587983900692, 591723786643046401, 591723817127116840, 591723897418809368, 591723630811938816],
+                    'Smart Tech & AI': [591723531969101824, 591723568400957461, 591723587983900692, 591723605054980107, 591723630811938816]}],
                [['Stage'],
-                   {'Web & App': [591723974094749696, 591724012728746026, 591724053983789114,
-                                  591724086355558420,
-                                  591724034857631794],
-                    'AI Engineer': [591723917689880600, 591724012728746026, 591724139300257794,
-                                    591724192353746965, 591724034857631794],
-                    'IoT Infrastructure': [591723938657206407, 591724012728746026, 591724222464655387,
-                                           591724252668100608, 591724034857631794],
-                    'Smart Tech & AI': [591723917689880600, 591723938657206407, 591723974094749696,
-                                        591724012728746026,
-                                        591724034857631794]}]]
+                   {'Web & App': [591723974094749696, 591724012728746026, 591724053983789114, 591724086355558420, 591724034857631794],
+                    'AI Engineer': [591723917689880600, 591724012728746026, 591724139300257794, 591724192353746965, 591724034857631794],
+                    'IoT Infrastructure': [591723938657206407, 591724012728746026, 591724222464655387, 591724252668100608, 591724034857631794],
+                    'Smart Tech & AI': [591723917689880600, 591723938657206407, 591723974094749696, 591724012728746026, 591724034857631794]}]]
 
     def __init__(self, bot):
         self.bot = bot
@@ -38,12 +26,13 @@ class Flow:
         channel = ctx.channel
         user_object = discord.utils.get(discord.utils.get(
             self.bot.guilds, name='MCT').members, id=ctx.author.id)
+        await self.remove_roles(user_object)
+
         print(user_object.name)
 
         msg = await ctx.author.send(
             '**What year are you in?**\nIf a year is not applicable to you press the :no_entry_sign: button.')
-        reactions = [self.emoji_numbers[0],
-                     self.emoji_numbers[1], self.emoji_numbers[2], '🚫']
+        reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], '🚫']
 
         for emoji in reactions:
             await msg.add_reaction(emoji)
@@ -59,16 +48,62 @@ class Flow:
             if reaction.emoji == self.emoji_numbers[0]:
                 await user.send('**I signed you up for *year 1.***')
                 await self.add_role(user_object, uid=578656098425372697)
+                
+                # classes ----------------------------------------------------------------------------------
+                msg = await user.send(
+                    '**What class are you in?**\n\n:one: 1MCT 1\n:two: 1MCT 2\n:three: 1MCT 3\n:four: 1MCT 4\n:five: 1MCT 5\n:six: 1MCT 6')
+                reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4], self.emoji_numbers[5]]
+
+                for emoji in reactions:
+                    await msg.add_reaction(emoji)
+                    
+                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                if reaction.emoji == self.emoji_numbers[0]:
+                    await self.add_role(user_object, uid=555374881823522816)
+                elif reaction.emoji == self.emoji_numbers[1]:
+                    await self.add_role(user_object, uid=555374989918863376)
+                elif reaction.emoji == self.emoji_numbers[2]:
+                    await self.add_role(user_object, uid=555375032222875656)
+                elif reaction.emoji == self.emoji_numbers[3]:
+                    await self.add_role(user_object, uid=555375072693714944)
+                elif reaction.emoji == self.emoji_numbers[4]:
+                    await self.add_role(user_object, uid=555375105405091840)
+                elif reaction.emoji == self.emoji_numbers[5]:
+                    await self.add_role(user_object, uid=555375146094034965)
+                else:
+                    raise Exception()
+                
+                await user.send('**I have placed you in your class.**')
 
             # Give second year permissions ----------------------------------------------------------------------------------
             elif reaction.emoji == self.emoji_numbers[1]:
                 await user.send('**I signed you up for *year 2.***')
                 await self.add_role(user_object, uid=578656108663799818)
+                
+                # classes ----------------------------------------------------------------------------------
+                msg = await user.send(
+                    '**What class are you in?**\n\n:one: 2MCT 1\n:two: 2MCT 2\n:three: 2MCT 3')
+                reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2]]
 
+                for emoji in reactions:
+                    await msg.add_reaction(emoji)
+                    
+                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                if reaction.emoji == self.emoji_numbers[0]:
+                    await self.add_role(user_object, uid=591620333002293251)
+                elif reaction.emoji == self.emoji_numbers[1]:
+                    await self.add_role(user_object, uid=591620382344216576)
+                elif reaction.emoji == self.emoji_numbers[2]:
+                    await self.add_role(user_object, uid=591620431824551937)
+                else:
+                    raise Exception()
+                
+                await user.send('**I have placed you in your class.**')
+                
+                # course ----------------------------------------------------------------------------------
                 msg = await user.send(
                     '**Your year requires you to choose a sub category.**\nAlready have an idea what you\'re going to choose?\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI\n:no_entry_sign: No Idea')
-                reactions = [self.emoji_numbers[0], self.emoji_numbers[1],
-                             self.emoji_numbers[2], self.emoji_numbers[3], '🚫']
+                reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], '🚫']
 
                 for emoji in reactions:
                     await msg.add_reaction(emoji)
@@ -86,7 +121,7 @@ class Flow:
                 elif reaction.emoji == self.emoji_numbers[3]:
                     await self.add_role(user_object, uid=591620854966648832)
                     await user.send('**I signed you up for *2 Smart Tech and AI.***')
-                elif reaction.emoji == self.emoji_numbers[3]:
+                elif reaction.emoji == '🚫':
                     await user.send('**I only signed you up for the first semester, redo the setup if you have an idea what you\'ll choose**')
                 else:
                     raise Exception()
@@ -96,10 +131,10 @@ class Flow:
                 await user.send('**I signed you up for *year 3.***')
                 await self.add_role(user_object, uid=578656111041970186)
 
+                # course ----------------------------------------------------------------------------------
                 msg = await user.send(
                     '**Your year requires you to choose a sub category.**\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI')
-                reactions = [self.emoji_numbers[0], self.emoji_numbers[1],
-                             self.emoji_numbers[2], self.emoji_numbers[3]]
+                reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3]]
 
                 for emoji in reactions:
                     await msg.add_reaction(emoji)
@@ -119,7 +154,9 @@ class Flow:
                     await user.send('**We signed you up for *3 Smart Tech and AI.***')
                 else:
                     raise Exception()
-
+            elif reaction.emoji == '🚫':
+                await self.add_module(ctx)
+                return
             await user.send('**If you are following extra modules send me this command to add them.\n```!addModule```**')
 
         except asyncio.TimeoutError:
@@ -130,15 +167,15 @@ class Flow:
 
     async def add_module(self, ctx):
         channel = ctx.channel
-
+        user_object = discord.utils.get(discord.utils.get(
+                    self.bot.guilds, name='MCT').members, id=ctx.author.id)
         try:
             def check(reaction, user):
                 return user == ctx.author
 
             msg = await ctx.author.send(
                 '**What year is your module in?**')
-            reactions = [self.emoji_numbers[0],
-                         self.emoji_numbers[1], self.emoji_numbers[2]]
+            reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2]]
 
             for emoji in reactions:
                 await msg.add_reaction(emoji)
@@ -164,12 +201,13 @@ class Flow:
                             self.emoji_numbers[i], role.name)
                         i += 1
                     msg = await user.send(option_string)
-                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
-                                 self.emoji_numbers[3], self.emoji_numbers[4]]
+                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4]]
 
                     for emoji in reactions:
                         await msg.add_reaction(emoji)
                     reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                    if reaction.emoji in self.emoji_numbers:
+                        await self.add_role(user_object,uid=self.modules[0][0][self.emoji_numbers.index(reaction.emoji)])
                 elif reaction.emoji == self.emoji_numbers[1]:
                     option_string = '**Choose your module.**'
                     i = 0
@@ -179,12 +217,13 @@ class Flow:
                             self.emoji_numbers[i], role.name)
                         i += 1
                     msg = await user.send(option_string)
-                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
-                                 self.emoji_numbers[3], self.emoji_numbers[4]]
+                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4]]
 
                     for emoji in reactions:
                         await msg.add_reaction(emoji)
                     reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                    if reaction.emoji in self.emoji_numbers:
+                        await self.add_role(user_object,uid=self.modules[0][1][self.emoji_numbers.index(reaction.emoji)])
 
             # Give second year modules ----------------------------------------------------------------------------------
             elif reaction.emoji == self.emoji_numbers[1]:
@@ -206,20 +245,18 @@ class Flow:
                             self.emoji_numbers[i], role.name)
                         i += 1
                     msg = await user.send(option_string)
-                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
-                                 self.emoji_numbers[3], self.emoji_numbers[4]]
+                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4]]
 
                     for emoji in reactions:
                         await msg.add_reaction(emoji)
                     reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
 
-                    if reaction.emoji == self.emoji_numbers[0]:
-                        pass
+                    if reaction.emoji in self.emoji_numbers:
+                        await self.add_role(user_object,uid=self.modules[1][0][self.emoji_numbers.index(reaction.emoji)])
                 elif reaction.emoji == self.emoji_numbers[1]:
                     msg = await user.send(
                         '**What course is your module in?.**\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI')
-                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
-                                 self.emoji_numbers[3]]
+                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3]]
 
                     for emoji in reactions:
                         await msg.add_reaction(emoji)
@@ -235,12 +272,13 @@ class Flow:
                                 self.emoji_numbers[i], role.name)
                             i += 1
                         msg = await user.send(option_string)
-                        reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
-                                     self.emoji_numbers[3], self.emoji_numbers[4]]
+                        reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4]]
 
                         for emoji in reactions:
                             await msg.add_reaction(emoji)
                         reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                        if reaction.emoji in self.emoji_numbers:
+                            await self.add_role(user_object,uid=self.modules[1][1]['Web & App'][self.emoji_numbers.index(reaction.emoji)])
 
                     elif reaction.emoji == self.emoji_numbers[1]:
                         # Show options for ai engineer
@@ -252,12 +290,13 @@ class Flow:
                                 self.emoji_numbers[i], role.name)
                             i += 1
                         msg = await user.send(option_string)
-                        reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
-                                     self.emoji_numbers[3], self.emoji_numbers[4]]
+                        reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4]]
 
                         for emoji in reactions:
                             await msg.add_reaction(emoji)
                         reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                        if reaction.emoji in self.emoji_numbers:
+                            await self.add_role(user_object,uid=self.modules[1][1]['AI Engineer'][self.emoji_numbers.index(reaction.emoji)])
 
                     elif reaction.emoji == self.emoji_numbers[2]:
                         # Show options for iot infrastructure
@@ -269,12 +308,13 @@ class Flow:
                                 self.emoji_numbers[i], role.name)
                             i += 1
                         msg = await user.send(option_string)
-                        reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
-                                     self.emoji_numbers[3], self.emoji_numbers[4]]
+                        reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4]]
 
                         for emoji in reactions:
                             await msg.add_reaction(emoji)
                         reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                        if reaction.emoji in self.emoji_numbers:
+                            await self.add_role(user_object,uid=self.modules[1][1]['IoT Infrastructure'][self.emoji_numbers.index(reaction.emoji)])
 
                     elif reaction.emoji == self.emoji_numbers[3]:
                         # Show options for smart tech and ai
@@ -286,12 +326,13 @@ class Flow:
                                 self.emoji_numbers[i], role.name)
                             i += 1
                         msg = await user.send(option_string)
-                        reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
-                                     self.emoji_numbers[3], self.emoji_numbers[4]]
+                        reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4]]
 
                         for emoji in reactions:
                             await msg.add_reaction(emoji)
                         reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                        if reaction.emoji in self.emoji_numbers:
+                            await self.add_role(user_object,uid=self.modules[1][1]['Smart Tech & AI'][self.emoji_numbers.index(reaction.emoji)])
 
                     else:
                         raise Exception()
@@ -300,8 +341,7 @@ class Flow:
             elif reaction.emoji == self.emoji_numbers[2]:
                 msg = await user.send(
                     '**What course is your module in?.**\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI')
-                reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
-                             self.emoji_numbers[3]]
+                reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3]]
 
                 for emoji in reactions:
                     await msg.add_reaction(emoji)
@@ -311,69 +351,73 @@ class Flow:
                     # Show options for web and app
                     option_string = '**Choose your module.**'
                     i = 0
-                    for module in self.modules[1][1]['Web & App']:
+                    for module in self.modules[2][1]['Web & App']:
                         role = await self.get_role(uid=module)
                         option_string += '\n{} {}'.format(
                             self.emoji_numbers[i], role.name)
                         i += 1
                     msg = await user.send(option_string)
-                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
-                                 self.emoji_numbers[3], self.emoji_numbers[4]]
+                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4]]
 
                     for emoji in reactions:
                         await msg.add_reaction(emoji)
                     reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                    if reaction.emoji in self.emoji_numbers:
+                        await self.add_role(user_object,uid=self.modules[2][1]['Web & App'][self.emoji_numbers.index(reaction.emoji)])
 
                 elif reaction.emoji == self.emoji_numbers[1]:
                     # Show options for iot engineer
                     option_string = '**Choose your module.**'
                     i = 0
-                    for module in self.modules[1][1]['AI Engineer']:
+                    for module in self.modules[2][1]['AI Engineer']:
                         role = await self.get_role(uid=module)
                         option_string += '\n{} {}'.format(
                             self.emoji_numbers[i], role.name)
                         i += 1
                     msg = await user.send(option_string)
-                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
-                                 self.emoji_numbers[3], self.emoji_numbers[4]]
+                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4]]
 
                     for emoji in reactions:
                         await msg.add_reaction(emoji)
                     reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                    if reaction.emoji in self.emoji_numbers:
+                        await self.add_role(user_object,uid=self.modules[2][1]['AI Engineer'][self.emoji_numbers.index(reaction.emoji)])
 
                 elif reaction.emoji == self.emoji_numbers[2]:
                     # Show options for iot infrastructure
                     option_string = '**Choose your module.**'
                     i = 0
-                    for module in self.modules[1][1]['IoT Infrastructure']:
+                    for module in self.modules[2][1]['IoT Infrastructure']:
                         role = await self.get_role(uid=module)
                         option_string += '\n{} {}'.format(
                             self.emoji_numbers[i], role.name)
                         i += 1
                     msg = await user.send(option_string)
-                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
-                                 self.emoji_numbers[3], self.emoji_numbers[4]]
+                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4]]
 
                     for emoji in reactions:
                         await msg.add_reaction(emoji)
                     reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                    if reaction.emoji in self.emoji_numbers:
+                        await self.add_role(user_object,uid=self.modules[2][1]['IoT Infrastructure'][self.emoji_numbers.index(reaction.emoji)])
 
                 elif reaction.emoji == self.emoji_numbers[3]:
                     # Show options for smart tech and ai
                     option_string = '**Choose your module.**'
                     i = 0
-                    for module in self.modules[1][1]['Smart Tech & AI']:
+                    for module in self.modules[2][1]['Smart Tech & AI']:
                         role = await self.get_role(uid=module)
                         option_string += '\n{} {}'.format(
                             self.emoji_numbers[i], role.name)
                         i += 1
                     msg = await user.send(option_string)
-                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
-                                 self.emoji_numbers[3], self.emoji_numbers[4]]
+                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4]]
 
                     for emoji in reactions:
                         await msg.add_reaction(emoji)
                     reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                    if reaction.emoji in self.emoji_numbers:
+                        await self.add_role(user_object,uid=self.modules[2][1]['Smart Tech & AI'][self.emoji_numbers.index(reaction.emoji)])
 
                 else:
                     raise Exception()
@@ -460,6 +504,12 @@ class Flow:
         else:
             raise ValueError(
                 'add_role function needs to have a name or a id parameter.')
+            
+    async def remove_roles(self, usr, name=None, uid=None):
+            for role in usr.roles[1:]:
+                if role.id not in self.role_whitelist:
+                    print(role.name)
+                    await usr.remove_roles(role)
 
     async def get_role(self, name=None, uid=None):
         if name or uid:

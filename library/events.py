@@ -18,14 +18,14 @@ class Events(commands.Cog):
         print(self.bot.guilds[0].name)
         for guild in self.bot.guilds:
             print(guild.name)
-        file = open('ranks.txt', 'w')
-        for guild in self.bot.guilds:
-            file.write("Roles for {}\n".format(guild.name))
-            for role in guild.roles:
-                if role.name == '@everyone':
-                    continue
-                file.write("\t- {} \t {}\n".format(role.name, role.id))
-        file.close()
+        # file = open('ranks.txt', 'w')
+        # for guild in self.bot.guilds:
+        #     file.write("Roles for {}\n".format(guild.name))
+        #     for role in guild.roles:
+        #         if role.name == '@everyone':
+        #             continue
+        #         file.write("\t- {} \t {}\n".format(role.name, role.id))
+        # file.close()
 
     # Sends DM to a new member
     # @commands.Cog.listener()

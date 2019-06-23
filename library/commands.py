@@ -19,11 +19,13 @@ class Commands(commands.Cog):
     async def setup(self, ctx):
         flow = Flow(self.bot)
         await flow.start_flow(ctx)
+        await ctx.message.delete()
 
     @commands.command()
     async def addmodule(self, ctx):
         flow = Flow(self.bot)
         await flow.add_module(ctx)
+        await ctx.message.delete()
 
     # @commands.command()
     # async def roles(self, ctx):
