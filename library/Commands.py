@@ -53,7 +53,7 @@ class Commands(commands.Cog):
         try:
             reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
             if reaction.emoji == self.emoji_numbers[0]:
-                await channel.send('**We signed you up for *year 1.***'.format(reaction))
+                await channel.send('**We signed you up for *year 1.***')
                 # Give first year permissions
             elif reaction.emoji == self.emoji_numbers[1]:
                 # Give second year year permissions
