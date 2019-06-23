@@ -15,6 +15,9 @@ class Events(commands.Cog):
     async def on_ready(self):
         print('Logged on as', self.bot.user)
         await self.bot.change_presence(activity=discord.Game(name="Crunching some data"))
+        print(self.bot.guilds[0].name)
+        for guild in self.bot.guilds:
+            print(guild.name)
         file = open('ranks.txt', 'w')
         for guild in self.bot.guilds:
             file.write("Roles for {}\n".format(guild.name))
@@ -25,10 +28,10 @@ class Events(commands.Cog):
         file.close()
 
     # Sends DM to a new member
-    @commands.Cog.listener()
-    async def on_member_join(self, member):
-        await member.send(
-            '**Welcome to the MCT server to get you started type in:** ```start```This will only take around 30 to 60 seconds of your time.')
+    # @commands.Cog.listener()
+    # async def on_member_join(self, member):
+    #     await member.send(
+    #         '**Welcome to the MCT server to get you started type in:** ```start```This will only take around 30 to 60 seconds of your time.')
 
     # Sends message in chat and via DM when user sends ping to any text channel in a server.
     @commands.Cog.listener()
@@ -38,10 +41,7 @@ class Events(commands.Cog):
             return
 
         if not isinstance(message.channel, DMChannel):
-            if message.content == 'ping':
-                author = message.author
-                await author.send('pong')
-                await message.channel.send('pong')
+            pass
         else:
             if message.content.lower() == 'start':
                 flow = Flow(self.bot)
