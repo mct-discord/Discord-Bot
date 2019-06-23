@@ -35,4 +35,4 @@ class Events(commands.Cog):
                 await message.channel.send('pong')
         else:
             flow = Flow(self.bot)
-            flow.start_flow(ctx)
+            await flow.start_flow(message)

@@ -14,7 +14,7 @@ class Commands(commands.Cog):
     @commands.command()
     async def setup(self, ctx):
         flow = Flow(self.bot)
-        flow.start_flow(ctx)
+        await flow.start_flow(ctx)
 
     @commands.command()
     async def roles(self, ctx):
