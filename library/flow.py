@@ -36,7 +36,11 @@ class Flow:
 
     async def start_flow(self, ctx):
         channel = ctx.channel
-        msg = await ctx.user.send(
+        user_object = discord.utils.get(discord.utils.get(
+            self.bot.guilds, name='MCT').members, id=ctx.author.id)
+        print(user_object.name)
+
+        msg = await ctx.author.send(
             '**What year are you in?**\nIf a year is not applicable to you press the :no_entry_sign: button.')
         reactions = [self.emoji_numbers[0],
                      self.emoji_numbers[1], self.emoji_numbers[2], '🚫']
@@ -54,12 +58,12 @@ class Flow:
             # Give first year permissions ----------------------------------------------------------------------------------
             if reaction.emoji == self.emoji_numbers[0]:
                 await user.send('**I signed you up for *year 1.***')
-                self.add_role(user, uid='578656098425372697')
+                await self.add_role(user_object, uid=578656098425372697)
 
             # Give second year permissions ----------------------------------------------------------------------------------
             elif reaction.emoji == self.emoji_numbers[1]:
                 await user.send('**I signed you up for *year 2.***')
-                self.add_role(user, uid='578656108663799818')
+                await self.add_role(user_object, uid=578656108663799818)
 
                 msg = await user.send(
                     '**Your year requires you to choose a sub category.**\nAlready have an idea what you\'re going to choose?\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI\n:no_entry_sign: No Idea')
@@ -71,16 +75,16 @@ class Flow:
 
                 reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
                 if reaction.emoji == self.emoji_numbers[0]:
-                    self.add_role(user, uid='591620720875012117')
+                    await self.add_role(user_object, uid=591620720875012117)
                     await user.send('**I signed you up for *2 Web and App.***')
                 elif reaction.emoji == self.emoji_numbers[1]:
-                    self.add_role(user, uid='591621045572861962')
+                    await self.add_role(user_object, uid=591621045572861962)
                     await user.send('**I signed you up for *2 AI Engineer.***')
                 elif reaction.emoji == self.emoji_numbers[2]:
-                    self.add_role(user, uid='591621084110127133')
+                    await self.add_role(user_object, uid=591621084110127133)
                     await user.send('**I signed you up for *2 IoT Infrastructure.***')
                 elif reaction.emoji == self.emoji_numbers[3]:
-                    self.add_role(user, uid='591620854966648832')
+                    await self.add_role(user_object, uid=591620854966648832)
                     await user.send('**I signed you up for *2 Smart Tech and AI.***')
                 elif reaction.emoji == self.emoji_numbers[3]:
                     await user.send('**I only signed you up for the first semester, redo the setup if you have an idea what you\'ll choose**')
@@ -90,7 +94,7 @@ class Flow:
             # Give third year permissions ----------------------------------------------------------------------------------
             elif reaction.emoji == self.emoji_numbers[2]:
                 await user.send('**I signed you up for *year 3.***')
-                self.add_role(user, uid='578656111041970186')
+                await self.add_role(user_object, uid=578656111041970186)
 
                 msg = await user.send(
                     '**Your year requires you to choose a sub category.**\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI')
@@ -102,16 +106,16 @@ class Flow:
 
                 reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
                 if reaction.emoji == self.emoji_numbers[0]:
-                    self.add_role(user, uid='591621299692896276')
+                    await self.add_role(user_object, uid=591621299692896276)
                     await user.send('**We signed you up for *3 Web and App.***')
                 elif reaction.emoji == self.emoji_numbers[1]:
-                    self.add_role(user, uid='591621543965097985')
+                    await self.add_role(user_object, uid=591621543965097985)
                     await user.send('**We signed you up for *3 AI Engineer.***')
                 elif reaction.emoji == self.emoji_numbers[2]:
-                    self.add_role(user, uid='591621593613205524')
+                    await self.add_role(user_object, uid=591621593613205524)
                     await user.send('**We signed you up for *3 IoT Infrastructure.***')
                 elif reaction.emoji == self.emoji_numbers[3]:
-                    self.add_role(user, uid='591621481818095626')
+                    await self.add_role(user_object, uid=591621481818095626)
                     await user.send('**We signed you up for *3 Smart Tech and AI.***')
                 else:
                     raise Exception()
@@ -119,10 +123,10 @@ class Flow:
             await user.send('**If you are following extra modules send me this command to add them.\n```!addModule```**')
 
         except asyncio.TimeoutError:
-            await user.send('We didn\'t get your answer try again with \n```!setup```')
+            await user.send('We didn\'t get your answer try again with \n```!start```')
         else:
             await user.send(
-                'If you want to redo this process you can enter the following command anytime here or on the server.```!setup```')
+                'If you want to redo this process you can enter the following command anytime here or on the server.```!start```')
 
     async def add_module(self, ctx):
         channel = ctx.channel
@@ -382,18 +386,19 @@ class Flow:
 
         else:
             await user.send(
-                'If you want to redo this process you can enter the following command anytime here or on the server.```!setup```')
+                'If you want to redo this process you can enter the following command anytime here or on the server.```!start```')
 
     async def add_role(self, usr, name=None, uid=None):
         if name or uid:
             if name:
                 if isinstance(name, list):
                     for role_item in list:
-                        role = discord.utils.get(
-                            usr.guild.roles, name=role_item)
+                        role = discord.utils.get(discord.utils.get(
+                            self.bot.guilds, name='MCT').roles, name=role_item)
                         await usr.add_roles(role_item)
                 elif isinstance(name, str):
-                    role = discord.utils.get(usr.guild.roles, name=name)
+                    role = discord.utils.get(discord.utils.get(
+                        self.bot.guilds, name='MCT').roles, name=name)
                     await usr.add_roles(role)
                 else:
                     raise ValueError(
@@ -401,14 +406,16 @@ class Flow:
             elif uid:
                 if isinstance(uid, list):
                     for role_item in list:
-                        role = discord.utils.get(usr.guild.roles, id=role_item)
+                        role = discord.utils.get(discord.utils.get(
+                            self.bot.guilds, name='MCT').roles, id=role_item)
                         await usr.add_roles(role_item)
-                elif isinstance(uid, str):
-                    role = discord.utils.get(usr.guild.roles, id=uid)
+                elif isinstance(uid, int):
+                    role = discord.utils.get(discord.utils.get(
+                        self.bot.guilds, name='MCT').roles, id=uid)
                     await usr.add_roles(role)
                 else:
                     raise ValueError(
-                        'When adding a role to a user use a list or a string for the id parameter.')
+                        'When adding a role to a user use a list or a int for the id parameter.')
         else:
             raise ValueError(
                 'add_role function needs to have a name or a id parameter.')
@@ -427,11 +434,12 @@ class Flow:
             if name:
                 if isinstance(name, list):
                     for role_item in list:
-                        role = discord.utils.get(
-                            usr.guild.roles, name=role_item)
+                        role = discord.utils.get(discord.utils.get(
+                            self.bot.guilds, name='MCT').roles, name=role_item)
                         await usr.remove_roles(role)
                 elif isinstance(name, str):
-                    role = discord.utils.get(usr.guild.roles, name=name)
+                    role = discord.utils.get(discord.utils.get(
+                        self.bot.guilds, name='MCT').roles, name=name)
                     await usr.remove_roles(role)
                 else:
                     raise ValueError(
@@ -439,14 +447,16 @@ class Flow:
             elif uid:
                 if isinstance(uid, list):
                     for role_item in list:
-                        role = discord.utils.get(usr.guild.roles, id=role_item)
+                        role = discord.utils.get(discord.utils.get(
+                            self.bot.guilds, name='MCT').roles, id=role_item)
                         await usr.remove_roles(role)
-                elif isinstance(uid, str):
-                    role = discord.utils.get(usr.guild.roles, id=uid)
+                elif isinstance(uid, int):
+                    role = discord.utils.get(discord.utils.get(
+                        self.bot.guilds, name='MCT').roles, id=uid)
                     await usr.remove_roles(role)
                 else:
                     raise ValueError(
-                        'When adding a role to a user use a list or a string for the id parameter.')
+                        'When adding a role to a user use a list or a int for the id parameter.')
         else:
             raise ValueError(
                 'add_role function needs to have a name or a id parameter.')
@@ -455,7 +465,6 @@ class Flow:
         if name or uid:
             if name:
                 if isinstance(name, str):
-                    pass
                     return discord.utils.get(discord.utils.get(self.bot.guilds, name='MCT').roles, name=name)
                 else:
                     raise ValueError(

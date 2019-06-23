@@ -1,69 +1,73 @@
-Roles for FunergyDev
-	- MCT-Bot 	 592422987471519754
-	- Test 	 591766767865692170
-	- FunergyDevBot 	 591751678181507112
-	- Admin 	 591963076849565741
+
 Roles for MCT
-	- Stage 	 591724283550760997
-	- Network Programming 	 591724252668100608
-	- Cloud Services 	 591724222464655387
-	- Advanced AI 	 591724192353746965
-	- Cloud Services and DevOps 	 591724139300257794
-	- Full Stack Development 	 591724086355558420
-	- Framework and Patterns 	 591724053983789114
-	- Project 4 	 591724034857631794
-	- Fastforward 	 591724012728746026
-	- Augmented and Mixed Reality 	 591723974094749696
-	- IoT Devices and Robotics 	 591723938657206407
-	- Deep Learning 	 591723917689880600
-	- Windows OS 	 591723897418809368
-	- Virtualisation and Cloud 	 591723817127116840
-	- Network Infrastructure 	 591723786643046401
-	- Concept Visualisation 	 591723750576357400
-	- Backend Development 	 591723719123140641
-	- Smart App Development 	 591723688567504896
-	- Frontend 	 591723663477440522
-	- Project 3 	 591723630811938816
-	- Machine Learning 	 591723605054980107
-	- Linux OS 	 591723587983900692
-	- Big Data 	 591723568400957461
-	- Advanced Programming and Math 	 591723531969101824
-	- Project 2 	 591723509764456457
-	- Interaction Design 	 591723479011950622
-	- IoT Cloud 	 591723436452217044
-	- Security 	 591723418223771658
-	- Device Programming 	 591723388154806490
-	- Project 1 	 591723365878988800
-	- Create 2 	 591723296404406307
-	- Data Management 	 591723267266445350
-	- Sensors and Interfacing 	 591723225977978912
-	- Full Stack Web Development 	 591723166594891794
-	- Prototyping 	 591723123171393552
-	- User Experience 	 591723086185889995
-	- Data Science 	 591723051381686272
-	- Computer Networks 	 591722865175560203
-	- Basic Programming 	 591721912187486228
-	- Alumni 	 591653678776057882
-	- Derdejaars 	 578656111041970186
-	- 3 IoT Infrastructure 	 591621593613205524
-	- 3 AI Engineer 	 591621543965097985
-	- 3 Smart Tech & AI 	 591621481818095626
-	- 3 Web & App 	 591621299692896276
-	- Tweedejaars 	 578656108663799818
-	- 2 IoT Infrastructure 	 591621084110127133
-	- 2 AI Engineer 	 591621045572861962
-	- 2 Smart Tech & AI 	 591620854966648832
-	- 2 Web & App 	 591620720875012117
-	- 2 MCT 3 	 591620431824551937
-	- 2 MCT 3 	 591620382344216576
-	- 2 MCT 1 	 591620333002293251
-	- Eerstejaars 	 578656098425372697
-	- 1 MCT 6 	 555375146094034965
-	- 1 MCT 5 	 555375105405091840
-	- 1 MCT 4 	 555375072693714944
-	- 1 MCT 3 	 555375032222875656
-	- 1 MCT 2 	 555374989918863376
-	- 1 MCT 1 	 555374881823522816
-	- MCT-Bot 	 592423322839416843
-	- Mod 	 591659288053940272
-	- Admin 	 555375267275603968
+
+----- Eerstejaars 	 				578656098425372697
+	- 1 MCT 6 	 						555375146094034965
+	- 1 MCT 5 	 						555375105405091840
+	- 1 MCT 4 	 						555375072693714944
+	- 1 MCT 3 	 						555375032222875656
+	- 1 MCT 2 	 						555374989918863376
+	- 1 MCT 1 	 						555374881823522816
+
+----- Tweedejaars 	 				578656108663799818
+	- 2 IoT Infrastructure 	 			591621084110127133
+	- 2 AI Engineer 	 				591621045572861962
+	- 2 Smart Tech & AI 	 			591620854966648832
+	- 2 Web & App 	 					591620720875012117
+	- 2 MCT 3 	 						591620431824551937
+	- 2 MCT 3 	 						591620382344216576
+	- 2 MCT 1 	 						591620333002293251
+
+----- Derdejaars 	 				578656111041970186
+	- 3 IoT Infrastructure 	 			591621593613205524
+	- 3 AI Engineer 	 				591621543965097985
+	- 3 Smart Tech & AI 	 			591621481818095626
+	- 3 Web & App 	 					591621299692896276
+
+
+----- Modules
+	- Stage 	 						591724283550760997
+	- Network Programming 	 			591724252668100608
+	- Cloud Services 	 				591724222464655387
+	- Advanced AI 	 					591724192353746965
+	- Cloud Services and DevOps 	 	591724139300257794
+	- Full Stack Development 	 		591724086355558420
+	- Framework and Patterns 	 		591724053983789114
+	- Project 4 	 					591724034857631794
+	- Fastforward 	 					591724012728746026
+	- Augmented and Mixed Reality 	 	591723974094749696
+	- IoT Devices and Robotics 	 		591723938657206407
+	- Deep Learning 	 				591723917689880600
+	- Windows OS 	 					591723897418809368
+	- Virtualisation and Cloud 	 		591723817127116840
+	- Network Infrastructure 	 		591723786643046401
+	- Concept Visualisation 	 		591723750576357400
+	- Backend Development 	 			591723719123140641
+	- Smart App Development 	 		591723688567504896
+	- Frontend 	 						591723663477440522
+	- Project 3 	 					591723630811938816
+	- Machine Learning 	 				591723605054980107
+	- Linux OS 	 						591723587983900692
+	- Big Data 	 						591723568400957461
+	- Advanced Programming and Math 	591723531969101824
+	- Project 2 	 					591723509764456457
+	- Interaction Design 	 			591723479011950622
+	- IoT Cloud 	 					591723436452217044
+	- Security 	 						591723418223771658
+	- Device Programming 	 			591723388154806490
+	- Project 1 	 					591723365878988800
+	- Create 2 	 						591723296404406307
+	- Data Management 	 				591723267266445350
+	- Sensors and Interfacing 	 		591723225977978912
+	- Full Stack Web Development 	 	591723166594891794
+	- Prototyping 	 					591723123171393552
+	- User Experience 	 				591723086185889995
+	- Data Science 	 					591723051381686272
+	- Computer Networks 	 			591722865175560203
+	- Basic Programming 	 			591721912187486228
+
+
+	- MCT-Bot 	 	592423322839416843
+	- Mod 	 		591659288053940272
+	- Admin 	 	555375267275603968
+	- Alumni 	 	591653678776057882

@@ -1,14 +1,14 @@
 # MCT-Project-Disc
 Role Automation bot for MCT discord
-Currently only written in Python, but it would be a great example and exersise to write this bot in every language ought at MCT to show what we're capable of.
+Currently only written in Python, but it would be a great example and exersise to write this bot in every language tought at MCT to show what we're capable of.
 If you want to help us in this endeavour do not hesitate to contact me or any of the contributors of this project.
 
 Planned languages:
-* Pyhton
+* Phyton
 * JavaScript
 * C#
 * Go
-* Rust⋅⋅*
+* Rust
 * Java
 * Ruby
 
