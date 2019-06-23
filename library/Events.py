@@ -19,13 +19,15 @@ class Events(commands.Cog):
                     'Smart Tech and AI': ['Advanced Programming and Math', 'Big Data', 'Linux OS', 'Machine Learning',
                                           'Project 3']}],
                3: [['Stage'],
-                   {'Web and App': ['Augmented and Mixed Reality', 'Fast Forward', 'Framework and Patterns', 'Full Stack Development',
+                   {'Web and App': ['Augmented and Mixed Reality', 'Fast Forward', 'Framework and Patterns',
+                                    'Full Stack Development',
                                     'Project 4'],
                     'AI Engineer': ['Deep Learning', 'Fast Forward', 'Cloud Services and DevOps',
                                     'Advanced AI', 'Project 4'],
                     'IoT Infrastructure': ['IoT Devices and Robotics', 'Fast Forward', 'Cloud Services',
                                            'Network Programming', 'Project 4'],
-                    'Smart Tech and AI': ['Deep Learning', 'IoT Devices and Robotics', 'Augmented and Mixed Reality', 'Fast Forward',
+                    'Smart Tech and AI': ['Deep Learning', 'IoT Devices and Robotics', 'Augmented and Mixed Reality',
+                                          'Fast Forward',
                                           'Project 4']}]}
 
     def __init__(self, bot):
@@ -126,7 +128,56 @@ class Events(commands.Cog):
 
                     reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
                     if reaction.emoji == '✅':
-                        pass
+                        msg = await channel.send(
+                            '**What year is your module?**')
+                        reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2]]
+
+                        for emoji in reactions:
+                            await msg.add_reaction(emoji)
+                        reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                        if reaction.emoji == self.emoji_numbers[0]:
+                            pass  # Show options for first year
+                        elif reaction.emoji == self.emoji_numbers[1]:
+                            msg = await channel.send(
+                                '**What course is your module in?.**\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI')
+                            reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
+                                         self.emoji_numbers[3]]
+
+                            for emoji in reactions:
+                                await msg.add_reaction(emoji)
+
+                            reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                            if reaction.emoji == self.emoji_numbers[0]:
+                                pass  # Show options for web and app
+                            elif reaction.emoji == self.emoji_numbers[1]:
+                                pass  # Show options for ai engineer
+                            elif reaction.emoji == self.emoji_numbers[2]:
+                                pass  # Show options for iot infrastructure
+                            elif reaction.emoji == self.emoji_numbers[3]:
+                                pass  # Show options for smart tech and ai
+                            else:
+                                raise Exception()
+                        elif reaction.emoji == self.emoji_numbers[2]:
+                            # Give second year year permissions
+                            msg = await channel.send(
+                                '**Your year requires you to choose a sub category.**\nWhat will you choose?\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI')
+                            reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2],
+                                         self.emoji_numbers[3]]
+
+                            for emoji in reactions:
+                                await msg.add_reaction(emoji)
+
+                            reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                            if reaction.emoji == self.emoji_numbers[0]:
+                                pass  # Show options for web and app
+                            elif reaction.emoji == self.emoji_numbers[1]:
+                                pass  # Show options for ai engineer
+                            elif reaction.emoji == self.emoji_numbers[2]:
+                                pass  # Show options for iot infrastructure
+                            elif reaction.emoji == self.emoji_numbers[3]:
+                                pass  # Show options for smart tech and ai
+                            else:
+                                raise Exception()
                     elif reaction.emoji == '❎':
                         pass
                     else:
