@@ -3,6 +3,7 @@ from discord.ext import commands
 import discord
 import asyncio
 from library.flow import Flow
+import json
 
 
 class Events(commands.Cog):
@@ -14,6 +15,14 @@ class Events(commands.Cog):
     async def on_ready(self):
         print('Logged on as', self.bot.user)
         await self.bot.change_presence(activity=discord.Game(name="Crunching some data"))
+        file = open('ranks.txt', 'w')
+        for guild in self.bot.guilds:
+            file.write("Roles for {}\n".format(guild.name))
+            for role in guild.roles:
+                if role.name == '@everyone':
+                    continue
+                file.write("\t- {} \t {}\n".format(role.name, role.id))
+        file.close()
 
     # Sends DM to a new member
     @commands.Cog.listener()
@@ -34,5 +43,6 @@ class Events(commands.Cog):
                 await author.send('pong')
                 await message.channel.send('pong')
         else:
-            flow = Flow(self.bot)
-            await flow.start_flow(message)
+            if message.content.lower() == 'start':
+                flow = Flow(self.bot)
+                await flow.start_flow(message)

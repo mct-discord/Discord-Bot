@@ -17,13 +17,19 @@ class Commands(commands.Cog):
         await flow.start_flow(ctx)
 
     @commands.command()
+    async def addModule(self, ctx):
+        flow = Flow(self.bot)
+        await flow.add_module(ctx)
+    
+   
+    @commands.command()
     async def roles(self, ctx):
         for guild in self.bot.guilds:
             roles = "Roles for {}\n".format(guild.name)
             for role in guild.roles:
                 if role.name == '@everyone':
                     continue
-                roles += "\t- {}\n".format(role.name)
+                roles += "\t- {} \t\t\t\t\t {}\n".format(role.name, role.id)
             await ctx.channel.send(roles)
 
     @commands.command()
