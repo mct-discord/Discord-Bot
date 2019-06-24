@@ -224,7 +224,34 @@ class Flow:
             else:
                 await user_object.send(
                     'If you want to redo this process you can enter the following command anytime here or on the server.```!setup```')
+        elif current_year == 2:
+            role = await self.get_role(uid=591653678776057882)
+            
+            msg = await ctx.author.send(
+                '**Based on your previous choices I have made a prediction for you.**\nDoes the following status apply to you?\n\n\t- **{}**'.format(role.name))
+            reactions = ['✅', '❎']
 
+            for emoji in reactions:
+                await msg.add_reaction(emoji)
+
+            def check(reaction, user):
+                return user == ctx.author
+
+            try:
+                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                if reaction.emoji == '✅':
+                    await self.remove_roles(user_object)
+                    await self.add_role(user_object, uid=591653678776057882)
+                    await user_object.send('The bot and the developers of this bot congratulate you. **Good Job!**\n:trophy: :champagne: :confetti_ball: ')
+
+                else:
+                    await self.start_flow(ctx)
+                    return
+            except asyncio.TimeoutError:
+                await user_object.send('We didn\'t get your answer try again with \n```!setup```')
+            else:
+                await user_object.send(
+                    'If you want to sign up for a year, a course or a module just type the following command.```!setup```')
 
     async def add_module(self, ctx):
         channel = ctx.channel
