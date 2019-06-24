@@ -26,6 +26,12 @@ class Commands(commands.Cog):
         await ctx.message.delete()
         await flow.add_module(ctx)
 
+    @commands.command()
+    async def predictrole(self, ctx):
+        flow = Flow(self.bot)
+        await ctx.message.delete()
+        await flow.predictive_flow(ctx)
+
     # @commands.command()
     # async def roles(self, ctx):
     #     for guild in self.bot.guilds:

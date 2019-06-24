@@ -18,7 +18,11 @@ class Flow:
                     'AI Engineer': [591723917689880600, 591724012728746026, 591724139300257794, 591724192353746965, 591724034857631794],
                     'IoT Infrastructure': [591723938657206407, 591724012728746026, 591724222464655387, 591724252668100608, 591724034857631794],
                     'Smart Tech & AI': [591723917689880600, 591723938657206407, 591723974094749696, 591724012728746026, 591724034857631794]}]]
-
+    years = [578656098425372697,578656108663799818,578656111041970186]
+    courses = [[],
+               [[],
+                [591620720875012117,591621045572861962,591621084110127133,591620854966648832]],
+               [591621299692896276,591621543965097985,591621593613205524,591621299692896276]]
     def __init__(self, bot):
         self.bot = bot
 
@@ -160,10 +164,67 @@ class Flow:
             await user.send('**If you are following extra modules send me this command to add them.\n```!addModule```**')
 
         except asyncio.TimeoutError:
-            await user.send('We didn\'t get your answer try again with \n```!setup```')
+            await user_object.send('We didn\'t get your answer try again with \n```!setup```')
         else:
-            await user.send(
+            await user_object.send(
                 'If you want to redo this process you can enter the following command anytime here or on the server.```!setup```')
+
+    async def predictive_flow(self, ctx):
+        channel = ctx.channel
+        user_object = discord.utils.get(discord.utils.get(
+            self.bot.guilds, name='MCT').members, id=ctx.author.id)
+        current_year = -1
+        current_course = -1
+        for role in user_object.roles:
+            if role.id in self.years:
+                current_year = self.years.index(role.id)
+        
+        if current_year == (0 or -1):
+            await self.start_flow(ctx)
+            return
+        
+        elif current_year == 1:
+            for role in user_object.roles:
+                if role.id in self.courses[1][1]:
+                    current_course = self.courses[1][1].index(role.id)
+            
+            if current_course == -1:
+                await self.start_flow(ctx)
+                return
+            
+            
+            
+            next_year = current_year+1
+            next_year_id = self.years[next_year]
+            next_course_id = self.courses[2][current_course]            
+        
+            role = await self.get_role(uid=next_course_id)
+        
+            msg = await ctx.author.send(
+                '**Based on your previous choices I have made a prediction for you.**\nDoes the following course in ***year {}*** apply to you?\n\n\t- **{}**'.format(next_year+1,role.name))
+            reactions = ['✅', '❎']
+
+            for emoji in reactions:
+                await msg.add_reaction(emoji)
+
+            def check(reaction, user):
+                return user == ctx.author
+
+            try:
+                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                if reaction.emoji == '✅':
+                    await self.remove_roles(user_object)
+                    await self.add_role(user_object, uid=next_year_id)
+                    await self.add_role(user_object, uid=next_course_id)
+                else:
+                    await self.start_flow(ctx)
+                    return
+            except asyncio.TimeoutError:
+                await user_object.send('We didn\'t get your answer try again with \n```!setup```')
+            else:
+                await user_object.send(
+                    'If you want to redo this process you can enter the following command anytime here or on the server.```!setup```')
+
 
     async def add_module(self, ctx):
         channel = ctx.channel
@@ -423,13 +484,13 @@ class Flow:
                     raise Exception()
 
         except asyncio.TimeoutError:
-            await user.send('We couldn\'t get your answer right let\'s try this again shall we?')
+            await user_object.send('We couldn\'t get your answer right let\'s try this again shall we?')
 
         except Exception as e:
             print(e)
 
         else:
-            await user.send(
+            await user_object.send(
                 'If you want to add another module you can enter the following command anytime here or on the server.```!addmodule```')
 
     async def add_role(self, usr, name=None, uid=None):
