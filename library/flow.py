@@ -196,8 +196,6 @@ class Flow:
             for emoji in reactions:
                 await msg.add_reaction(emoji)
 
-            def check(reaction, user):
-                return user == ctx.author
 
             try:
                 reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
