@@ -18,7 +18,7 @@ class Commands(commands.Cog):
     async def setup(self, ctx):
         flow = Flow(self.bot)
         await ctx.message.delete()
-        await flow.start_flow(ctx)
+        await flow.predictive_flow(ctx)
 
     @commands.command()
     async def addmodule(self, ctx):
@@ -26,11 +26,11 @@ class Commands(commands.Cog):
         await ctx.message.delete()
         await flow.add_module(ctx)
 
-    @commands.command()
-    async def predictrole(self, ctx):
-        flow = Flow(self.bot)
-        await ctx.message.delete()
-        await flow.predictive_flow(ctx)
+    # @commands.command()
+    # async def predictrole(self, ctx):
+    #     flow = Flow(self.bot)
+    #     await ctx.message.delete()
+    #     await flow.predictive_flow(ctx)
 
     # @commands.command()
     # async def roles(self, ctx):

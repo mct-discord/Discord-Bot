@@ -5,7 +5,7 @@ import asyncio
 
 class Flow:
     role_whitelist = [591659288053940272, 555375267275603968, 591653678776057882]
-    emoji_numbers = ['1⃣', '2⃣', '3⃣', '4⃣', '6⃣', '7⃣', '8⃣', '9⃣', '0⃣']
+    emoji_numbers = ['1⃣', '2⃣', '3⃣', '4⃣','5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '0⃣']
     modules = [[[591723123171393552, 591721912187486228, 591722865175560203, 591723051381686272, 591723086185889995], 
                 [591724086355558420, 591723225977978912, 591723267266445350, 591723296404406307, 591723365878988800]],
                [[591723388154806490, 591723418223771658, 591723436452217044, 591723479011950622, 591723509764456457],
@@ -56,7 +56,7 @@ class Flow:
                 # classes ----------------------------------------------------------------------------------
                 msg = await user.send(
                     '**What class are you in?**\n\n:one: 1MCT 1\n:two: 1MCT 2\n:three: 1MCT 3\n:four: 1MCT 4\n:five: 1MCT 5\n:six: 1MCT 6')
-                reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4], self.emoji_numbers[5]]
+                reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], self.emoji_numbers[4],self.emoji_numbers[5]]
 
                 for emoji in reactions:
                     await msg.add_reaction(emoji)
@@ -171,6 +171,10 @@ class Flow:
 
     async def predictive_flow(self, ctx):
         channel = ctx.channel
+        
+        def check(reaction, user):
+                return user == ctx.author
+        
         user_object = discord.utils.get(discord.utils.get(
             self.bot.guilds, name='MCT').members, id=ctx.author.id)
         current_year = -1
@@ -179,29 +183,14 @@ class Flow:
             if role.id in self.years:
                 current_year = self.years.index(role.id)
         
-        if current_year == (0 or -1):
+        if current_year == -1:
             await self.start_flow(ctx)
             return
-        
-        elif current_year == 1:
-            for role in user_object.roles:
-                if role.id in self.courses[1][1]:
-                    current_course = self.courses[1][1].index(role.id)
-            
-            if current_course == -1:
-                await self.start_flow(ctx)
-                return
-            
-            
-            
+        elif current_year == 0:
             next_year = current_year+1
             next_year_id = self.years[next_year]
-            next_course_id = self.courses[2][current_course]            
-        
-            role = await self.get_role(uid=next_course_id)
-        
             msg = await ctx.author.send(
-                '**Based on your previous choices I have made a prediction for you.**\nDoes the following course in ***year {}*** apply to you?\n\n\t- **{}**'.format(next_year+1,role.name))
+                '**Based on your previous choices I have made a prediction for you.**\nDoes the following year apply to you?\n\n\t- **Year {}**'.format(next_year+1))
             reactions = ['✅', '❎']
 
             for emoji in reactions:
@@ -214,8 +203,53 @@ class Flow:
                 reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
                 if reaction.emoji == '✅':
                     await self.remove_roles(user_object)
-                    await self.add_role(user_object, uid=next_year_id)
-                    await self.add_role(user_object, uid=next_course_id)
+                    await user.send('**I signed you up for *year 2.***')
+                    await self.add_role(user_object, uid=578656108663799818)
+                    # classes ----------------------------------------------------------------------------------
+                    msg = await user.send(
+                        '**What class are you in?**\n\n:one: 2MCT 1\n:two: 2MCT 2\n:three: 2MCT 3')
+                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2]]
+
+                    for emoji in reactions:
+                        await msg.add_reaction(emoji)
+                        
+                    reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                    if reaction.emoji == self.emoji_numbers[0]:
+                        await self.add_role(user_object, uid=591620333002293251)
+                    elif reaction.emoji == self.emoji_numbers[1]:
+                        await self.add_role(user_object, uid=591620382344216576)
+                    elif reaction.emoji == self.emoji_numbers[2]:
+                        await self.add_role(user_object, uid=591620431824551937)
+                    else:
+                        raise Exception()
+                    
+                    await user.send('**I have placed you in your class.**')
+                    
+                    # course ----------------------------------------------------------------------------------
+                    msg = await user.send(
+                        '**Your year requires you to choose a sub category.**\nAlready have an idea what you\'re going to choose?\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI\n:no_entry_sign: No Idea')
+                    reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3], '🚫']
+
+                    for emoji in reactions:
+                        await msg.add_reaction(emoji)
+
+                    reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                    if reaction.emoji == self.emoji_numbers[0]:
+                        await self.add_role(user_object, uid=591620720875012117)
+                        await user.send('**I signed you up for *2 Web and App.***')
+                    elif reaction.emoji == self.emoji_numbers[1]:
+                        await self.add_role(user_object, uid=591621045572861962)
+                        await user.send('**I signed you up for *2 AI Engineer.***')
+                    elif reaction.emoji == self.emoji_numbers[2]:
+                        await self.add_role(user_object, uid=591621084110127133)
+                        await user.send('**I signed you up for *2 IoT Infrastructure.***')
+                    elif reaction.emoji == self.emoji_numbers[3]:
+                        await self.add_role(user_object, uid=591620854966648832)
+                        await user.send('**I signed you up for *2 Smart Tech and AI.***')
+                    elif reaction.emoji == '🚫':
+                        await user.send('**I only signed you up for the first semester, redo the setup if you have an idea what you\'ll choose**')
+                    else:
+                        raise Exception()
                 else:
                     await self.start_flow(ctx)
                     return
@@ -224,6 +258,82 @@ class Flow:
             else:
                 await user_object.send(
                     'If you want to redo this process you can enter the following command anytime here or on the server.```!setup```')
+        elif current_year == 1:
+            for role in user_object.roles:
+                if role.id in self.courses[1][1]:
+                    current_course = self.courses[1][1].index(role.id)
+            
+            if current_course == -1:
+                msg = await ctx.author.send(
+                    '**Based on your previous choices I have made a prediction for you.**\nWould you like to choose the following?\n\n\t- **A course**')
+                reactions = ['✅', '❎']
+
+                for emoji in reactions:
+                    await msg.add_reaction(emoji)
+
+                try:
+                    reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                    if reaction.emoji == '✅':
+                        msg = await user_object.send(
+                                '**Your year requires you to choose a sub category.**\nHave an idea what you\'re going to choose?\n\n:one: Web and App\n:two: AI Engineer\n:three: IoT Infrastructure\n:four: Smart Tech and AI')
+                        reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], self.emoji_numbers[3]]
+
+                        for emoji in reactions:
+                            await msg.add_reaction(emoji)
+
+                        reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                        if reaction.emoji == self.emoji_numbers[0]:
+                            await self.add_role(user_object, uid=591620720875012117)
+                            await user_object.send('**I signed you up for *2 Web and App.***')
+                        elif reaction.emoji == self.emoji_numbers[1]:
+                            await self.add_role(user_object, uid=591621045572861962)
+                            await user_object.send('**I signed you up for *2 AI Engineer.***')
+                        elif reaction.emoji == self.emoji_numbers[2]:
+                            await self.add_role(user_object, uid=591621084110127133)
+                            await user_object.send('**I signed you up for *2 IoT Infrastructure.***')
+                        elif reaction.emoji == self.emoji_numbers[3]:
+                            await self.add_role(user_object, uid=591620854966648832)
+                            await user_object.send('**I signed you up for *2 Smart Tech and AI.***')
+                        else:
+                            raise Exception()
+                    else:
+                        await self.start_flow(ctx)
+                        return
+                except asyncio.TimeoutError:
+                    await user_object.send('We didn\'t get your answer try again with \n```!setup```')
+                else:
+                    await user_object.send(
+                        'If you want to redo this process you can enter the following command anytime here or on the server.```!setup```')
+            
+            else:
+                next_year = current_year+1
+                next_year_id = self.years[next_year]
+                next_course_id = self.courses[2][current_course]            
+            
+                role = await self.get_role(uid=next_course_id)
+            
+                msg = await ctx.author.send(
+                    '**Based on your previous choices I have made a prediction for you.**\nDoes the following course in ***year {}*** apply to you?\n\n\t- **{}**'.format(next_year+1,role.name))
+                reactions = ['✅', '❎']
+
+                for emoji in reactions:
+                    await msg.add_reaction(emoji)
+
+
+                try:
+                    reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                    if reaction.emoji == '✅':
+                        await self.remove_roles(user_object)
+                        await self.add_role(user_object, uid=next_year_id)
+                        await self.add_role(user_object, uid=next_course_id)
+                    else:
+                        await self.start_flow(ctx)
+                        return
+                except asyncio.TimeoutError:
+                    await user_object.send('We didn\'t get your answer try again with \n```!setup```')
+                else:
+                    await user_object.send(
+                        'If you want to redo this process you can enter the following command anytime here or on the server.```!setup```')
         elif current_year == 2:
             role = await self.get_role(uid=591653678776057882)
             
@@ -234,8 +344,6 @@ class Flow:
             for emoji in reactions:
                 await msg.add_reaction(emoji)
 
-            def check(reaction, user):
-                return user == ctx.author
 
             try:
                 reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)

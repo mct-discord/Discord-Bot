@@ -45,4 +45,4 @@ class Events(commands.Cog):
         else:
             if message.content.lower() == 'start':
                 flow = Flow(self.bot)
-                await flow.start_flow(message)
+                await flow.predictive_flow(message)
