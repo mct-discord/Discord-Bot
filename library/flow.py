@@ -430,7 +430,7 @@ class Flow:
 
         else:
             await user.send(
-                'If you want to redo this process you can enter the following command anytime here or on the server.```!setup```')
+                'If you want to add another module you can enter the following command anytime here or on the server.```!addmodule```')
 
     async def add_role(self, usr, name=None, uid=None):
         if name or uid:
