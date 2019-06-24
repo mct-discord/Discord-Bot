@@ -464,15 +464,6 @@ class Flow:
             raise ValueError(
                 'add_role function needs to have a name or a id parameter.')
 
-    async def reset_all_members(self, guild):
-        members = guild.get_all_members()
-        for member in members:
-            if member == self.bot.user:
-                continue
-            for role in member.roles:
-                if role.id not in self.role_whitelist:
-                    self.remove_role(member, uid=role.id)
-
     async def remove_role(self, usr, name=None, uid=None):
         if name or uid:
             if name:

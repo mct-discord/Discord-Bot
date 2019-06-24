@@ -55,9 +55,9 @@ class Commands(commands.Cog):
                 if member == self.bot.user:
                     continue
                 for role in member.roles:
-                    if role.id == 578656111041970186:
-                        self.flow.add_role(
-                            ctx.author, uid='591653678776057882')
+                    # if role.id == 578656111041970186:
+                    #     self.flow.add_role(
+                    #         ctx.author, uid='591653678776057882')
                     if role.id not in self.role_whitelist:
                         self.flow.remove_role(member, uid=role.id)
 
@@ -65,4 +65,5 @@ class Commands(commands.Cog):
     @commands.has_role("Admin")
     async def rules(self, ctx):
         if not isinstance(ctx.channel, DMChannel):
-            pass
+            await ctx.message.delete()
+            await bot.say(content="**Rules**\n 1.\tDo not write anything purposely hurtful or mean about other students or teachers, be civil.\n 2.\tThis is an official school server, do not post any NSFW content, even though most wouldn’t mind, there are those who would rather not see this kind of content.\n\n**Info**\n-\tTeachers only have permission to see certain channels, student privacy is respected here\n-\tWhen you join this server you should get a message from our bot, follow its instructions to receive your correct module channels.\n-\tIf you would like to help us write this bot, pm an admin and we will get in contact.\n-\tTo get your roles send `start` to the MCT-Bot in PM or type the following command anywhere in this server.\n```!setup```\nIf you would like to share this server with your classmates you can use this link: https://discord.gg/AtkVyTM")
