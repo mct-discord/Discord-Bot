@@ -37,18 +37,18 @@ class Commands(commands.Cog):
     #             roles += "\t- {} \t\t\t\t\t {}\n".format(role.name, role.id)
     #         await ctx.channel.send(roles)
 
-    @commands.command()
-    @commands.has_role("Admin")
-    async def fuck(self, ctx):
-        if not isinstance(ctx.channel, DMChannel):
-            author = ctx.author
-            role = discord.utils.get(author.guild.roles, name='Test')
-            await author.add_roles(role)
-            await ctx.channel.send('Added user to the role \'Test\'')
+    # @commands.command()
+    # @commands.has_role("Admin")
+    # async def fuck(self, ctx):
+    #     if not isinstance(ctx.channel, DMChannel):
+    #         author = ctx.author
+    #         role = discord.utils.get(author.guild.roles, name='Test')
+    #         await author.add_roles(role)
+    #         await ctx.channel.send('Added user to the role \'Test\'')
 
     @commands.command()
     @commands.has_role("Admin")
-    async def september(self, ctx):
+    async def yeetroles(self, ctx):
         if not isinstance(ctx.channel, DMChannel):
             members = discord.utils.get(
                 self.bot.guilds, name='MCT').get_all_members()
@@ -61,3 +61,9 @@ class Commands(commands.Cog):
                             ctx.author, uid='591653678776057882')
                     if role.id not in self.role_whitelist:
                         self.flow.remove_role(member, uid=role.id)
+
+    @commands.command()
+    @commands.has_role("Admin")
+    async def rules(self, ctx):
+        if not isinstance(ctx.channel, DMChannel):
+            pass
