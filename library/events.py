@@ -28,10 +28,10 @@ class Events(commands.Cog):
         # file.close()
 
     # Sends DM to a new member
-    # @commands.Cog.listener()
-    # async def on_member_join(self, member):
-    #     await member.send(
-    #         '**Welcome to the MCT server to get you started type in:** ```start```This will only take around 30 to 60 seconds of your time.')
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        await member.send(
+            '**Welcome to the MCT server to get you started type in:** ```start```This will only take around 30 to 60 seconds of your time.')
 
     # Sends message in chat and via DM when user sends ping to any text channel in a server.
     @commands.Cog.listener()
