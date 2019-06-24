@@ -17,14 +17,6 @@ Windows:        `py -3 -m pip install -U discord.py`
 Linux:          `python3 -m pip install -U discord.py`  
 
 ## Planned Functionalities
-### Predictive role assessment
-In september we would like to reset all roles of the users so they can select the courses of the next year. If we could get advanced enough we can offer them a predicted course so they wouldn't have to go through the setup process again.  
-For example:  
-The end of the year is here, your modules have expired.  
-Would you like to sign up for the following predicted modules?  
-3 Web & App  
-Yes -- No  
-
 ### Automatic role reset
 Every year in september we should run a reset so everybody can select their modules and be in the correct channels, if we could automate this by date, that would be great.  
 Perhaps even add an extra question in january for the second year students  
