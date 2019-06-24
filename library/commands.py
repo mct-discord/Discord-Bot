@@ -65,4 +65,5 @@ class Commands(commands.Cog):
     @commands.has_role("Admin")
     async def rules(self, ctx):
         if not isinstance(ctx.channel, DMChannel):
-            pass
+            await ctx.message.delete()
+            await bot.say(content="**Rules**\n 1.\tDo not write anything purposely hurtful or mean about other students or teachers, be civil.\n 2.\tThis is an official school server, do not post any NSFW content, even though most wouldn’t mind, there are those who would rather not see this kind of content.\n\n**Info**\n-\tTeachers only have permission to see certain channels, student privacy is respected here\n")
