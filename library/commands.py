@@ -7,7 +7,7 @@ from library.flow import Flow
 
 class Commands(commands.Cog):
     role_whitelist = [591659288053940272,
-                      555375267275603968, 591653678776057882]
+                      555375267275603968, 591653678776057882, 597790918736740363]
 
     def __init__(self, bot):
         self.bot = bot
