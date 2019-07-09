@@ -4,6 +4,7 @@ import discord
 import asyncio
 from library.flow import Flow
 import json
+from library.api import API
 
 
 class Events(commands.Cog):
@@ -13,11 +14,14 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        # Initiate the API
+        api = API(self.bot)
+
         print('Logged on as', self.bot.user)
         await self.bot.change_presence(activity=discord.Game(name="Crunching some data"))
-        print(self.bot.guilds[0].name)
-        for guild in self.bot.guilds:
-            print(guild.name)
+        # print(self.bot.guilds[0].name)
+        # for guild in self.bot.guilds:
+        #     print(guild.name)
         # file = open('ranks.txt', 'w')
         # for guild in self.bot.guilds:
         #     file.write("Roles for {}\n".format(guild.name))
