@@ -20,5 +20,9 @@ class API(Thread):
         def user_count():
             return jsonify(count=discord.utils.get(self.bot.guilds, name='MCT').member_count)
 
+        @self.app.route('/api/v1/give_roles/<userid>')
+        def give_user_roles(userid):
+            return jsonify(status=200), 200
+
         self.app.run(host="0.0.0.0", port=5000,
                      debug=True, use_reloader=False)
