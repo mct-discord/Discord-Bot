@@ -13,9 +13,6 @@ root_path = os.path.dirname(os.path.realpath(__file__))
 config = configparser.ConfigParser(allow_no_value=True)
 config.read(os.path.abspath("{}/config.ini".format(root_path)))
 
-# loop = asyncio.get_event_loop()
-loop = asyncio.get_event_loop()
-
 # Initiate the bot
 bot = commands.Bot(command_prefix='!', case_insensitive=True)
 
