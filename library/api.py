@@ -25,26 +25,13 @@ class API(Thread):
 
         @self.app.route('/api/v1/give_roles/<userid>')
         async def give_user_roles(userid):
-            # 160672936636841984
+            # Funergy: 160672936636841984
             user = discord.utils.get(
                 self.bot.get_all_members(), id=int(userid))
 
-            message = self.loop.create_task(
-                user.send('This is just a test message'))
-            await asyncio.gather(message)
-            # message = self.loop.run_until_complete(task)
+            message = await user.send('This is just a test message')
 
-            return jsonify(status=200, user=str(user), message=str(message.result().content)), 200
-
-        # @self.app.route('/api/v1/send_message/<userid>')
-
-        # self.loop.create_task(self.loop.create_server(
-        #     lambda: quart.serving.Server(self.app, loop), "0.0.0.0", 5000))
-        # print('Running APP')
-        # self.loop.stop()
+            return jsonify(status=200, user=str(user), message=str(message.content)), 200
 
         self.app.run(host="0.0.0.0", port=5000,
                      debug=False, use_reloader=True, loop=self.loop)
-        # self.loop.run_in_executor(
-        #     None, self.app.run(host="0.0.0.0", port=5000,
-        #                        debug=True, use_reloader=False, loop=self.loop))
