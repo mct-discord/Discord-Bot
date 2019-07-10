@@ -1,5 +1,5 @@
 from threading import Thread
-from library.quart import Quart, jsonify
+from library.quart import Quart, jsonify, quart_cors
 import discord
 import asyncio
 
@@ -15,6 +15,7 @@ class API(Thread):
         self.loop = bot.loop
 
         self.app = Quart(__name__)
+        self.app = quart_cors.cors(self.app, allow_origin="*")
         self.start()
 
     def run(self):
