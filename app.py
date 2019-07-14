@@ -18,7 +18,7 @@ bot = commands.Bot(command_prefix='!', case_insensitive=True)
 
 # Add bot components
 bot.add_cog(Commands(bot))
-bot.add_cog(Events(bot))
+bot.add_cog(Events(bot, root_path))
 bot.add_cog(Tasks(bot))
 
 # Run the bot

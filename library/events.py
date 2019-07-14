@@ -9,13 +9,14 @@ from library.api import API
 
 class Events(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot, rootpath):
         self.bot = bot
+        self.rootpath = rootpath
 
     @commands.Cog.listener()
     async def on_ready(self):
         # Initiate the API
-        api = API(self.bot)
+        api = API(self.bot, rootpath)
 
         print('Logged on as', self.bot.user)
         await self.bot.change_presence(activity=discord.Game(name="Crunching some data"))
