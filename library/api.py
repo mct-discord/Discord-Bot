@@ -3,6 +3,7 @@ from library.quart import Quart, jsonify, quart_cors
 from library import flow
 import discord
 import asyncio
+import os
 
 
 class API(Thread):
@@ -12,7 +13,7 @@ class API(Thread):
         self.daemon = True
         self.bot = bot
         # Initiate API
-
+        self.rootpath = os.path.dirname(os.path.realpath(__file__))
         self.loop = bot.loop
 
         self.app = Quart(__name__)
@@ -48,4 +49,5 @@ class API(Thread):
             return jsonify(status=400), 400
 
         self.app.run(host="0.0.0.0", port=5000,
-                     debug=False, use_reloader=True, loop=self.loop)
+                     debug=False, use_reloader=True, loop=self.loop, keyfile='{}/certs/privkey.pem'.format(self.rootpath),
+                     certfile='{}/certs/cert.pem'.format(self.rootpath))
