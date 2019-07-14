@@ -16,7 +16,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         # Initiate the API
-        api = API(self.bot, rootpath)
+        api = API(self.bot, self.rootpath)
 
         print('Logged on as', self.bot.user)
         await self.bot.change_presence(activity=discord.Game(name="Crunching some data"))
