@@ -8,12 +8,12 @@ import os
 
 class API(Thread):
 
-    def __init__(self, bot):
+    def __init__(self, bot, rootpath):
         Thread.__init__(self)
         self.daemon = True
         self.bot = bot
         # Initiate API
-        self.rootpath = os.path.dirname(os.path.realpath(__file__))
+        self.rootpath = rootpath
         self.loop = bot.loop
 
         self.app = Quart(__name__)
@@ -49,5 +49,5 @@ class API(Thread):
             return jsonify(status=400), 400
 
         self.app.run(host="0.0.0.0", port=5000,
-                     debug=False, use_reloader=True, loop=self.loop, keyfile='{}/../certs/privkey.pem'.format(self.rootpath),
-                     certfile='{}/../certs/cert.pem'.format(self.rootpath))
+                     debug=False, use_reloader=True, loop=self.loop, keyfile='{}/certs/privkey.pem'.format(self.rootpath),
+                     certfile='{}/certs/cert.pem'.format(self.rootpath))
