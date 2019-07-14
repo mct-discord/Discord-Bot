@@ -1,5 +1,6 @@
 from threading import Thread
 from library.quart import Quart, jsonify, quart_cors
+from library import flow
 import discord
 import asyncio
 
@@ -16,9 +17,21 @@ class API(Thread):
 
         self.app = Quart(__name__)
         self.app = quart_cors.cors(self.app, allow_origin="*")
+
+        self.flow = flow.Flow(self.bot)
+
         self.start()
 
     def run(self):
+        @self.app.route('/api/v1/modules')
+        async def modules():
+            module_dict = {}
+
+            for module in self.flow.modules_list:
+                role = await self.flow.get_role(uid=module)
+                module_dict[role.name] = module
+
+            return jsonify(modules=module_dict)
 
         @self.app.route('/api/v1/user_count')
         async def user_count():
