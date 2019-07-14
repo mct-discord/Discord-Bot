@@ -49,5 +49,5 @@ class API(Thread):
             return jsonify(status=400), 400
 
         self.app.run(host="0.0.0.0", port=5000,
-                     debug=False, use_reloader=True, loop=self.loop, keyfile='{}/certs/privkey.pem'.format(self.rootpath),
-                     certfile='{}/certs/cert.pem'.format(self.rootpath))
+                     debug=False, use_reloader=True, loop=self.loop, keyfile='{}/../certs/privkey.pem'.format(self.rootpath),
+                     certfile='{}/../certs/cert.pem'.format(self.rootpath))
