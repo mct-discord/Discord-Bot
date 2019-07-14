@@ -40,12 +40,12 @@ class API(Thread):
         @self.app.route('/api/v1/give_roles/<userid>')
         async def give_user_roles(userid):
             # Funergy: 160672936636841984
-            user = discord.utils.get(
-                self.bot.get_all_members(), id=int(userid))
+            # user = discord.utils.get(
+            #     self.bot.get_all_members(), id=int(userid))
 
-            message = await user.send('This is just a test message')
+            # message = await user.send('This is just a test message')
 
-            return jsonify(status=200, user=str(user), message=str(message.content)), 200
+            return jsonify(status=400), 400
 
         self.app.run(host="0.0.0.0", port=5000,
                      debug=False, use_reloader=True, loop=self.loop)
