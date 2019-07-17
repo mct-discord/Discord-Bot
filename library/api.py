@@ -17,7 +17,8 @@ class API(Thread):
         self.loop = bot.loop
 
         self.app = Quart(__name__)
-        self.app = quart_cors.cors(self.app, allow_origin="*")
+        self.app = quart_cors.cors(
+            self.app, allow_origin="https://mctb.funergydev.com")
 
         self.flow = flow.Flow(self.bot)
 
