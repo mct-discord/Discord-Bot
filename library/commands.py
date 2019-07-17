@@ -30,7 +30,7 @@ class Commands(commands.Cog):
     async def web(self, ctx):
         flow = Flow(self.bot)
         await ctx.message.delete()
-        await ctx.channel.send('https://mctb.funergydev.com/?token={}'.format(ctx.author.id))
+        await ctx.author.send('https://mctb.funergydev.com/?token={}'.format(ctx.author.id))
     # @commands.command()
     # async def predictrole(self, ctx):
     #     flow = Flow(self.bot)
