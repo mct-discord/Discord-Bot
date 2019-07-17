@@ -39,10 +39,18 @@ class API(Thread):
             return jsonify(count=discord.utils.get(self.bot.guilds, name='MCT').member_count)
 
         @self.app.route('/api/v1/give_roles/<userid>')
-        async def give_user_roles(userid):
+        async def give_user_roles(userid, roles):
             # Funergy: 160672936636841984
-            # user = discord.utils.get(
-            #     self.bot.get_all_members(), id=int(userid))
+            user = discord.utils.get(
+                self.bot.get_all_members(), id=int(userid))
+            
+            print(roles)
+            
+            # user_object = discord.utils.get(discord.utils.get(
+            #     self.bot.guilds, name='MCT').members, id=ctx.author.id)
+            # await self.remove_roles(user_object)
+            
+            user.give_roles(roles[0], roles[1], roles[2])
 
             # message = await user.send('This is just a test message')
 
