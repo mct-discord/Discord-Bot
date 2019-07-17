@@ -30,7 +30,7 @@ class API(Thread):
 
             for module in self.flow.modules_list:
                 role = await self.flow.get_role(uid=module)
-                module_dict[role.name] = module
+                module_dict[role.name] = role.id
 
             return jsonify(modules=module_dict)
 
