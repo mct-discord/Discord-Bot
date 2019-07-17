@@ -34,11 +34,17 @@ class API(Thread):
 
             return jsonify(modules=module_dict)
 
+        @self.app.route('/api/v1/user/<userid>')
+        async def modules(userid):
+            user = discord.utils.get(
+                discord.utils.get(self.bot.guilds, name='MCT').members, id=int(userid))
+            return jsonify(name=user.name), 200
+
         @self.app.route('/api/v1/user_count')
         async def user_count():
             return jsonify(count=discord.utils.get(self.bot.guilds, name='MCT').member_count)
 
-        @self.app.route('/api/v1/roles/<userid>', methods=['POST', 'GET'])
+        @self.app.route('/api/v1/user/<userid>/roles', methods=['POST', 'GET'])
         async def give_user_roles(userid):
             # Funergy: 160672936636841984
             if request.method == 'POST':
