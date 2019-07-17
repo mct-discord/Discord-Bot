@@ -35,7 +35,7 @@ class API(Thread):
             return jsonify(modules=module_dict)
 
         @self.app.route('/api/v1/user/<userid>')
-        async def user(userid):
+        async def get_user(userid):
             user = discord.utils.get(
                 discord.utils.get(self.bot.guilds, name='MCT').members, id=int(userid))
             return jsonify(name=user.name), 200
