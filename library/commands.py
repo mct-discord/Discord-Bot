@@ -17,20 +17,30 @@ class Commands(commands.Cog):
     @commands.command()
     async def setup(self, ctx):
         flow = Flow(self.bot)
-        await ctx.message.delete()
+        try:
+            await ctx.message.delete()
+        except:
+            pass
         await flow.predictive_flow(ctx)
 
     @commands.command()
     async def addmodule(self, ctx):
         flow = Flow(self.bot)
-        await ctx.message.delete()
+        try:
+            await ctx.message.delete()
+        except:
+            pass
         await flow.add_module(ctx)
 
     @commands.command()
     async def web(self, ctx):
         flow = Flow(self.bot)
-        await ctx.message.delete()
+        try:
+            await ctx.message.delete()
+        except:
+            pass
         await ctx.author.send('https://mctb.funergydev.com/?token={}'.format(ctx.author.id))
+
     # @commands.command()
     # async def predictrole(self, ctx):
     #     flow = Flow(self.bot)
