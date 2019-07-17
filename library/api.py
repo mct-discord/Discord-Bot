@@ -1,5 +1,5 @@
 from threading import Thread
-from library.quart import Quart, jsonify, quart_cors
+from library.quart import Quart, jsonify, quart_cors, request, session
 from library import flow
 import discord
 import asyncio
@@ -38,16 +38,30 @@ class API(Thread):
         async def user_count():
             return jsonify(count=discord.utils.get(self.bot.guilds, name='MCT').member_count)
 
-        @self.app.route('/api/v1/give_roles/<userid>')
+        @self.app.route('/api/v1/roles/<userid>', methods=['POST', 'GET'])
         async def give_user_roles(userid):
             # Funergy: 160672936636841984
-            # user = discord.utils.get(
-            #     self.bot.get_all_members(), id=int(userid))
+            if request.method == 'POST':
+                data = await request.get_json()
 
-            # message = await user.send('This is just a test message')
+                user = discord.utils.get(
+                    discord.utils.get(self.bot.guilds, name='MCT').members, id=int(userid))
 
-            return jsonify(status=400), 400
+                # # user_object = discord.utils.get(discord.utils.get(
+                # #     self.bot.guilds, name='MCT').members, id=ctx.author.id)
+                # # await self.remove_roles(user_object)
+                await self.flow.remove_roles(user)
+                for role in data['roles']:
+                    await self.flow.add_role(user, uid=int(role))
 
+                # user.give_roles(roles[0], roles[1], roles[2])
+                message = await user.send('I have given you access to the modules you have requested.')
+
+                return jsonify(roles_given=data['roles']), 200
+            elif request.method == 'GET':
+                return jsonify(roles=100), 200
+        # self.app.run(host="0.0.0.0", port=5000,
+        #              debug=False, use_reloader=True, loop=self.loop)
         self.app.run(host="0.0.0.0", port=5000,
                      debug=False, use_reloader=True, loop=self.loop, keyfile='{}/certs/privkey.pem'.format(self.rootpath),
                      certfile='{}/certs/cert.pem'.format(self.rootpath))

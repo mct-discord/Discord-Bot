@@ -637,7 +637,7 @@ class Flow:
         if name or uid:
             if name:
                 if isinstance(name, list):
-                    for role_item in list:
+                    for role_item in name:
                         role = discord.utils.get(discord.utils.get(
                             self.bot.guilds, name='MCT').roles, name=role_item)
                         await usr.add_roles(role_item)
@@ -650,7 +650,7 @@ class Flow:
                         'When adding a role to a user use a list or a string for the name parameter.')
             elif uid:
                 if isinstance(uid, list):
-                    for role_item in list:
+                    for role_item in uid:
                         role = discord.utils.get(discord.utils.get(
                             self.bot.guilds, name='MCT').roles, id=role_item)
                         await usr.add_roles(role_item)
@@ -669,7 +669,7 @@ class Flow:
         if name or uid:
             if name:
                 if isinstance(name, list):
-                    for role_item in list:
+                    for role_item in name:
                         role = discord.utils.get(discord.utils.get(
                             self.bot.guilds, name='MCT').roles, name=role_item)
                         await usr.remove_roles(role)
@@ -682,7 +682,7 @@ class Flow:
                         'When adding a role to a user use a list or a string for the name parameter.')
             elif uid:
                 if isinstance(uid, list):
-                    for role_item in list:
+                    for role_item in uid:
                         role = discord.utils.get(discord.utils.get(
                             self.bot.guilds, name='MCT').roles, id=role_item)
                         await usr.remove_roles(role)
@@ -700,8 +700,10 @@ class Flow:
     async def remove_roles(self, usr, name=None, uid=None):
             for role in usr.roles[1:]:
                 if role.id not in self.role_whitelist:
-                    print(role.name)
-                    await usr.remove_roles(role)
+                    try:
+                        await usr.remove_roles(role)
+                    except:
+                        pass
 
     async def get_role(self, name=None, uid=None):
         if name or uid:
