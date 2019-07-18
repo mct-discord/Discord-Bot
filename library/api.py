@@ -41,18 +41,25 @@ class API(Thread):
                 discord.utils.get(self.bot.guilds, name='MCT').members, id=int(userid))
             return jsonify(name=user.name), 200
 
+        @self.app.route('/api/v1/user/hash/<userid>')
+        async def get_hashed_user(userid):
+            uid = self.flow.get_procedure(userid)
+            user = discord.utils.get(
+                discord.utils.get(self.bot.guilds, name='MCT').members, id=int(uid))
+            return jsonify(name=user.name), 200
+
         @self.app.route('/api/v1/user_count')
         async def user_count():
             return jsonify(count=discord.utils.get(self.bot.guilds, name='MCT').member_count)
 
-        @self.app.route('/api/v1/user/<userid>/roles', methods=['POST', 'GET'])
+        @self.app.route('/api/v1/user/hash/<userid>/roles', methods=['POST', 'GET'])
         async def give_user_roles(userid):
             # Funergy: 160672936636841984
             if request.method == 'POST':
                 data = await request.get_json()
-
+                uid = self.flow.get_procedure(userid)
                 user = discord.utils.get(
-                    discord.utils.get(self.bot.guilds, name='MCT').members, id=int(userid))
+                    discord.utils.get(self.bot.guilds, name='MCT').members, id=int(uid))
 
                 # # user_object = discord.utils.get(discord.utils.get(
                 # #     self.bot.guilds, name='MCT').members, id=ctx.author.id)
@@ -67,8 +74,8 @@ class API(Thread):
                 return jsonify(roles_given=data['roles']), 200
             elif request.method == 'GET':
                 return jsonify(roles=100), 200
-        # self.app.run(host="0.0.0.0", port=5000,
-        #              debug=False, use_reloader=True, loop=self.loop)
         self.app.run(host="0.0.0.0", port=5000,
-                     debug=False, use_reloader=True, loop=self.loop, keyfile='{}/certs/privkey.pem'.format(self.rootpath),
-                     certfile='{}/certs/cert.pem'.format(self.rootpath))
+                     debug=False, use_reloader=True, loop=self.loop)
+        # self.app.run(host="0.0.0.0", port=5000,
+        #              debug=False, use_reloader=True, loop=self.loop, keyfile='{}/certs/privkey.pem'.format(self.rootpath),
+        #              certfile='{}/certs/cert.pem'.format(self.rootpath))

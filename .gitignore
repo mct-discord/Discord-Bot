@@ -6,3 +6,4 @@ config.ini
 .vscode
 certs
 *.pem
+db.json
