@@ -382,9 +382,10 @@ class Flow:
     async def get_procedure(self, hash):
         obj = Query()
         obj = self.db.search(obj.token == hash)
+        if len(obj) == 0: return False
         uid = obj[0]['user']
         time_of_creation = obj[0]['timeOfCreation']
-        if time.time() - time_of_creation < 86400:
+        if time.time() - time_of_creation < 86400 :
             return uid
         else:
             return False
