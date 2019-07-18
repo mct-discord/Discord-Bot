@@ -1,7 +1,11 @@
 from discord.ext import commands
 import discord
 import asyncio
-
+from tinydb import TinyDB, Query
+from tinydb.storages import JSONStorage
+from tinydb.middlewares import CachingMiddleware
+import hashlib
+import time
 
 class Flow:
     modules_list = [591723123171393552, 591721912187486228, 591722865175560203, 591723051381686272, 591723086185889995,
@@ -32,6 +36,7 @@ class Flow:
                [591621299692896276,591621543965097985,591621481818095626,591621593613205524]]
     def __init__(self, bot):
         self.bot = bot
+        self.db = TinyDB('db.json', storage=CachingMiddleware(JSONStorage))
 
     async def start_flow(self, ctx):
         channel = ctx.channel
@@ -175,7 +180,7 @@ class Flow:
         else:
             await user_object.send(
                 'If you want to redo this process you can enter the following command anytime here or on the server.```!setup```')
-
+    
     async def predictive_flow(self, ctx):
         channel = ctx.channel
         
@@ -365,6 +370,22 @@ class Flow:
             else:
                 await user_object.send(
                     'If you want to sign up for a year, a course or a module just type the following command.```!setup```')
+
+    async def initiate_procedure(self,user):
+        current_hash = hashlib.sha256(user.id+time.time())
+        self.db.insert({'user':user.id, 'token': current_hash, 'timeOfCreation':time.time()})
+        return current_hash
+        
+    async def get_procedure(self, hash):
+        obj = Query()
+        obj = self.search(obj.token == hash)
+        uid = obj[0]['user']
+        time_of_creation = obj[0]['timeOfCreation']
+        if time.time() - timeOfCreation < 86400:
+            return uid
+        else:
+            return False
+        
 
     async def add_module(self, ctx):
         channel = ctx.channel

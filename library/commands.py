@@ -16,30 +16,28 @@ class Commands(commands.Cog):
     # TODO: CLEANUP NEEDED
     @commands.command()
     async def setup(self, ctx):
-        flow = Flow(self.bot)
         try:
             await ctx.message.delete()
         except:
             pass
-        await flow.predictive_flow(ctx)
+        await self.flow.predictive_flow(ctx)
 
     @commands.command()
     async def addmodule(self, ctx):
-        flow = Flow(self.bot)
         try:
             await ctx.message.delete()
         except:
             pass
-        await flow.add_module(ctx)
+        await self.flow.add_module(ctx)
 
     @commands.command()
     async def web(self, ctx):
-        flow = Flow(self.bot)
+        token = self.flow.initiate_procedure(ctx.author)
         try:
             await ctx.message.delete()
         except:
             pass
-        await ctx.author.send('https://mctb.funergydev.com/?token={}'.format(ctx.author.id))
+        await ctx.author.send('https://mctb.funergydev.com/?token={}'.format(token))
 
     # @commands.command()
     # async def predictrole(self, ctx):
