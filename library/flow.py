@@ -6,6 +6,7 @@ from tinydb.storages import JSONStorage
 from tinydb.middlewares import CachingMiddleware
 import hashlib
 import time
+import os
 
 class Flow:
     modules_list = [591723123171393552, 591721912187486228, 591722865175560203, 591723051381686272, 591723086185889995,
@@ -36,7 +37,7 @@ class Flow:
                [591621299692896276,591621543965097985,591621481818095626,591621593613205524]]
     def __init__(self, bot):
         self.bot = bot
-        self.db = TinyDB('db.json')
+        self.db = TinyDB('{}/db.json'.format(os.path.dirname(os.path.realpath(__file__))))
 
     async def start_flow(self, ctx):
         channel = ctx.channel
