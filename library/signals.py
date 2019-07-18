@@ -10,7 +10,6 @@ class Signals:
     def __init__(self, bot, api):
         self.b = bot
         self.a = api
-        self.d = db
         signal.signal(signal.SIGINT, self.exit_gracefully)
         signal.signal(signal.SIGTERM, self.exit_gracefully)
 
