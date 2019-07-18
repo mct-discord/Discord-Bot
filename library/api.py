@@ -83,4 +83,3 @@ class API(Thread):
         self.app.run(host="0.0.0.0", port=5000,
                      debug=False, use_reloader=True, loop=self.loop, keyfile='{}/certs/privkey.pem'.format(self.rootpath),
                      certfile='{}/certs/cert.pem'.format(self.rootpath))
-        self.app.stop()
