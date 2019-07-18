@@ -70,7 +70,7 @@ class API(Thread):
 
                 # user.give_roles(roles[0], roles[1], roles[2])
                 message = await user.send('I have given you access to the modules you have requested.')
-
+                self.flow.end_procedure(userid)
                 return jsonify(roles_given=data['roles']), 200
             elif request.method == 'GET':
                 return jsonify(roles=100), 200

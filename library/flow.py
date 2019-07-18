@@ -388,6 +388,9 @@ class Flow:
         else:
             return False
         
+    async def end_procedure(self, hash):
+        obj = Query()
+        self.db.remove(obj.token == hash)
 
     async def add_module(self, ctx):
         channel = ctx.channel
