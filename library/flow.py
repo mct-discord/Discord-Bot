@@ -36,7 +36,7 @@ class Flow:
                [591621299692896276,591621543965097985,591621481818095626,591621593613205524]]
     def __init__(self, bot):
         self.bot = bot
-        self.db = TinyDB('db.json', storage=CachingMiddleware(JSONStorage))
+        self.db = TinyDB('db.json')
 
     async def start_flow(self, ctx):
         channel = ctx.channel
@@ -372,13 +372,15 @@ class Flow:
                     'If you want to sign up for a year, a course or a module just type the following command.```!setup```')
 
     async def initiate_procedure(self,user):
-        current_hash = hashlib.sha256(user.id+time.time())
+        m = hashlib.sha256()
+        m.update(repr(user.id+int(time.time())).encode('utf-8'))
+        current_hash = m.hexdigest()
         self.db.insert({'user':user.id, 'token': current_hash, 'timeOfCreation':time.time()})
         return current_hash
         
     async def get_procedure(self, hash):
         obj = Query()
-        obj = self.search(obj.token == hash)
+        obj = self.db.search(obj.token == hash)
         uid = obj[0]['user']
         time_of_creation = obj[0]['timeOfCreation']
         if time.time() - time_of_creation < 86400:
