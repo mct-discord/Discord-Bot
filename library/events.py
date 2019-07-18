@@ -5,6 +5,7 @@ import asyncio
 from library.flow import Flow
 import json
 from library.api import API
+from library.signals import Signals
 
 
 class Events(commands.Cog):
@@ -17,6 +18,7 @@ class Events(commands.Cog):
     async def on_ready(self):
         # Initiate the API
         api = API(self.bot, self.rootpath)
+        Signals(self.bot, api)
 
         print('Logged on as', self.bot.user)
         await self.bot.change_presence(activity=discord.Game(name="Crunching some data"))
