@@ -371,17 +371,17 @@ class Flow:
                 await user_object.send(
                     'If you want to sign up for a year, a course or a module just type the following command.```!setup```')
 
-    async def initiate_procedure(self,user):
+    def initiate_procedure(self,user):
         current_hash = hashlib.sha256(user.id+time.time())
         self.db.insert({'user':user.id, 'token': current_hash, 'timeOfCreation':time.time()})
         return current_hash
         
-    async def get_procedure(self, hash):
+    def get_procedure(self, hash):
         obj = Query()
         obj = self.search(obj.token == hash)
         uid = obj[0]['user']
         time_of_creation = obj[0]['timeOfCreation']
-        if time.time() - timeOfCreation < 86400:
+        if time.time() - time_of_creation < 86400:
             return uid
         else:
             return False
