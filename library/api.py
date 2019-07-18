@@ -43,7 +43,7 @@ class API(Thread):
 
         @self.app.route('/api/v1/user/hash/<userid>')
         async def get_hashed_user(userid):
-            uid = self.flow.get_procedure(userid)
+            uid = await self.flow.get_procedure(userid)
             user = discord.utils.get(
                 discord.utils.get(self.bot.guilds, name='MCT').members, id=int(uid))
             return jsonify(name=user.name), 200
@@ -57,7 +57,7 @@ class API(Thread):
             # Funergy: 160672936636841984
             if request.method == 'POST':
                 data = await request.get_json()
-                uid = self.flow.get_procedure(userid)
+                uid = await self.flow.get_procedure(userid)
                 user = discord.utils.get(
                     discord.utils.get(self.bot.guilds, name='MCT').members, id=int(uid))
 
