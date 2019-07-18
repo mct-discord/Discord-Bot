@@ -18,7 +18,7 @@ class API(Thread):
 
         self.app = Quart(__name__)
         self.app = quart_cors.cors(
-            self.app, allow_origin="https://mctb.funergydev.com")
+            self.app, allow_origin="https://mctb.funergydev.com")  # https://mctb.funergydev.com *
 
         self.flow = flow.Flow(self.bot)
 
@@ -74,8 +74,8 @@ class API(Thread):
                 return jsonify(roles_given=data['roles']), 200
             elif request.method == 'GET':
                 return jsonify(roles=100), 200
-        self.app.run(host="0.0.0.0", port=5000,
-                     debug=False, use_reloader=True, loop=self.loop)
         # self.app.run(host="0.0.0.0", port=5000,
-        #              debug=False, use_reloader=True, loop=self.loop, keyfile='{}/certs/privkey.pem'.format(self.rootpath),
-        #              certfile='{}/certs/cert.pem'.format(self.rootpath))
+        #              debug=False, use_reloader=True, loop=self.loop)
+        self.app.run(host="0.0.0.0", port=5000,
+                     debug=False, use_reloader=True, loop=self.loop, keyfile='{}/certs/privkey.pem'.format(self.rootpath),
+                     certfile='{}/certs/cert.pem'.format(self.rootpath))
