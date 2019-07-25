@@ -374,7 +374,7 @@ class Flow:
 
     async def initiate_procedure(self,user):
         m = hashlib.sha256()
-        m.update(repr(user.id+int(time.time())).encode('utf-8'))
+        m.update(str(user.id+time.time()).encode('utf-8'))
         current_hash = m.hexdigest()
         self.db.insert({'user':user.id, 'token': current_hash, 'timeOfCreation':time.time()})
         return current_hash
@@ -393,6 +393,7 @@ class Flow:
         elif user:
             obj = self.db.search(obj.user == user.id)
             if len(obj) == 0: return await self.initiate_procedure(user)
+            
             token = obj[0]['token']
             time_of_creation = obj[0]['timeOfCreation']
             if time.time() - time_of_creation < 86400 :
