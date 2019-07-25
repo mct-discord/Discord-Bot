@@ -37,7 +37,17 @@ class Commands(commands.Cog):
             await ctx.message.delete()
         except:
             pass
-        await ctx.author.send('https://mctb.funergydev.com/?token={}'.format(token))
+        await ctx.author.send('**This is your setup url:** https://mctb.funergydev.com/?token={}'.format(token))
+
+    @commands.command()
+    async def webend(self, ctx):
+        token = await self.flow.get_procedure(user=ctx.author)
+        await self.flow.end_procedure(token)
+        try:
+            await ctx.message.delete()
+        except:
+            pass
+        await ctx.author.send('**Closed procedure**')
 
     # @commands.command()
     # async def predictrole(self, ctx):

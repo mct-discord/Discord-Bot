@@ -1,7 +1,7 @@
 from discord.ext import commands
 import discord
 import asyncio
-from tinydb import TinyDB, Query
+from tinydb import TinyDB, Query, where
 from tinydb.storages import JSONStorage
 from tinydb.middlewares import CachingMiddleware
 import hashlib
