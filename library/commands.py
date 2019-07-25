@@ -32,7 +32,7 @@ class Commands(commands.Cog):
 
     @commands.command()
     async def web(self, ctx):
-        token = await self.flow.initiate_procedure(ctx.author)
+        token = await self.flow.get_procedure(user=ctx.author)
         try:
             await ctx.message.delete()
         except:
