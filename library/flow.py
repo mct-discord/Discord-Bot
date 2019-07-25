@@ -392,13 +392,13 @@ class Flow:
                 return False
         elif user:
             obj = self.db.search(obj.user == user.id)
-            if len(obj) == 0: return self.initiate_procedure(user)
+            if len(obj) == 0: return await self.initiate_procedure(user)
             token = obj[0]['token']
             time_of_creation = obj[0]['timeOfCreation']
             if time.time() - time_of_creation < 86400 :
                 return token
             else:
-                return self.initiate_procedure(user)
+                return await self.initiate_procedure(user)
         
     async def end_procedure(self, hash):
         obj = Query()
