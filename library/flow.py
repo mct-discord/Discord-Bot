@@ -7,6 +7,7 @@ from tinydb.middlewares import CachingMiddleware
 import hashlib
 import time
 import os
+import uuid
 
 class Flow:
     modules_list = [591723123171393552, 591721912187486228, 591722865175560203, 591723051381686272, 591723086185889995,
@@ -373,9 +374,7 @@ class Flow:
                     'If you want to sign up for a year, a course or a module just type the following command.```!setup```')
 
     async def initiate_procedure(self,user):
-        m = hashlib.sha256()
-        m.update(str(user.id+time.time()).encode('utf-8'))
-        current_hash = m.hexdigest()
+        current_hash = uuid.uuid4().hex
         self.db.insert({'user':user.id, 'token': current_hash, 'timeOfCreation':time.time()})
         return current_hash
         
