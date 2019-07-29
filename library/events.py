@@ -13,6 +13,7 @@ class Events(commands.Cog):
     def __init__(self, bot, rootpath):
         self.bot = bot
         self.rootpath = rootpath
+        self.flow = Flow(self.bot)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -51,8 +52,7 @@ class Events(commands.Cog):
             pass
         else:
             if message.content.lower() == 'chat':
-                flow = Flow(self.bot)
-                await flow.predictive_flow(message)
+                await self.flow.predictive_flow(message)
             if message.content.lower() == 'web':
                 token = await self.flow.get_procedure(user=ctx.author)
                 try:
