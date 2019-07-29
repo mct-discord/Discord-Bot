@@ -21,7 +21,7 @@ class Commands(commands.Cog):
         except:
             pass
         await ctx.author.send(
-            '**Glad to know that you are interested in updating your roles:**\nPlease send me `chat` for the **chat** interface or `web` for the **web** interface.\nThis will only take a couple of seconds.')
+            '**Glad to know that you are interested in updating your roles:**\nPlease send me `chat` for the **chat** interface or `web` for the **web** interface (Fastest).\nThis will only take a couple of seconds.')
 
         # await self.flow.predictive_flow(ctx)
 
