@@ -38,7 +38,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member):
         await member.send(
-            '**Welcome to the MCT server to get you started type in:** `chat` for the **chat** interface and `web` for the **web** interface.\nThis will only take a couple of seconds.')
+            '**Welcome to the MCT server to get you started type in:** `chat` for the **chat** interface and `web` for the **web** interface (Fastest).\nThis will only take a couple of seconds.')
 
     # Sends message in chat and via DM when user sends ping to any text channel in a server.
     @commands.Cog.listener()
@@ -59,4 +59,4 @@ class Events(commands.Cog):
                     await ctx.message.delete()
                 except:
                     pass
-                await ctx.author.send('**This is your setup url:** https://mctb.funergydev.com/?token={}'.format(token))
+                await message.author.send('**This is your setup url:** https://mctb.funergydev.com/?token={}'.format(token))
