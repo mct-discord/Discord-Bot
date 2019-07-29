@@ -54,9 +54,9 @@ class Events(commands.Cog):
             if message.content.lower() == 'chat':
                 await self.flow.predictive_flow(message)
             if message.content.lower() == 'web':
-                token = await self.flow.get_procedure(user=ctx.author)
+                token = await self.flow.get_procedure(user=message.author)
                 try:
-                    await ctx.message.delete()
+                    await message.message.delete()
                 except:
                     pass
                 await message.author.send('**This is your setup url:** https://mctb.funergydev.com/?token={}'.format(token))
