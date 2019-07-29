@@ -388,6 +388,7 @@ class Flow:
             if time.time() - time_of_creation < 86400 :
                 return uid
             else:
+                self.end_procedure(hash)
                 return False
         elif user:
             obj = self.db.search(obj.user == user.id)
@@ -398,11 +399,17 @@ class Flow:
             if time.time() - time_of_creation < 86400 :
                 return token
             else:
+                self.end_procedure(user=user)
                 return await self.initiate_procedure(user)
         
-    async def end_procedure(self, hash):
+    async def end_procedure(self, hash=None, user=None):
         obj = Query()
-        self.db.remove(obj.token == hash)
+        if hash:
+            self.db.remove(obj.token == hash)
+
+        elif user:
+            self.db.remove(obj.user == user.id)
+
 
     async def add_module(self, ctx):
         channel = ctx.channel
