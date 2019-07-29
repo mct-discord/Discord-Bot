@@ -38,7 +38,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member):
         await member.send(
-            '**Welcome to the MCT server to get you started type in:** `start` for the **chat** interface and `web` for the **web** interface.\nThis will only take a couple of seconds.')
+            '**Welcome to the MCT server to get you started type in:** `chat` for the **chat** interface and `web` for the **web** interface.\nThis will only take a couple of seconds.')
 
     # Sends message in chat and via DM when user sends ping to any text channel in a server.
     @commands.Cog.listener()
@@ -50,6 +50,13 @@ class Events(commands.Cog):
         if not isinstance(message.channel, DMChannel):
             pass
         else:
-            if message.content.lower() == 'start':
+            if message.content.lower() == 'chat':
                 flow = Flow(self.bot)
                 await flow.predictive_flow(message)
+            if message.content.lower() == 'web':
+                token = await self.flow.get_procedure(user=ctx.author)
+                try:
+                    await ctx.message.delete()
+                except:
+                    pass
+                await ctx.author.send('**This is your setup url:** https://mctb.funergydev.com/?token={}'.format(token))
