@@ -20,7 +20,7 @@ class Commands(commands.Cog):
             await ctx.message.delete()
         except:
             pass
-        await member.send(
+        await ctx.author.send(
             '**Glad to know that you are interested in updating your roles:**\n Please send me `chat` for the **chat** interface or `web` for the **web** interface.\nThis will only take a couple of seconds.')
 
         # await self.flow.predictive_flow(ctx)
