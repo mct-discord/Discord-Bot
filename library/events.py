@@ -59,4 +59,4 @@ class Events(commands.Cog):
                     await ctx.message.delete()
                 except:
                     pass
-                await ctx.author.send('**This is your setup url:** https://mctb.funergydev.com/?token={}'.format(token))
+                await message.author.send('**This is your setup url:** https://mctb.funergydev.com/?token={}'.format(token))
