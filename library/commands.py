@@ -95,6 +95,18 @@ class Commands(commands.Cog):
 
     @commands.command()
     @commands.has_role("Admin")
+    async def purgechannels(self, ctx):
+        if not isinstance(ctx.channel, DMChannel):
+            channels = discord.utils.get(
+                self.bot.guilds, name='MCT').channels
+            for channel in channels:
+                if channel.type == 'Text' and channel.id not in self.flow.channel_whitelist:
+                    async for x in self.bot.logs_from(channel):
+                        await x.delete()
+                        await asyncio.sleep(.5)
+
+    @commands.command()
+    @commands.has_role("Admin")
     async def rules(self, ctx):
         if not isinstance(ctx.channel, DMChannel):
             await ctx.message.delete()
