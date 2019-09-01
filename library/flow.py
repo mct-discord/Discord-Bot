@@ -410,6 +410,8 @@ class Flow:
 
         elif user:
             self.db.remove(obj.user == user.id)
+        
+        self.db.clear_cache()
 
 
     async def add_module(self, ctx):
