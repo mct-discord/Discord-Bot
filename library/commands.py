@@ -104,7 +104,7 @@ class Commands(commands.Cog):
             #     self.bot.guilds, name='MCT').channels
             # for channel in channels:
             #     if channel.type == 'Text' and channel.id not in self.flow.channel_whitelist:
-            #         async for x in self.bot.logs_from(channel):
+            #         async for x in channel.history():
             #             await x.delete()
             #             await asyncio.sleep(.5)
 
@@ -112,9 +112,9 @@ class Commands(commands.Cog):
     @commands.has_role("Admin")
     async def purgetext(self, ctx):
         if not isinstance(ctx.channel, DMChannel):
-            async for x in self.bot.logs_from(ctx.channel):
+            async for x in ctx.channel.history():
                 await x.delete()
-                await asyncio.sleep(.5)
+                # await asyncio.sleep(.3)
 
     @commands.command()
     @commands.has_role("Admin")
