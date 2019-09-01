@@ -81,29 +81,40 @@ class Commands(commands.Cog):
     @commands.has_role("Admin")
     async def yeetroles(self, ctx):
         if not isinstance(ctx.channel, DMChannel):
-            members = discord.utils.get(
-                self.bot.guilds, name='MCT').get_all_members()
-            for member in members:
-                if member == self.bot.user:
-                    continue
-                for role in member.roles:
-                    # if role.id == 578656111041970186:
-                    #     self.flow.add_role(
-                    #         ctx.author, uid='591653678776057882')
-                    if role.id not in self.role_whitelist:
-                        self.flow.remove_role(member, uid=role.id)
+            await ctx.channel.send("This nuke everything to hell trigger is not yet active please discuss your evil ideas with the devs.")
+            # members = discord.utils.get(
+            #     self.bot.guilds, name='MCT').get_all_members()
+            # for member in members:
+            #     if member == self.bot.user:
+            #         continue
+            #     for role in member.roles:
+            #         # if role.id == 578656111041970186:
+            #         #     self.flow.add_role(
+            #         #         ctx.author, uid='591653678776057882')
+            #         if role.id not in self.role_whitelist:
+            #             self.flow.remove_role(member, uid=role.id)
 
     @commands.command()
     @commands.has_role("Admin")
     async def purgechannels(self, ctx):
         if not isinstance(ctx.channel, DMChannel):
-            channels = discord.utils.get(
-                self.bot.guilds, name='MCT').channels
-            for channel in channels:
-                if channel.type == 'Text' and channel.id not in self.flow.channel_whitelist:
-                    async for x in self.bot.logs_from(channel):
-                        await x.delete()
-                        await asyncio.sleep(.5)
+            await ctx.channel.send("This nuke everything to hell trigger is not yet active please discuss your evil ideas with the devs.")
+
+            # channels = discord.utils.get(
+            #     self.bot.guilds, name='MCT').channels
+            # for channel in channels:
+            #     if channel.type == 'Text' and channel.id not in self.flow.channel_whitelist:
+            #         async for x in self.bot.logs_from(channel):
+            #             await x.delete()
+            #             await asyncio.sleep(.5)
+
+    @commands.command()
+    @commands.has_role("Admin")
+    async def purgetext(self, ctx):
+        if not isinstance(ctx.channel, DMChannel):
+            async for x in self.bot.logs_from(ctx.channel):
+                await x.delete()
+                await asyncio.sleep(.5)
 
     @commands.command()
     @commands.has_role("Admin")
