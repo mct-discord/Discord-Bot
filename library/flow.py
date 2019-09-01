@@ -40,6 +40,7 @@ class Flow:
     def __init__(self, bot):
         self.bot = bot
         self.db = TinyDB('{}/db.json'.format(os.path.dirname(os.path.realpath(__file__))), storage=JSONStorage)
+        self.table = self.db.table('api_keys', cache_size=0)
 
     async def start_flow(self, ctx):
         channel = ctx.channel
@@ -376,13 +377,13 @@ class Flow:
 
     async def initiate_procedure(self,user):
         current_hash = uuid.uuid4().hex
-        self.db.insert({'user':user.id, 'token': current_hash, 'timeOfCreation':time.time()})
+        self.table.insert({'user':user.id, 'token': current_hash, 'timeOfCreation':time.time()})
         return current_hash
         
     async def get_procedure(self, hash=None, user=None):
         obj = Query()
         if hash:
-            obj = self.db.search(obj.token == hash)
+            obj = self.table.search(obj.token == hash)
             if len(obj) == 0: return False
             uid = obj[0]['user']
             time_of_creation = obj[0]['timeOfCreation']
@@ -392,7 +393,7 @@ class Flow:
                 await self.end_procedure(hash)
                 return False
         elif user:
-            obj = self.db.search(obj.user == user.id)
+            obj = self.table.search(obj.user == user.id)
             if len(obj) == 0: return await self.initiate_procedure(user)
             
             token = obj[0]['token']
@@ -406,10 +407,10 @@ class Flow:
     async def end_procedure(self, hash=None, user=None):
         obj = Query()
         if hash:
-            self.db.remove(obj.token == hash)
+            self.table.remove(obj.token == hash)
 
         elif user:
-            self.db.remove(obj.user == user.id)
+            self.table.remove(obj.user == user.id)
         
         self.db.clear_cache()
 
