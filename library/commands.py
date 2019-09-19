@@ -53,6 +53,14 @@ class Commands(commands.Cog):
             pass
         await ctx.author.send('**Closed procedure**')
 
+    @commands.command()
+    async def international(self, ctx):
+        await self.flow.add_role(ctx.author, uid=624245270393389068)
+        try:
+            await ctx.message.delete()
+        except:
+            pass
+        await ctx.author.send('**I have added you to the list of (possible) international students.**\n\t- You can converse with other students about your journey in the special channels.\n\t- Or talk about how to get an international experience within MCT.')
     # @commands.command()
     # async def predictrole(self, ctx):
     #     flow = Flow(self.bot)
