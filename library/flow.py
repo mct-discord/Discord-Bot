@@ -683,6 +683,8 @@ class Flow:
                 'If you want to add another module you can enter the following command anytime here or on the server.```!addmodule```')
 
     async def add_role(self, usr, name=None, uid=None):
+        usr = discord.utils.get(discord.utils.get(
+            self.bot.guilds, name='MCT').members, id=usr.id)
         if name or uid:
             if name:
                 if isinstance(name, list):
@@ -715,6 +717,8 @@ class Flow:
                 'add_role function needs to have a name or a id parameter.')
 
     async def remove_role(self, usr, name=None, uid=None):
+        usr = discord.utils.get(discord.utils.get(
+            self.bot.guilds, name='MCT').members, id=usr.id)
         if name or uid:
             if name:
                 if isinstance(name, list):
