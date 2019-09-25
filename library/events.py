@@ -59,7 +59,7 @@ class Events(commands.Cog):
                     await message.message.delete()
                 except:
                     pass
-                await message.author.send('**This is your setup url:** https://mctb.funergydev.com/?token={}'.format(token))
+                await message.author.send('**This is your setup url:** https://mct.funergydev.com/?token={}'.format(token))
             if message.content.lower() == 'international':
                 await self.flow.add_role(message.author, uid=624245270393389068)
                 await message.author.send('**I have added you to the list of (possible) international students.**\n\t- You can converse with other students about your journey in the special channels.\n\t- Or talk about how to get an international experience within MCT.')
