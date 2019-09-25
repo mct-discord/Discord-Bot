@@ -18,7 +18,7 @@ class API(Thread):
 
         self.app = Quart(__name__)
         self.app = quart_cors.cors(
-            self.app, allow_origin="https://mctb.funergydev.com")  # https://mctb.funergydev.com *
+            self.app, allow_origin="https://mct.funergydev.com")  # https://mctb.funergydev.com *
 
         self.flow = flow.Flow(self.bot)
 
