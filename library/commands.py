@@ -41,7 +41,7 @@ class Commands(commands.Cog):
             await ctx.message.delete()
         except:
             pass
-        await ctx.author.send('**This is your setup url:** https://mctb.funergydev.com/?token={}'.format(token))
+        await ctx.author.send('**This is your setup url:** https://mct.funergydev.com/?token={}'.format(token))
 
     @commands.command()
     async def webend(self, ctx):
