@@ -32,7 +32,7 @@ class Commands(commands.Cog):
             await ctx.message.delete()
         except:
             pass
-        await self.flow.add_module(ctx)
+        await self.flow.useradmin.add_module(ctx)
 
     @commands.command()
     async def web(self, ctx):
@@ -55,7 +55,7 @@ class Commands(commands.Cog):
 
     @commands.command()
     async def international(self, ctx):
-        await self.flow.add_role(ctx.author, uid=624245270393389068)
+        await self.flow.useradmin.add_role(ctx.author, uid=624245270393389068)
         try:
             await ctx.message.delete()
         except:
@@ -98,10 +98,10 @@ class Commands(commands.Cog):
             #         continue
             #     for role in member.roles:
             #         # if role.id == 578656111041970186:
-            #         #     self.flow.add_role(
+            #         #     self.flow.useradmin.add_role(
             #         #         ctx.author, uid='591653678776057882')
             #         if role.id not in self.role_whitelist:
-            #             self.flow.remove_role(member, uid=role.id)
+            #             self.flow.useradmin.remove_role(member, uid=role.id)
 
     @commands.command()
     @commands.has_role("Admin")
