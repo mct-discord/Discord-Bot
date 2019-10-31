@@ -32,7 +32,7 @@ class API(Thread):
             module_dict = {}
 
             for module in self.flow.modules_list:
-                role = await self.flow.get_role(uid=module)
+                role = await self.userhelper.get_role(uid=module)
                 module_dict[role.name] = '{}'.format(module)
 
             return jsonify(modules=module_dict)
@@ -68,7 +68,7 @@ class API(Thread):
 
                 await self.userhelper.remove_roles(user)
                 for role in data['roles']:
-                    await self.flow.add_role(user, uid=int(role))
+                    await self.userhelper.add_role(user, uid=int(role))
 
                 message = await user.send('I have given you access to the modules you have requested.')
                 await self.flow.end_procedure(userid)
