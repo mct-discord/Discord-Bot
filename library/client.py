@@ -6,9 +6,10 @@ from discord import DMChannel, TextChannel
 from discord.ext import commands
 from tinydb import Query, TinyDB, where
 
-from library.commands import _custom, addcommand, removecommand, web
+from library.commands import _custom, addcommand, removecommand, web, botsend, purgetext, rules, setup, webend, addmodule
 from library.models import command
 from library.repositories.db import Db
+from library.services import api
 
 
 class Client(discord.Client):
@@ -28,6 +29,12 @@ class Client(discord.Client):
         self.commands.append(web.Web(self))
         self.commands.append(addcommand.AddCommand(self))
         self.commands.append(removecommand.RemoveCommand(self))
+        self.commands.append(botsend.BotSend(self))
+        self.commands.append(purgetext.PurgeText(self))
+        self.commands.append(rules.Rules(self))
+        self.commands.append(webend.WebEnd(self))
+        self.commands.append(setup.Setup(self))
+        self.commands.append(addmodule.AddModule(self))
 
     def load_custom_commands(self):
         db = Db()
@@ -74,3 +81,10 @@ class Client(discord.Client):
                 except Exception as ex:
                     print(ex)
                     await message.channel.send(command_obj)
+
+    async def on_ready(self):
+        # Initiate the API
+        api = api.API(self.bot)
+
+        print('Logged on as', self.bot.user)
+        await self.bot.change_presence(activity=discord.Game(name="Crunching some data"))
