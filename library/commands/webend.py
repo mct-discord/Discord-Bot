@@ -6,9 +6,8 @@ from library.procedures.webprocedure import WebProcedure
 class WebEnd(Command):
 
     def __init__(self, bot):
-        super().__init__("web", bot)
+        super().__init__("webend", bot)
         self.bot = bot
-        self.delete_message = True
         self.allowed_sources = [DMChannel]
 
     async def on_execute(self, ctx, params):
