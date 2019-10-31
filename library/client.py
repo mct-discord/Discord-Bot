@@ -84,7 +84,7 @@ class Client(discord.Client):
 
     async def on_ready(self):
         # Initiate the API
-        api = api.API(self.bot)
+        self.api = api.API(self)
 
-        print('Logged on as', self.bot.user)
-        await self.bot.change_presence(activity=discord.Game(name="Crunching some data"))
+        print('Logged on as', self.user)
+        await self.change_presence(activity=discord.Game(name="Crunching some data"))

@@ -54,8 +54,8 @@ class _TestingWebsocket:
 def make_test_headers_path_and_query_string(
         app: 'Quart',
         path: str,
-        headers: Optional[Union[dict, CIMultiDict]]=None,
-        query_string: Optional[dict]=None,
+        headers: Optional[Union[dict, CIMultiDict]] = None,
+        query_string: Optional[dict] = None,
 ) -> Tuple[CIMultiDict, str, bytes]:
     """Make the headers and path with defaults for testing.
 
@@ -78,7 +78,8 @@ def make_test_headers_path_and_query_string(
     headers.setdefault('User-Agent', 'Quart')
     headers.setdefault('host', app.config['SERVER_NAME'] or 'localhost')
     if '?' in path and query_string is not None:
-        raise ValueError('Query string is defined in the path and as an argument')
+        raise ValueError(
+            'Query string is defined in the path and as an argument')
     if query_string is None:
         path, _, query_string_raw = path.partition('?')
     else:
@@ -106,7 +107,7 @@ class QuartClient:
     :attr:`~quart.app.Quart.test_client` method.
     """
 
-    def __init__(self, app: 'Quart', use_cookies: bool=True) -> None:
+    def __init__(self, app: 'Quart', use_cookies: bool = True) -> None:
         if use_cookies:
             self.cookie_jar = SimpleCookie()
         else:
@@ -118,14 +119,14 @@ class QuartClient:
             self,
             path: str,
             *,
-            method: str='GET',
-            headers: Optional[Union[dict, CIMultiDict]]=None,
-            data: AnyStr=None,
-            form: Optional[dict]=None,
-            query_string: Optional[dict]=None,
-            json: Any=sentinel,
-            scheme: str='http',
-            follow_redirects: bool=False,
+            method: str = 'GET',
+            headers: Optional[Union[dict, CIMultiDict]] = None,
+            data: AnyStr = None,
+            form: Optional[dict] = None,
+            query_string: Optional[dict] = None,
+            json: Any = sentinel,
+            scheme: str = 'http',
+            follow_redirects: bool = False,
     ) -> Response:
         """Open a request to the app associated with this client.
 
@@ -169,7 +170,8 @@ class QuartClient:
         )
 
         if [json is not sentinel, form is not None, data is not None].count(True) > 1:
-            raise ValueError("Quart test args 'json', 'form', and 'data' are mutually exclusive")
+            raise ValueError(
+                "Quart test args 'json', 'form', and 'data' are mutually exclusive")
 
         request_data = b''
 
@@ -196,7 +198,8 @@ class QuartClient:
         request.body.set_result(request_data)
         response = await self._handle_request(request)
         if self.cookie_jar is not None and 'Set-Cookie' in response.headers:
-            self.cookie_jar.load(";".join(response.headers.getall('Set-Cookie')))
+            self.cookie_jar.load(
+                ";".join(response.headers.getall('Set-Cookie')))
 
         if follow_redirects:
             while response.status_code >= 300 and response.status_code <= 399:
@@ -285,35 +288,37 @@ class QuartClient:
     def set_cookie(
             self,
             key: str,
-            value: str='',
-            max_age: Optional[Union[int, timedelta]]=None,
-            expires: Optional[Union[int, float, datetime]]=None,
-            path: str='/',
-            domain: Optional[str]=None,
-            secure: bool=False,
-            httponly: bool=False,
+            value: str = '',
+            max_age: Optional[Union[int, timedelta]] = None,
+            expires: Optional[Union[int, float, datetime]] = None,
+            path: str = '/',
+            domain: Optional[str] = None,
+            secure: bool = False,
+            httponly: bool = False,
     ) -> None:
         """Set a cookie in the cookie jar.
 
         The arguments are the standard cookie morsels and this is a
         wrapper around the stdlib SimpleCookie code.
         """
-        cookie = create_cookie(key, value, max_age, expires, path, domain, secure, httponly)
+        cookie = create_cookie(key, value, max_age, expires,
+                               path, domain, secure, httponly)
         self.cookie_jar = cookie
 
-    def delete_cookie(self, key: str, path: str='/', domain: Optional[str]=None) -> None:
+    def delete_cookie(self, key: str, path: str = '/', domain: Optional[str] = None) -> None:
         """Delete a cookie (set to expire immediately)."""
-        self.set_cookie(key, expires=datetime.utcnow(), max_age=0, path=path, domain=domain)
+        self.set_cookie(key, expires=datetime.utcnow(),
+                        max_age=0, path=path, domain=domain)
 
     @asynccontextmanager
     async def websocket(
             self,
             path: str,
             *,
-            headers: Optional[Union[dict, CIMultiDict]]=None,
-            query_string: Optional[dict]=None,
-            scheme: str='http',
-            subprotocols: Optional[List[str]]=None,
+            headers: Optional[Union[dict, CIMultiDict]] = None,
+            query_string: Optional[dict] = None,
+            scheme: str = 'http',
+            subprotocols: Optional[List[str]] = None,
     ) -> AsyncGenerator[_TestingWebsocket, None]:
         headers, path, query_string_bytes = make_test_headers_path_and_query_string(
             self.app, path, headers, query_string,
@@ -331,7 +336,8 @@ class QuartClient:
         if not url_rule.is_websocket:
             raise BadRequest()
 
-        websocket_client.task = asyncio.ensure_future(self.app.handle_websocket(websocket))
+        websocket_client.task = asyncio.ensure_future(
+            self.app.handle_websocket(websocket))
 
         try:
             yield websocket_client

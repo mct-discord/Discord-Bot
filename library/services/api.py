@@ -1,5 +1,6 @@
 from threading import Thread
-from library.quart import Quart, jsonify, quart_cors, request, session
+from library.quart import Quart, jsonify, request, session, quart_cors
+
 from library.procedures import webprocedure
 from library.utilities import userhelper
 import discord
@@ -18,7 +19,7 @@ class API(Thread):
 
         self.app = Quart(__name__)
         self.app = quart_cors.cors(
-            self.app, allow_origin="https://mct.funergydev.com")  # https://mctb.funergydev.com *
+            self.app, allow_origin="*")  # https://mct.funergydev.com *
 
         self.flow = webprocedure.WebProcedure(bot)
         self.userhelper = userhelper.UserHelper(bot)
