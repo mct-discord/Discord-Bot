@@ -1,5 +1,5 @@
 from threading import Thread
-from library.quart import Quart, jsonify, request, session, quart_cors
+from library.utilities.quart import Quart, jsonify, request, session, quart_cors
 
 from library.procedures import webprocedure
 from library.utilities import userhelper
@@ -19,7 +19,7 @@ class API(Thread):
 
         self.app = Quart(__name__)
         self.app = quart_cors.cors(
-            self.app, allow_origin="*")  # https://mct.funergydev.com *
+            self.app, allow_origin="https://mct.funergydev.com")  # https://mct.funergydev.com *
 
         self.flow = webprocedure.WebProcedure(bot)
         self.userhelper = userhelper.UserHelper(bot)
@@ -76,8 +76,8 @@ class API(Thread):
             elif request.method == 'GET':
                 return jsonify(roles=100), 200
 
-        self.app.run(host="0.0.0.0", port=5000,
-                     debug=False, use_reloader=True, loop=self.loop)
         # self.app.run(host="0.0.0.0", port=5000,
-        #              debug=False, use_reloader=True, loop=self.loop, keyfile='/etc/letsencrypt/live/mct.api.funergydev.com/privkey.pem',
-        #              certfile='/etc/letsencrypt/live/mct.api.funergydev.com/cert.pem')
+        #              debug=False, use_reloader=True, loop=self.loop)
+        self.app.run(host="0.0.0.0", port=5000,
+                     debug=False, use_reloader=True, loop=self.loop, keyfile='/etc/letsencrypt/live/mct.api.funergydev.com/privkey.pem',
+                     certfile='/etc/letsencrypt/live/mct.api.funergydev.com/cert.pem')

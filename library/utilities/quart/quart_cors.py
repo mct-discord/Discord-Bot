@@ -2,8 +2,8 @@ from datetime import timedelta
 from functools import partial, wraps
 from typing import Any, Callable, Iterable, Optional, TypeVar, Union
 
-from library.quart import Blueprint, current_app, make_response, Quart, request, Response
-from library.quart.datastructures import HeaderSet, RequestAccessControl
+from library.utilities.quart import Blueprint, current_app, make_response, Quart, request, Response
+from library.utilities.quart.datastructures import HeaderSet, RequestAccessControl
 
 __all__ = ("cors",)
 
