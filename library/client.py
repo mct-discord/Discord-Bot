@@ -62,6 +62,9 @@ class Client(discord.Client):
 
     async def on_ready(self):
         print('Logged on as', self.user)
+        self.api = api.API(self)
+
+        await self.change_presence(activity=discord.Game(name="Crunching some data"))
 
     async def on_message(self, message):
         # Don't respond to ourselves
@@ -81,10 +84,3 @@ class Client(discord.Client):
                 except Exception as ex:
                     print(ex)
                     await message.channel.send(command_obj)
-
-    async def on_ready(self):
-        # Initiate the API
-        self.api = api.API(self)
-
-        print('Logged on as', self.user)
-        await self.change_presence(activity=discord.Game(name="Crunching some data"))
