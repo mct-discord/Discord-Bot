@@ -6,7 +6,7 @@ from discord import DMChannel, TextChannel
 from discord.ext import commands
 from tinydb import Query, TinyDB, where
 
-from library.commands import _custom, addcommand, removecommand, web, botsend, purgetext, rules, setup, webend, addmodule
+from library.commands import _custom, addcommand, removecommand, web, botsend, purgetext, rules, setup, webend, addmodule, chat
 from library.models import command
 from library.repositories.db import Db
 from library.services import api
@@ -35,6 +35,7 @@ class Client(discord.Client):
         self.commands.append(webend.WebEnd(self))
         self.commands.append(setup.Setup(self))
         self.commands.append(addmodule.AddModule(self))
+        self.commands.append(chat.Chat(self))
 
     def load_custom_commands(self):
         db = Db()
@@ -84,3 +85,7 @@ class Client(discord.Client):
                 except Exception as ex:
                     print(ex)
                     await message.channel.send(command_obj)
+
+    async def on_member_join(self, member):
+        await member.send(
+            '**Welcome to the MCT server to get you started send me one of the following words:**\n\t- `chat` for the **chat** interface.\n\t- `web` for the **web** interface (Fastest).\nThis will only take a couple of seconds of your time :).')
