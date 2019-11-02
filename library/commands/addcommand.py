@@ -77,7 +77,7 @@ class AddCommand(Command):
         db.db.close()
 
         custom = _custom.Custom(
-            self.bot, cmd_name, cmd_action_type, cmd_action, cmd_action_value)
+            self.bot, cmd_name, cmd_action_type, cmd_action, cmd_action_value, cmd_return_message)
         sources = list()
         for source in cmd_allowed_sources:
             if source.lower() == "channel.dm":
