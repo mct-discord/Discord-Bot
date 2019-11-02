@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from discord import DMChannel, TextChannel
 from library.utilities.userhelper import UserHelper
+import shlex
 
 
 class Command(ABC):
@@ -13,7 +14,8 @@ class Command(ABC):
         self.delete_message = True
 
     async def get_params(self, command):
-        self.params = command.split(" ")[1:]
+
+        self.params = shlex.split(command)[1:]
         return self.params
 
     async def is_allowed_source(self, source):

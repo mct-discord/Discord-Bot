@@ -1,12 +1,13 @@
 import asyncio
 import re
+from importlib import reload
 
 import discord
 from discord import DMChannel, TextChannel
-from discord.ext import commands
 from tinydb import Query, TinyDB, where
 
-from library.commands import _custom, addcommand, removecommand, web, botsend, purgetext, rules, setup, webend, addmodule, chat
+import library.commands as commands
+from library.commands import *
 from library.models import command
 from library.repositories.db import Db
 from library.services import api
@@ -36,6 +37,8 @@ class Client(discord.Client):
         self.commands.append(setup.Setup(self))
         self.commands.append(addmodule.AddModule(self))
         self.commands.append(chat.Chat(self))
+        self.commands.append(reloadcmd.ReloadCMD(self))
+        self.commands.append(test.Test(self))
 
     def load_custom_commands(self):
         db = Db()
@@ -60,6 +63,13 @@ class Client(discord.Client):
             self.commands.append(custom)
 
         db.db.close()
+
+    async def reloadCommand(self, cmd):
+        cmd_obj = next(
+            (command for command in self.commands if command.name == cmd), None)
+        self.commands.remove(cmd_obj)
+        reload(commands)
+        self.commands.append(cmd_obj)
 
     async def on_ready(self):
         print('Logged on as', self.user)
