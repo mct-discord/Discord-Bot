@@ -6,11 +6,12 @@ from library.utilities.userhelper import UserHelper
 
 class Custom(Command):
 
-    def __init__(self, bot, name, type, action, value):
+    def __init__(self, bot, name, type, action, value, returnmsg):
         super().__init__(name, bot)
         self.type = type
         self.action = action
         self.action_value = value
+        self.returnmsg = returnmsg
         self.bot = bot
         self.allowed_sources = [DMChannel, TextChannel]
 
@@ -29,3 +30,6 @@ class Custom(Command):
             if self.action == "add":
                 for emoji in self.action_value.split(","):
                     await ctx.add_reaction(emoji)
+
+        if self.returnmsg is not "":
+            await ctx.author.send(self.returnmsg)

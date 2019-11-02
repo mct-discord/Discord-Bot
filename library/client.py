@@ -45,22 +45,26 @@ class Client(discord.Client):
         obj = Query()
         obj = db.get_table('commands').all()
         for cmd in obj:
-            custom = _custom.Custom(
-                self, cmd['name'], cmd['type'], cmd['action'], cmd['actionValue'])
-            print("Loading {}".format(cmd['name']))
-            custom.delete_message = cmd['deleteMessage']
-            sources = list()
-            for source in cmd['allowedSources']:
-                if source.lower() == "channel.dm":
-                    sources.append(DMChannel)
-                elif source.lower() == "channel.text":
-                    sources.append(TextChannel)
+            try:
+                custom = _custom.Custom(
+                    self, cmd['name'], cmd['type'], cmd['action'], cmd['actionValue'], cmd['returnMessage'])
+                print("Loading {}".format(cmd['name']))
+                custom.delete_message = cmd['deleteMessage']
 
-            custom.allowed_roles = cmd['allowedRoles']
+                sources = list()
+                for source in cmd['allowedSources']:
+                    if source.lower() == "channel.dm":
+                        sources.append(DMChannel)
+                    elif source.lower() == "channel.text":
+                        sources.append(TextChannel)
 
-            if len(sources):
-                custom.allowed_sources = sources
-            self.commands.append(custom)
+                custom.allowed_roles = cmd['allowedRoles']
+
+                if len(sources):
+                    custom.allowed_sources = sources
+                self.commands.append(custom)
+            except:
+                print("Skipped command {}".format(cmd['name']))
 
         db.db.close()
 

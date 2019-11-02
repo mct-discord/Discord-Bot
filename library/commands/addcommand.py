@@ -25,17 +25,19 @@ class AddCommand(Command):
         cmd_action_value = params[3]
 
         nonrequired_vars = (
-            'delete_message', 'allowed_roles', 'allowed_sources')
+            'delete_message', 'allowed_roles', 'allowed_sources', 'return_message')
         true_values = (1, 'true', 'True', 'y', 'yes')
 
         cmd_delete_msg = self.delete_message
         cmd_allowed_roles = list()
         cmd_allowed_sources = list()
-
+        cmd_return_message = ""
         if len(params) > 4:
+            # CMD DELETE MSG FLAG
             cmd_delete_msg = params[4] in true_values if not params[4].startswith(nonrequired_vars) else next((param.split(
                 '=')[1] in true_values for param in params if param.startswith(nonrequired_vars[0])), self.delete_message)
 
+            # CMD ROLES FLAG
             raw_allowed_roles = self.get_param_value_list(
                 params, 5, nonrequired_vars[1])
 
@@ -43,6 +45,7 @@ class AddCommand(Command):
                 if role.lower() in raw_allowed_roles:
                     cmd_allowed_roles.append(int(role))
 
+            # CMD SOURCE FLAG
             allowed_source_values = ["channel.text", "channel.dm"]
 
             raw_allowed_sources = self.get_param_value_list(
@@ -50,6 +53,10 @@ class AddCommand(Command):
             for source in raw_allowed_sources:
                 if source.lower() in allowed_source_values:
                     cmd_allowed_sources.append(source)
+
+            # CMD RETURN MSG FLAG
+            cmd_return_message = self.get_param_value(
+                params, 7, nonrequired_vars[3])
 
         if cmd_delete_msg and cmd_action_type == "react":
             cmd_delete_msg = False
@@ -63,6 +70,7 @@ class AddCommand(Command):
                 'deleteMessage': cmd_delete_msg,
                 'allowedSources': cmd_allowed_sources,
                 'allowedRoles': cmd_allowed_roles,
+                'returnMessage': cmd_return_message,
                 'timestamp': time.time()
             }
         )
