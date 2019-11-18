@@ -4,3 +4,7 @@ config.ini
 
 .idea
 .vscode
+certs
+*.pem
+db.json
+__pycache__
