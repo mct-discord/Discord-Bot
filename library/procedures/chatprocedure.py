@@ -637,11 +637,11 @@ class ChatProcedure:
                     '**I have given you the rank of alumni.**\nCongrats by the way!')
 
         except asyncio.TimeoutError:
-            await user_object.send(' \nWe couldn\'t get your answer right let\'s try this again shall we?')
+            await user_object.send('\r\nWe couldn\'t get your answer right let\'s try this again shall we?')
 
         except Exception as e:
             print(e)
 
         else:
             await user_object.send(
-                ' \nIf you want to add another module you can enter the following command anytime here or on the server.```!addmodule```')
+                '\r\nIf you want to add another module you can enter the following command anytime here or on the server.```!addmodule```')
