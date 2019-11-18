@@ -632,7 +632,7 @@ class ChatProcedure:
                     await user.send(
                     '**I have given you the teacher role.**\n Your next step, if you haven\'nt already, will be to add yourself to your respected modules.')
                 elif reaction.emoji == self.emoji_numbers[1]:
-                    await self.useradmin.add_role(user_object uid=self.alumni)
+                    await self.useradmin.add_role(user_object, uid=self.alumni)
                     await user.send(
                     '**I have given you the rank of alumni.**\n Congrats by the way!')
 
