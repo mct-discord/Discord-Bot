@@ -11,6 +11,7 @@ from library.commands import *
 from library.models import command
 from library.repositories.db import Db
 from library.services import api
+from library.utilities import signals
 
 
 class Client(discord.Client):
@@ -78,7 +79,7 @@ class Client(discord.Client):
     async def on_ready(self):
         print('Logged on as', self.user)
         self.api = api.API(self)
-
+        signals.Signals(self,self.api)
         await self.change_presence(activity=discord.Game(name="Crunching some data"))
 
     async def on_message(self, message):
