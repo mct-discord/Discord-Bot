@@ -630,18 +630,18 @@ class ChatProcedure:
                 if reaction.emoji == self.emoji_numbers[0]: 
                     await self.useradmin.add_role(user_object, uid=self.teacher)
                     await user.send(
-                    '**I have given you the teacher role.**\nYour next step, if you haven\'t already, will be to add yourself to your respected modules.')
+                    '**I have given you the teacher role.**\nYour next step, if you haven\'t already, will be to add yourself to your respected modules.\r\n')
                 elif reaction.emoji == self.emoji_numbers[1]:
                     await self.useradmin.add_role(user_object, uid=self.alumni)
                     await user.send(
-                    '**I have given you the rank of alumni.**\nCongrats by the way!')
+                    '**I have given you the rank of alumni.**\nCongrats by the way!\r\n')
 
         except asyncio.TimeoutError:
-            await user_object.send('\r\nWe couldn\'t get your answer right let\'s try this again shall we?')
+            await user_object.send('We couldn\'t get your answer right let\'s try this again shall we?')
 
         except Exception as e:
             print(e)
 
         else:
             await user_object.send(
-                '\r\nIf you want to add another module you can enter the following command anytime here or on the server.```!addmodule```')
+                'If you want to add another module you can enter the following command anytime here or on the server.```!addmodule```')
