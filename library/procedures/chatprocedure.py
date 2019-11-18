@@ -630,7 +630,7 @@ class ChatProcedure:
                 if reaction.emoji == self.emoji_numbers[0]: 
                     await self.useradmin.add_role(user_object, uid=self.teacher)
                     await user.send(
-                    '**I have given you the teacher role.**\nYour next step, if you have\'nt already, will be to add yourself to your respected modules.')
+                    '**I have given you the teacher role.**\nYour next step, if you haven\'t already, will be to add yourself to your respected modules.')
                 elif reaction.emoji == self.emoji_numbers[1]:
                     await self.useradmin.add_role(user_object, uid=self.alumni)
                     await user.send(
