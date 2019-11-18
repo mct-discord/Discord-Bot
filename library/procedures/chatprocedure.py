@@ -8,13 +8,8 @@ import uuid
 from library.utilities.userhelper import UserHelper
 
 class ChatProcedure:
-    modules_list = [591723123171393552, 591721912187486228, 591722865175560203, 591723051381686272, 591723086185889995,
-                    591724086355558420, 591723225977978912, 591723267266445350, 591723296404406307, 591723365878988800,
-                    591723388154806490, 591723418223771658, 591723436452217044, 591723479011950622, 591723509764456457,591723166594891794,
-                    591723531969101824, 591723568400957461, 591723587983900692, 591723605054980107, 591723630811938816,591723663477440522,
-                    591723688567504896, 591723719123140641, 591723750576357400, 591723786643046401, 591723817127116840,591723897418809368,
-                    591723917689880600, 591723938657206407, 591723974094749696, 591724012728746026, 591724034857631794,591724053983789114,
-                    591724086355558420, 591724139300257794, 591724192353746965, 591724222464655387, 591724252668100608,591724283550760997,624245270393389068]
+    teacher = 642469055382421516
+    alumni = 591653678776057882
     emoji_numbers = ['1⃣', '2⃣', '3⃣', '4⃣','5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '0⃣']
     modules = [[[591723123171393552, 591721912187486228, 591722865175560203, 591723051381686272, 591723086185889995], 
                 [591724086355558420, 591723225977978912, 591723267266445350, 591723296404406307, 591723365878988800]],
@@ -377,7 +372,7 @@ class ChatProcedure:
 
             msg = await ctx.author.send(
                 '**What year is your module in?**')
-            reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2]]
+            reactions = [self.emoji_numbers[0], self.emoji_numbers[1], self.emoji_numbers[2], '🚫']
 
             for emoji in reactions:
                 await msg.add_reaction(emoji)
@@ -623,6 +618,23 @@ class ChatProcedure:
 
                 else:
                     raise Exception()
+            elif reaction.emoji == '🚫':
+                msg = await user.send(
+                    '**Since the role you want isn\'t a module, choose which applies to you:**\n\n:one: 👨‍🏫 Teacher\n:two: 🏆 Alumni')
+                reactions = [self.emoji_numbers[0], self.emoji_numbers[1],'🚫']
+
+                for emoji in reactions:
+                    await msg.add_reaction(emoji)
+                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                
+                if reaction.emoji == self.emoji_numbers[0]: 
+                    await self.useradmin.add_role(user_object uid=self.teacher)
+                    await user.send(
+                    '**I have given you the teacher role.**\n Your next step, if you haven\'nt already, will be to add yourself to your respected modules.')
+                elif reaction.emoji == self.emoji_numbers[1]:
+                    await self.useradmin.add_role(user_object uid=self.alumni)
+                    await user.send(
+                    '**I have given you the rank of alumni.**\n Congrats by the way!')
 
         except asyncio.TimeoutError:
             await user_object.send('We couldn\'t get your answer right let\'s try this again shall we?')
