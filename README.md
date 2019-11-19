@@ -37,7 +37,7 @@ For every Module in MCT
 For every year  
 For every Course
 
-We have this many Roles zo we can give everybody a nice custom view for all their courses, even if they're taking some couses along for the next year
+We have this many Roles so we can give everybody a nice custom view for all their courses, even if they're taking some couses along for the next year
 
 ## Planned Functionalities
 
