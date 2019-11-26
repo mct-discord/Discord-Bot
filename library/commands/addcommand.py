@@ -122,4 +122,4 @@ class AddCommand(Command):
                 return tempparam.split('=')[1]
 
     def __str__(self):
-        return "Syntax: addcommand <command> <actionType[role,react]> <action{role:[add | remove], react:[add]}> [delete_message=<True/False> | allowed_sources=channel.text(,channel.dm)] "
+        return "Syntax: addcommand <command> <actionType[role,react]> <action{role:[add | remove], react:[add]}> [delete_message=<True/False> | allowed_sources=channel.text(,channel.dm) | return_message=<Message>] "

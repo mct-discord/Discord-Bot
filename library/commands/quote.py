@@ -60,3 +60,7 @@ class Quote(Command):
             quote_embed.timestamp = quote.created_at
             
             await ctx.channel.send(embed=quote_embed)
+
+
+    def __str__(self):
+        return "Syntax: quote [<#Channel>] <MessageID>"

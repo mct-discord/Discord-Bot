@@ -16,3 +16,6 @@ class ReloadCMD(Command):
     async def on_execute(self, ctx, params):
         await self.bot.reloadCommand(params[0])
         await ctx.channel.send("Reloaded command {}".format(params[0]))
+
+    def __str__(self):
+        return "Syntax: reloadcmd <Command>"

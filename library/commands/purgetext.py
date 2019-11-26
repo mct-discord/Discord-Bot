@@ -14,3 +14,6 @@ class PurgeText(Command):
     async def on_execute(self, ctx, params):
         async for x in ctx.channel.history():
             await x.delete()
+
+    def __str__(self):
+        return "Syntax: purgetext <#Channel>"
