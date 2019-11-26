@@ -41,6 +41,8 @@ class Client(discord.Client):
         self.commands.append(reloadcmd.ReloadCMD(self))
         self.commands.append(test.Test(self))
         self.commands.append(quote.Quote(self))
+        self.commands.append(help.Help(self))
+
 
     def load_custom_commands(self):
         db = Db()

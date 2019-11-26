@@ -14,3 +14,6 @@ class Web(Command):
     async def on_execute(self, ctx, params):
         token = await WebProcedure(self.bot).get_procedure(user=ctx.author)
         await ctx.author.send('**This is your setup url:** https://mct.funergydev.com/?token={}'.format(token))
+
+    def __str__(self):
+        return "Syntax: web"

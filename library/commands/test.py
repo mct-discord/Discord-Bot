@@ -14,4 +14,7 @@ class Test(Command):
         self.allowed_roles = []
 
     async def on_execute(self, ctx, params):
-        await ctx.channel.send("Test HAHA")
+        await ctx.channel.send("It works!")
+
+    def __str__(self):
+        return "Syntax: test"

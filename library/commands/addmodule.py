@@ -13,3 +13,6 @@ class AddModule(Command):
 
     async def on_execute(self, ctx, params):
         await ChatProcedure(self.bot).add_module(ctx)
+
+    def __str__(self):
+        return "Syntax: addmodule"
