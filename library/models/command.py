@@ -21,16 +21,17 @@ class Command(ABC):
     async def is_allowed_source(self, source):
         return any(isinstance(source, x) for x in self.allowed_sources)
 
-    async def is_allowed_role(self, roles):
+    async def is_allowed_role(self, user):
         # if any(isinstance(DMChannel, x) for x in self.allowed_sources):
         #     return True
+        roles = await UserHelper(self.bot).get_roles(user)
         if len(self.allowed_roles) == 0 or self.allowed_roles == None:
             return True
         else:
             return any(elem.id in self.allowed_roles for elem in roles)
 
     async def execute(self, ctx, command):
-        if await self.is_allowed_source(ctx.channel) and await self.is_allowed_role(await UserHelper(self.bot).get_roles(ctx.author)):
+        if await self.is_allowed_source(ctx.channel) and await self.is_allowed_role(ctx.author):
             if self.delete_message:
                 try:
                     await ctx.delete()

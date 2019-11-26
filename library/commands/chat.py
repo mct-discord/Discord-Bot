@@ -12,3 +12,6 @@ class Chat(Command):
 
     async def on_execute(self, ctx, params):
         await ChatProcedure(self.bot).predictive_flow(ctx)
+
+    def __str__(self):
+        return "Syntax: chat"

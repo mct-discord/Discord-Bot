@@ -23,3 +23,6 @@ class BotSend(Command):
                 await channel.send(params[1])
             except:
                 await ctx.channel.send('Unable to find the textchannel.')
+
+    def __str__(self):
+        return "Syntax: botsend [<#Channel>] <Message>"

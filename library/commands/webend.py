@@ -15,3 +15,6 @@ class WebEnd(Command):
         token = await webproc.get_procedure(user=ctx.author)
         await webproc.end_procedure(token)
         await ctx.author.send('**Closed procedure**')
+
+    def __str__(self):
+        return "Syntax: webend"
