@@ -18,17 +18,35 @@ Planned languages:
 
 `pip install discord.py quart`
 
+## Current Functionalities
+### API
+Quart API to communicate with the web procedure
+
+### Commands
+- Dynamic commands
+- Reload command
+
+### Procedures
+
+- Web procedure
+- Chat procedure
+
+### Roles
+
+For every Module in MCT  
+For every year  
+For every Course
+
+We have this many Roles so we can give everybody a nice custom view for all their courses, even if they're taking some couses along for the next year
+
 ## Planned Functionalities
+
+### Commands
+- Disable commands
 
 ### Automatic role reset
 
 Every year in september we should run a reset so everybody can select their modules and be in the correct channels, if we could automate this by date, that would be great.  
 Perhaps even add an extra question in january for the second year students
 
-## Roles
 
-For every Module in MCT  
-For every year  
-For every Course
-
-We have this many Roles zo we can give everybody a nice custom view for all their courses, even if they're taking some couses along for the next year
