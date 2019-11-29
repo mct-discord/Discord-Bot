@@ -12,7 +12,7 @@ config.read(os.path.abspath("{}/config.ini".format(root_path)))
 guildname = config.get('discord', 'guild')
 
 # Initiate the bot
-bot = Client(guildname)
+bot = Client(guildname,root_path)
 
 # Run the bot
 bot.run(config.get('discord', 'token'))

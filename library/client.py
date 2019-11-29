@@ -16,9 +16,9 @@ from library.utilities import signals
 
 class Client(discord.Client):
 
-    def __init__(self, guildname):
+    def __init__(self, guildname, rootpath):
         super().__init__()
-
+        self.root_path = rootpath
         self.commands = list()
         self.command_prefix = "!"
 
@@ -42,7 +42,6 @@ class Client(discord.Client):
         self.commands.append(test.Test(self))
         self.commands.append(quote.Quote(self))
         self.commands.append(help.Help(self))
-
 
     def load_custom_commands(self):
         db = Db()
@@ -82,7 +81,7 @@ class Client(discord.Client):
     async def on_ready(self):
         print('Logged on as', self.user)
         self.api = api.API(self)
-        signals.Signals(self,self.api)
+        signals.Signals(self, self.api)
         await self.change_presence(activity=discord.Game(name="Crunching some data"))
 
     async def on_message(self, message):
