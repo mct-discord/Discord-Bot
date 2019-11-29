@@ -31,5 +31,5 @@ class Custom(Command):
                 for emoji in self.action_value.split(","):
                     await ctx.add_reaction(emoji)
 
-        if self.returnmsg is not "":
+        if self.returnmsg != "":
             await ctx.author.send(self.returnmsg)
