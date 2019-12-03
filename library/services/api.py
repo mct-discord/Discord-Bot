@@ -19,8 +19,8 @@ class API(Thread):
 
         self.app = Quart(__name__)
         self.app = quart_cors.cors(
-            self.app, allow_origin="https://mct.funergydev.com")  # https://mct.funergydev.com *
-        
+            self.app, allow_origin="https://mctdiscord.azurewebsites.net")  # https://mct.funergydev.com *
+
         self.flow = webprocedure.WebProcedure(bot)
         self.userhelper = userhelper.UserHelper(bot)
 
@@ -78,6 +78,6 @@ class API(Thread):
 
         # self.app.run(host="0.0.0.0", port=5000,
         #              debug=False, use_reloader=True, loop=self.loop)
-        self.app.run(host="0.0.0.0", port=5000,
-                     debug=False, use_reloader=True, loop=self.loop, keyfile='/etc/letsencrypt/live/mct.api.funergydev.com/privkey.pem',
-                     certfile='/etc/letsencrypt/live/mct.api.funergydev.com/cert.pem')
+        self.app.run(host="0.0.0.0", port=443,
+                     debug=False, use_reloader=True, loop=self.loop, keyfile='{}/certs/privkey.pem'.format(self.bot.root_path),
+                     certfile='{}/certs/cert.pem'.format(self.bot.root_path))

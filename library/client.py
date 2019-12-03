@@ -1,6 +1,7 @@
 import asyncio
 import re
-from importlib import reload
+from importlib import reload, import_module
+import inspect
 
 import discord
 from discord import DMChannel, TextChannel
@@ -16,9 +17,9 @@ from library.utilities import signals
 
 class Client(discord.Client):
 
-    def __init__(self, guildname):
+    def __init__(self, guildname, rootpath):
         super().__init__()
-
+        self.root_path = rootpath
         self.commands = list()
         self.command_prefix = "!"
 
@@ -28,21 +29,15 @@ class Client(discord.Client):
         self.load_custom_commands()
 
     def load_commands(self):
-        self.commands.append(web.Web(self))
-        self.commands.append(addcommand.AddCommand(self))
-        self.commands.append(removecommand.RemoveCommand(self))
-        self.commands.append(botsend.BotSend(self))
-        self.commands.append(purgetext.PurgeText(self))
-        self.commands.append(rules.Rules(self))
-        self.commands.append(webend.WebEnd(self))
-        self.commands.append(setup.Setup(self))
-        self.commands.append(addmodule.AddModule(self))
-        self.commands.append(chat.Chat(self))
-        self.commands.append(reloadcmd.ReloadCMD(self))
-        self.commands.append(test.Test(self))
-        self.commands.append(quote.Quote(self))
-        self.commands.append(help.Help(self))
+        for cmd in commands.__all__:
+            if cmd == "_custom":
+                continue
 
+            print("Loading {}".format(cmd))
+
+            for name, obj in inspect.getmembers(import_module("library.commands.{}".format(cmd)), inspect.isclass):
+                if command.Command in obj.__bases__:
+                    self.commands.append(obj(self))
 
     def load_custom_commands(self):
         db = Db()
@@ -82,7 +77,7 @@ class Client(discord.Client):
     async def on_ready(self):
         print('Logged on as', self.user)
         self.api = api.API(self)
-        signals.Signals(self,self.api)
+        signals.Signals(self, self.api)
         await self.change_presence(activity=discord.Game(name="Crunching some data"))
 
     async def on_message(self, message):
