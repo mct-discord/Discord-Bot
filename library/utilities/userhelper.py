@@ -18,6 +18,10 @@ class UserHelper:
         self.bot = bot
         self.guildname = self.bot.guildname
 
+    async def get_user(self, uid):
+        return discord.utils.get(discord.utils.get(
+            self.bot.guilds, name=self.guildname).members, id=uid)
+
     async def add_role(self, usr, name=None, uid=None):
         usr = discord.utils.get(discord.utils.get(
             self.bot.guilds, name=self.guildname).members, id=usr.id)
