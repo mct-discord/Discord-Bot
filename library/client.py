@@ -12,7 +12,7 @@ from library.commands import *
 from library.models import command
 from library.repositories.db import Db
 from library.services import api
-from library.utilities import signals
+from library.utilities import signals, gspreadsheets
 
 
 class Client(discord.Client):
@@ -23,10 +23,14 @@ class Client(discord.Client):
         self.commands = list()
         self.command_prefix = "!"
 
+        self.spreadsheet = gspreadsheets.GSpreadsheets(
+            "{}/certs/mct-discord-064e9637a331.json".format(self.root_path))
         self.guildname = guildname
-
+        self.guild = self.get_guild(555371544940118016)
         self.load_commands()
         self.load_custom_commands()
+        self.debug = False
+        self.debug_commands = "warn kick ban"
 
     def load_commands(self):
         for cmd in commands.__all__:
@@ -88,6 +92,10 @@ class Client(discord.Client):
         if message.content.startswith(self.command_prefix) or isinstance(message.channel, DMChannel):
 
             command_name = await command.Command.extract_command_name(message.content.lower())
+
+            if self.debug and command_name not in self.debug_commands:
+                return
+
             command_obj = next(
                 (command for command in self.commands if command.name == command_name), None)
 

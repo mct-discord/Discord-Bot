@@ -16,4 +16,3 @@ bot = Client(guildname,root_path)
 
 # Run the bot
 bot.run(config.get('discord', 'token'))
-    
