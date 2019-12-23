@@ -16,7 +16,6 @@ class API(Thread):
         self.bot = bot
         # Initiate API
         self.loop = bot.loop
-
         self.app = Quart(__name__)
         self.app = quart_cors.cors(
             self.app, allow_origin="https://mctdiscord.azurewebsites.net")  # https://mct.funergydev.com *
