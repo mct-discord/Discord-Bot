@@ -22,7 +22,7 @@ class Ban(Command):
                     await ctx.channel.send('Cannot ban a user of an even or higher rank.')
                     return
 
-                self.bot.spreadsheet.add_kick(
+                self.bot.spreadsheet.add_ban(
                     user, params[1], ctx.author)
 
                 embed = discord.Embed(
