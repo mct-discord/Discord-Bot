@@ -8,8 +8,9 @@ from discord import DMChannel, TextChannel
 from tinydb import Query, TinyDB, where
 
 import library.commands as commands
+import library.listeners as listeners
 from library.commands import *
-from library.models import command
+from library.models import command, listener
 from library.repositories.db import Db
 from library.services import api
 from library.utilities import signals, gspreadsheets
@@ -21,16 +22,31 @@ class Client(discord.Client):
         super().__init__()
         self.root_path = rootpath
         self.commands = list()
+        self.listeners = list()
         self.command_prefix = "!"
 
         self.spreadsheet = gspreadsheets.GSpreadsheets(
             "{}/certs/mct-discord-064e9637a331.json".format(self.root_path))
+
         self.guildname = guildname
         self.guild = self.get_guild(555371544940118016)
         self.load_commands()
         self.load_custom_commands()
+        self.load_listeners()
+
         self.debug = False
-        self.debug_commands = "warn kick ban"
+        self.debug_commands = "mute unmute"
+
+    def load_listeners(self):
+        for cmd in listeners.__all__:
+            if cmd == "_custom":
+                continue
+
+            print("Loading {}".format(cmd))
+
+            for name, obj in inspect.getmembers(import_module("library.listeners.{}".format(cmd)), inspect.isclass):
+                if listener.Listener in obj.__bases__:
+                    self.listeners.append(obj(self))
 
     def load_commands(self):
         for cmd in commands.__all__:
@@ -88,6 +104,12 @@ class Client(discord.Client):
         # Don't respond to ourselves
         if message.author == self.user:
             return
+
+        for listener in self.listeners:
+            try:
+                await listener.execute(message)
+            except Exception as ex:
+                print(ex)
 
         if message.content.startswith(self.command_prefix) or isinstance(message.channel, DMChannel):
 
