@@ -25,7 +25,7 @@ class Command(ABC):
         # if any(isinstance(DMChannel, x) for x in self.allowed_sources):
         #     return True
         roles = await UserHelper(self.bot).get_roles(user)
-        if len(self.allowed_roles) == 0 or self.allowed_roles == None:
+        if self.allowed_roles == None or len(self.allowed_roles) == 0:
             return True
         else:
             return any(elem.id in self.allowed_roles for elem in roles)
