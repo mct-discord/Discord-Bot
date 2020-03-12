@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import inspect
 import sys
 
-from .templating import render_template_string
-from .wrappers import Response
+from jinja2 import Template
 
+from .wrappers import Response
 
 TEMPLATE = """
 <style>
@@ -95,14 +97,17 @@ async def traceback_response() -> Response:
         except OSError:
             code = None
 
-        frames.append({
-            'file': inspect.getfile(frame),
-            'line': frame.f_lineno,
-            'locals': frame.f_locals,
-            'code': code,
-        })
+        frames.append(
+            {
+                "file": inspect.getfile(frame),
+                "line": frame.f_lineno,
+                "locals": frame.f_locals,
+                "code": code,
+            }
+        )
         tb = tb.tb_next
 
     name = type_.__name__
-    html = await render_template_string(TEMPLATE, frames=reversed(frames), name=name, value=value)
+    template = Template(TEMPLATE)
+    html = template.render(frames=reversed(frames), name=name, value=value)
     return Response(html, 500)
