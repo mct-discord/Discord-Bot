@@ -11,7 +11,7 @@ import uuid
 
 
 class UserHelper:
-    role_whitelist = [591659288053940272, 555375267275603968,
+    role_whitelist = [591659288053940272,
                       591653678776057882, 597790918736740363]
 
     def __init__(self, bot):
@@ -25,16 +25,22 @@ class UserHelper:
     async def add_role(self, usr, name=None, uid=None):
         usr = discord.utils.get(discord.utils.get(
             self.bot.guilds, name=self.guildname).members, id=usr.id)
+
         if name or uid:
             if name:
                 if isinstance(name, list):
                     for role_item in name:
                         role = discord.utils.get(discord.utils.get(
                             self.bot.guilds, name=self.guildname).roles, name=role_item)
+                        if role.id not in self.role_whitelist:
+                            return
+
                         await usr.add_roles(role_item)
                 elif isinstance(name, str):
                     role = discord.utils.get(discord.utils.get(
                         self.bot.guilds, name=self.guildname).roles, name=name)
+                    if role.id not in self.role_whitelist:
+                        return
                     await usr.add_roles(role)
                 else:
                     raise ValueError(
@@ -44,10 +50,14 @@ class UserHelper:
                     for role_item in uid:
                         role = discord.utils.get(discord.utils.get(
                             self.bot.guilds, name=self.guildname).roles, id=role_item)
+                        if role.id not in self.role_whitelist:
+                            return
                         await usr.add_roles(role_item)
                 elif isinstance(uid, int):
                     role = discord.utils.get(discord.utils.get(
                         self.bot.guilds, name=self.guildname).roles, id=uid)
+                    if role.id not in self.role_whitelist:
+                        return
                     await usr.add_roles(role)
                 else:
                     raise ValueError(

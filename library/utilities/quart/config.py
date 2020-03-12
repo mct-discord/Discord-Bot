@@ -1,41 +1,43 @@
+from __future__ import annotations
+
 import importlib
 import importlib.util
 import json
 import os
 from configparser import ConfigParser
 from datetime import timedelta
-from typing import Any, Callable, Dict, Mapping, Optional, Union
+from typing import Any, Callable, Dict, IO, Mapping, Optional, Union
 
 from .typing import FilePath
 from .utils import file_path_to_path
 
-
 DEFAULT_CONFIG = {
-    'APPLICATION_ROOT': None,
-    'BODY_TIMEOUT': 60,  # Second
-    'DEBUG': None,
-    'ENV': None,
-    'JSON_AS_ASCII': True,
-    'JSON_SORT_KEYS': True,
-    'JSONIFY_MIMETYPE': 'application/json',
-    'JSONIFY_PRETTYPRINT_REGULAR': False,
-    'MAX_CONTENT_LENGTH': 16 * 1024 * 1024,  # 16 MB Limit
-    'PERMANENT_SESSION_LIFETIME': timedelta(days=31),
-    'PREFERRED_URL_SCHEME': 'http',
-    'PROPAGATE_EXCEPTIONS': None,
-    'RESPONSE_TIMEOUT': 60,  # Second
-    'SECRET_KEY': None,
-    'SEND_FILE_MAX_AGE_DEFAULT': timedelta(hours=12),
-    'SERVER_NAME': None,
-    'SESSION_COOKIE_DOMAIN': None,
-    'SESSION_COOKIE_HTTPONLY': True,
-    'SESSION_COOKIE_NAME': 'session',
-    'SESSION_COOKIE_PATH': None,
-    'SESSION_COOKIE_SECURE': False,
-    'SESSION_REFRESH_EACH_REQUEST': True,
-    'TEMPLATES_AUTO_RELOAD': None,
-    'TESTING': False,
-    'TRAP_HTTP_EXCEPTIONS': False,
+    "APPLICATION_ROOT": None,
+    "BODY_TIMEOUT": 60,  # Second
+    "DEBUG": None,
+    "ENV": None,
+    "JSON_AS_ASCII": True,
+    "JSON_SORT_KEYS": True,
+    "JSONIFY_MIMETYPE": "application/json",
+    "JSONIFY_PRETTYPRINT_REGULAR": False,
+    "MAX_CONTENT_LENGTH": 16 * 1024 * 1024,  # 16 MB Limit
+    "PERMANENT_SESSION_LIFETIME": timedelta(days=31),
+    "PREFER_SECURE_URLS": False,  # Replaces PREFERRED_URL_SCHEME to allow for WebSocket scheme
+    "PROPAGATE_EXCEPTIONS": None,
+    "RESPONSE_TIMEOUT": 60,  # Second
+    "SECRET_KEY": None,
+    "SEND_FILE_MAX_AGE_DEFAULT": timedelta(hours=12),
+    "SERVER_NAME": None,
+    "SESSION_COOKIE_DOMAIN": None,
+    "SESSION_COOKIE_HTTPONLY": True,
+    "SESSION_COOKIE_NAME": "session",
+    "SESSION_COOKIE_PATH": None,
+    "SESSION_COOKIE_SAMESITE": None,
+    "SESSION_COOKIE_SECURE": False,
+    "SESSION_REFRESH_EACH_REQUEST": True,
+    "TEMPLATES_AUTO_RELOAD": None,
+    "TESTING": False,
+    "TRAP_HTTP_EXCEPTIONS": False,
 }
 
 
@@ -56,11 +58,11 @@ class ConfigAttribute:
         assert obj.foo == obj.config['foo']
     """
 
-    def __init__(self, key: str, converter: Optional[Callable]=None) -> None:
+    def __init__(self, key: str, converter: Optional[Callable] = None) -> None:
         self.key = key
         self.converter = converter
 
-    def __get__(self, instance: object, owner: type=None) -> Any:
+    def __get__(self, instance: object, owner: type = None) -> Any:
         if instance is None:
             return self
         result = instance.config[self.key]  # type: ignore
@@ -81,11 +83,11 @@ class Config(dict):
     keys it is not recommended.
     """
 
-    def __init__(self, root_path: FilePath, defaults: Optional[dict]=None) -> None:
+    def __init__(self, root_path: FilePath, defaults: Optional[dict] = None) -> None:
         super().__init__(defaults or {})
         self.root_path = file_path_to_path(root_path)
 
-    def from_envvar(self, variable_name: str, silent: bool=False) -> None:
+    def from_envvar(self, variable_name: str, silent: bool = False) -> None:
         """Load the configuration from a location specified in the environment.
 
         This will load a cfg file using :meth:`from_pyfile` from the
@@ -104,11 +106,11 @@ class Config(dict):
         value = os.environ.get(variable_name)
         if value is None and not silent:
             raise RuntimeError(
-                f"Environment variable {variable_name} is not present, cannot load config",
+                f"Environment variable {variable_name} is not present, cannot load config"
             )
         return self.from_pyfile(value)
 
-    def from_pyfile(self, filename: str, silent: bool=False) -> None:
+    def from_pyfile(self, filename: str, silent: bool = False) -> None:
         """Load the configuration from a Python cfg or py file.
 
         See Python's ConfigParser docs for details on the cfg format.
@@ -128,14 +130,14 @@ class Config(dict):
         """
         file_path = self.root_path / filename
         try:
-            spec = importlib.util.spec_from_file_location("module.name", file_path)  # type: ignore
+            spec = importlib.util.spec_from_file_location("module.name", file_path)
             if spec is None:  # Likely passed a cfg file
                 parser = ConfigParser()
                 parser.optionxform = str  # type: ignore # Prevents lowercasing of keys
                 with open(file_path) as file_:
-                    config_str = '[section]\n' + file_.read()
+                    config_str = "[section]\n" + file_.read()
                 parser.read_string(config_str)
-                self.from_mapping(parser['section'])
+                self.from_mapping(parser["section"])
             else:
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)  # type: ignore
@@ -166,7 +168,7 @@ class Config(dict):
         """
         if isinstance(instance, str):
             try:
-                path, config = instance.rsplit('.', 1)
+                path, config = instance.rsplit(".", 1)
             except ValueError:
                 path = instance
                 instance = importlib.import_module(path)
@@ -178,7 +180,7 @@ class Config(dict):
             if key.isupper():
                 self[key] = getattr(instance, key)
 
-    def from_json(self, filename: str, silent: bool=False) -> None:
+    def from_json(self, filename: str, silent: bool = False) -> None:
         """Load the configuration values from a JSON formatted file.
 
         This allows configuration to be loaded as so
@@ -192,17 +194,38 @@ class Config(dict):
                 :attr:`root_path` gives the path to the file.
             silent: If True any errors will fail silently.
         """
+        self.from_file(filename, json.load, silent=silent)
+
+    def from_file(
+        self, filename: str, load: Callable[[IO[Any]], Mapping], silent: bool = False
+    ) -> None:
+        """Load the configuration from a data file.
+
+        This allows configuration to be loaded as so
+
+        .. code-block:: python
+
+            app.config.from_file('config.toml', toml.load)
+            app.config.from_file('config.json', json.load)
+
+        Arguments:
+            filename: The filename which when appended to
+                :attr:`root_path` gives the path to the file.
+            load: Callable that takes a file descriptor and
+                returns a mapping loaded from the file.
+            silent: If True any errors will fail silently.
+        """
         file_path = self.root_path / filename
         try:
             with open(file_path) as file_:
-                data = json.loads(file_.read())
+                data = load(file_)
         except (FileNotFoundError, IsADirectoryError):
             if not silent:
                 raise
         else:
             self.from_mapping(data)
 
-    def from_mapping(self, mapping: Optional[Mapping[str, Any]]=None, **kwargs: Any) -> None:
+    def from_mapping(self, mapping: Optional[Mapping[str, Any]] = None, **kwargs: Any) -> None:
         """Load the configuration values from a mapping.
 
         This allows either a mapping to be directly passed or as
@@ -228,10 +251,7 @@ class Config(dict):
                 self[key] = value
 
     def get_namespace(
-            self,
-            namespace: str,
-            lowercase: bool=True,
-            trim_namespace: bool=True,
+        self, namespace: str, lowercase: bool = True, trim_namespace: bool = True
     ) -> Dict[str, Any]:
         """Return a dictionary of keys within a namespace.
 
@@ -256,7 +276,7 @@ class Config(dict):
         for key, value in self.items():
             if key.startswith(namespace):
                 if trim_namespace:
-                    new_key = key[len(namespace):]
+                    new_key = key[len(namespace) :]
                 else:
                     new_key = key
                 if lowercase:

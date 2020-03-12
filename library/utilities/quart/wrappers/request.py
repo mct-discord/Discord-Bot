@@ -1,19 +1,22 @@
+from __future__ import annotations
+
 import asyncio
 import io
 from cgi import FieldStorage, parse_header
-from typing import (
-    Any, AnyStr, Awaitable, Callable, Generator, List, Optional, TYPE_CHECKING, Union,
-)
+from typing import Any, AnyStr, Awaitable, Callable, Generator, List, Optional, Union
 from urllib.parse import parse_qs
 
-from ._base import BaseRequestWebsocket, JSONMixin
-from ..datastructures import CIMultiDict, FileStorage, Headers, MultiDict
+from werkzeug.datastructures import CombinedMultiDict, Headers, MultiDict
 
-if TYPE_CHECKING:
-    from ..routing import Rule  # noqa
+from .base import BaseRequestWebsocket, JSONMixin
+from ..datastructures import FileStorage
 
 SERVER_PUSH_HEADERS_TO_COPY = {
-    "accept", "accept-encoding", "accept-language", "cache-control", "user-agent",
+    "accept",
+    "accept-encoding",
+    "accept-language",
+    "cache-control",
+    "user-agent",
 }
 
 
@@ -35,7 +38,7 @@ class Body:
     """
 
     def __init__(
-            self, expected_content_length: Optional[int], max_content_length: Optional[int],
+        self, expected_content_length: Optional[int], max_content_length: Optional[int]
     ) -> None:
         self._data = bytearray()
         self._complete: asyncio.Event = asyncio.Event()
@@ -46,13 +49,15 @@ class Body:
         # to an exception on error.
         self._must_raise: Optional[Exception] = None
         if (
-                expected_content_length is not None and max_content_length is not None
-                and expected_content_length > max_content_length
+            expected_content_length is not None
+            and max_content_length is not None
+            and expected_content_length > max_content_length
         ):
             from ..exceptions import RequestEntityTooLarge  # noqa Avoiding circular import
+
             self._must_raise = RequestEntityTooLarge()
 
-    def __aiter__(self) -> 'Body':
+    def __aiter__(self) -> "Body":
         return self
 
     async def __anext__(self) -> bytes:
@@ -88,12 +93,13 @@ class Body:
         return bytes(self._data)
 
     def append(self, data: bytes) -> None:
-        if data == b'' or self._must_raise is not None:
+        if data == b"" or self._must_raise is not None:
             return
         self._data.extend(data)
         self._has_data.set()
         if self._max_content_length is not None and len(self._data) > self._max_content_length:
             from ..exceptions import RequestEntityTooLarge  # noqa Avoiding circular import
+
             self._must_raise = RequestEntityTooLarge()
             self.set_complete()
 
@@ -117,19 +123,22 @@ class Request(BaseRequestWebsocket, JSONMixin):
     Attributes:
         body_class: The class to store the body data within.
     """
+
     body_class = Body
 
     def __init__(
-            self,
-            method: str,
-            scheme: str,
-            path: str,
-            query_string: bytes,
-            headers: CIMultiDict,
-            *,
-            max_content_length: Optional[int]=None,
-            body_timeout: Optional[int]=None,
-            send_push_promise: Callable[[str, Headers], Awaitable[None]],
+        self,
+        method: str,
+        scheme: str,
+        path: str,
+        query_string: bytes,
+        headers: Headers,
+        root_path: str,
+        http_version: str,
+        *,
+        max_content_length: Optional[int] = None,
+        body_timeout: Optional[int] = None,
+        send_push_promise: Callable[[str, Headers], Awaitable[None]],
     ) -> None:
         """Create a request object.
 
@@ -139,6 +148,9 @@ class Request(BaseRequestWebsocket, JSONMixin):
             path: The full unquoted path of the request.
             query_string: The raw bytes for the query string part.
             headers: The request headers.
+            root_path: The root path that should be prepended to all
+                routes.
+            http_version: The HTTP version of the request.
             body: An awaitable future for the body data i.e.
                 ``data = await body``
             max_content_length: The maximum length in bytes of the
@@ -148,14 +160,14 @@ class Request(BaseRequestWebsocket, JSONMixin):
             send_push_promise: An awaitable to send a push promise based
                 off of this request (HTTP/2 feature).
         """
-        super().__init__(method, scheme, path, query_string, headers)
+        super().__init__(method, scheme, path, query_string, headers, root_path, http_version)
         self.body_timeout = body_timeout
         self.body = self.body_class(self.content_length, max_content_length)
         self._form: Optional[MultiDict] = None
         self._files: Optional[MultiDict] = None
         self._send_push_promise = send_push_promise
 
-    async def get_data(self, raw: bool=True) -> AnyStr:
+    async def get_data(self, raw: bool = True) -> AnyStr:
         """The request body data."""
         try:
             body_future = asyncio.ensure_future(self.body)
@@ -163,6 +175,7 @@ class Request(BaseRequestWebsocket, JSONMixin):
         except asyncio.TimeoutError:
             body_future.cancel()
             from ..exceptions import RequestTimeout  # noqa Avoiding circular import
+
             raise RequestTimeout()
 
         if raw:
@@ -175,12 +188,9 @@ class Request(BaseRequestWebsocket, JSONMixin):
         return await self.get_data()
 
     @property
-    async def values(self) -> MultiDict:
-        result = MultiDict()
-        result.update(self.args)
-        for key, value in (await self.form).items():
-            result.add(key, value)
-        return result
+    async def values(self) -> CombinedMultiDict:
+        form = await self.form
+        return CombinedMultiDict([self.args, form])
 
     @property
     async def form(self) -> MultiDict:
@@ -205,26 +215,29 @@ class Request(BaseRequestWebsocket, JSONMixin):
         return self._files
 
     async def _load_form_data(self) -> None:
-        raw_data = await self.body
+        raw_data: bytes = await self.get_data(raw=True)
         self._form = MultiDict()
         self._files = MultiDict()
         content_header = self.content_type
         if content_header is None:
             return
         content_type, parameters = parse_header(content_header)
-        if content_type == 'application/x-www-form-urlencoded':
+        if content_type == "application/x-www-form-urlencoded":
             try:
                 data = raw_data.decode(parameters.get("charset", "utf-8"))
             except UnicodeDecodeError:
                 from ..exceptions import BadRequest  # noqa Avoiding circular import
+
                 raise BadRequest()
             for key, values in parse_qs(data, keep_blank_values=True).items():
                 for value in values:
                     self._form.add(key, value)
-        elif content_type == 'multipart/form-data':
+        elif content_type == "multipart/form-data":
             field_storage = FieldStorage(
-                io.BytesIO(raw_data), headers=self.headers,
-                environ={'REQUEST_METHOD': 'POST'}, limit=len(raw_data),
+                io.BytesIO(raw_data),
+                headers={name.lower(): value for name, value in self.headers.items()},
+                environ={"REQUEST_METHOD": "POST"},
+                limit=len(raw_data),
             )
             for key in field_storage:  # type: ignore
                 field_storage_key = field_storage[key]
@@ -237,9 +250,13 @@ class Request(BaseRequestWebsocket, JSONMixin):
     def _load_field_storage(self, key: str, field_storage: FieldStorage) -> None:
         if isinstance(field_storage, FieldStorage) and field_storage.filename is not None:
             self._files.add(
-                key, FileStorage(  # type: ignore
-                    io.BytesIO(field_storage.file.read()), field_storage.filename,
-                    field_storage.name, field_storage.type, field_storage.headers,  # type: ignore # noqa: E501
+                key,
+                FileStorage(
+                    io.BytesIO(field_storage.file.read()),
+                    field_storage.filename,
+                    field_storage.name,  # type: ignore
+                    field_storage.type,
+                    field_storage.headers,  # type: ignore
                 ),
             )
         else:
@@ -247,22 +264,22 @@ class Request(BaseRequestWebsocket, JSONMixin):
 
     @property
     def content_encoding(self) -> Optional[str]:
-        return self.headers.get('Content-Encoding')
+        return self.headers.get("Content-Encoding")
 
     @property
     def content_length(self) -> Optional[int]:
-        if 'Content-Length' in self.headers:
-            return int(self.headers['Content-Length'])
+        if "Content-Length" in self.headers:
+            return int(self.headers["Content-Length"])
         else:
             return None
 
     @property
     def content_md5(self) -> Optional[str]:
-        return self.headers.get('Content-md5')
+        return self.headers.get("Content-md5")
 
     @property
     def content_type(self) -> Optional[str]:
-        return self.headers.get('Content-Type')
+        return self.headers.get("Content-Type")
 
     async def _load_json_data(self) -> str:
         """Return the data after decoding."""
@@ -280,17 +297,18 @@ class Request(BaseRequestWebsocket, JSONMixin):
 
 
 class Websocket(BaseRequestWebsocket):
-
     def __init__(
-            self,
-            path: str,
-            query_string: bytes,
-            scheme: str,
-            headers: CIMultiDict,
-            subprotocols: List[str],
-            receive: Callable,
-            send: Callable,
-            accept: Callable,
+        self,
+        path: str,
+        query_string: bytes,
+        scheme: str,
+        headers: Headers,
+        root_path: str,
+        http_version: str,
+        subprotocols: List[str],
+        receive: Callable,
+        send: Callable,
+        accept: Callable,
     ) -> None:
         """Create a request object.
 
@@ -299,12 +317,15 @@ class Websocket(BaseRequestWebsocket):
             query_string: The raw bytes for the query string part.
             scheme: The scheme used for the request.
             headers: The request headers.
+            root_path: The root path that should be prepended to all
+                routes.
+            http_version: The HTTP version of the request.
             subprotocols: The subprotocols requested.
             receive: Returns an awaitable of the current data
 
             accept: Idempotent callable to accept the websocket connection.
         """
-        super().__init__('GET', scheme, path, query_string, headers)
+        super().__init__("GET", scheme, path, query_string, headers, root_path, http_version)
         self._accept = accept
         self._receive = receive
         self._send = send
@@ -327,9 +348,7 @@ class Websocket(BaseRequestWebsocket):
         await self._send(data)
 
     async def accept(
-            self,
-            headers: Optional[Union[dict, CIMultiDict, Headers]] = None,
-            subprotocol: Optional[str] = None,
+        self, headers: Optional[Union[dict, Headers]] = None, subprotocol: Optional[str] = None,
     ) -> None:
         """Manually chose to accept the websocket connection.
 

@@ -1,6 +1,15 @@
+from __future__ import annotations
+
 from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, cast, Iterator, List, Optional, TYPE_CHECKING  # noqa: F401
+
+from werkzeug.exceptions import (
+    BadRequest as WBadRequest,
+    MethodNotAllowed as WMethodNotAllowed,
+    NotFound as WNotFound,
+)
+from werkzeug.routing import RequestRedirect as WRequestRedirect
 
 from .exceptions import BadRequest, MethodNotAllowed, NotFound, RedirectRequired
 from .globals import _app_ctx_stack, _request_ctx_stack, _websocket_ctx_stack
@@ -22,7 +31,7 @@ class _BaseRequestWebsocketContext:
         session: The session information relating to this request.
     """
 
-    def __init__(self, app: 'Quart', request_websocket: BaseRequestWebsocket) -> None:
+    def __init__(self, app: "Quart", request_websocket: BaseRequestWebsocket) -> None:
         self.app = app
         self.request_websocket = request_websocket
         self.url_adapter = app.create_url_adapter(self.request_websocket)
@@ -31,7 +40,7 @@ class _BaseRequestWebsocketContext:
 
         self.match_request()
 
-    def copy(self) -> '_BaseRequestWebsocketContext':
+    def copy(self) -> "_BaseRequestWebsocketContext":
         return self.__class__(self.app, self.request_websocket)
 
     def match_request(self) -> None:
@@ -42,11 +51,24 @@ class _BaseRequestWebsocketContext:
         routing_exception.
         """
         try:
-            self.request_websocket.url_rule, self.request_websocket.view_args = self.url_adapter.match()  # noqa
-        except (NotFound, MethodNotAllowed, RedirectRequired) as error:
-            self.request_websocket.routing_exception = error
+            (
+                self.request_websocket.url_rule,
+                self.request_websocket.view_args,
+            ) = self.url_adapter.match(
+                return_rule=True
+            )  # noqa
+        except WBadRequest:
+            self.request_websocket.routing_exception = BadRequest()
+        except WNotFound:
+            self.request_websocket.routing_exception = NotFound()
+        except WMethodNotAllowed as error:
+            new_error = MethodNotAllowed(error.valid_methods)
+            self.request_websocket.routing_exception = new_error
+        except WRequestRedirect as error:
+            new_error = RedirectRequired(error.new_url)  # type: ignore
+            self.request_websocket.routing_exception = new_error
 
-    async def __aenter__(self) -> '_BaseRequestWebsocketContext':
+    async def __aenter__(self) -> "_BaseRequestWebsocketContext":
         app_ctx = _app_ctx_stack.top
         if app_ctx is None:
             app_ctx = self.app.app_context()
@@ -73,7 +95,7 @@ class RequestContext(_BaseRequestWebsocketContext):
             request, see :func:`after_this_request`.
     """
 
-    def __init__(self, app: 'Quart', request: Request) -> None:
+    def __init__(self, app: "Quart", request: Request) -> None:
         super().__init__(app, request)
         self._after_request_functions: List[Callable] = []
 
@@ -81,12 +103,7 @@ class RequestContext(_BaseRequestWebsocketContext):
     def request(self) -> Request:
         return cast(Request, self.request_websocket)
 
-    def match_request(self) -> None:
-        super().match_request()
-        if self.request.routing_exception is None and self.request.url_rule.is_websocket:
-            self.request.routing_exception = BadRequest()
-
-    async def __aenter__(self) -> 'RequestContext':
+    async def __aenter__(self) -> "RequestContext":
         await super().__aenter__()
         _request_ctx_stack.push(self)
         return self
@@ -109,7 +126,7 @@ class WebsocketContext(_BaseRequestWebsocketContext):
             websocket, see :func:`after_this_websocket`.
     """
 
-    def __init__(self, app: 'Quart', request: Websocket) -> None:
+    def __init__(self, app: "Quart", request: Websocket) -> None:
         super().__init__(app, request)
         self._after_websocket_functions: List[Callable] = []
 
@@ -117,12 +134,7 @@ class WebsocketContext(_BaseRequestWebsocketContext):
     def websocket(self) -> Websocket:
         return cast(Websocket, self.request_websocket)
 
-    def match_request(self) -> None:
-        super().match_request()
-        if self.websocket.routing_exception is None and not self.websocket.url_rule.is_websocket:
-            self.websocket.routing_exception = BadRequest()
-
-    async def __aenter__(self) -> 'WebsocketContext':
+    async def __aenter__(self) -> "WebsocketContext":
         await super().__aenter__()
         _websocket_ctx_stack.push(self)
         return self
@@ -147,13 +159,13 @@ class AppContext:
         g: An instance of the ctx globals class.
     """
 
-    def __init__(self, app: 'Quart') -> None:
+    def __init__(self, app: "Quart") -> None:
         self.app = app
         self.url_adapter = app.create_url_adapter(None)
         self.g = app.app_ctx_globals_class()
         self._app_reference_count = 0
 
-    def copy(self) -> 'AppContext':
+    def copy(self) -> "AppContext":
         app_context = self.__class__(self.app)
         app_context.g = self.g
         return app_context
@@ -172,7 +184,7 @@ class AppContext:
             _app_ctx_stack.pop()
         await appcontext_popped.send(self.app)
 
-    async def __aenter__(self) -> 'AppContext':
+    async def __aenter__(self) -> "AppContext":
         await self.push()
         return self
 
@@ -242,7 +254,7 @@ def copy_current_app_context(func: Callable) -> Callable:
 
     """
     if not has_app_context():
-        raise RuntimeError('Attempt to copy app context outside of a app context')
+        raise RuntimeError("Attempt to copy app context outside of a app context")
 
     app_context = _app_ctx_stack.top.copy()
 
@@ -250,6 +262,7 @@ def copy_current_app_context(func: Callable) -> Callable:
     async def wrapper(*args: Any, **kwargs: Any) -> Any:
         async with app_context:
             return await func(*args, **kwargs)
+
     return wrapper
 
 
@@ -269,7 +282,7 @@ def copy_current_request_context(func: Callable) -> Callable:
 
     """
     if not has_request_context():
-        raise RuntimeError('Attempt to copy request context outside of a request context')
+        raise RuntimeError("Attempt to copy request context outside of a request context")
 
     request_context = _request_ctx_stack.top.copy()
 
@@ -277,6 +290,7 @@ def copy_current_request_context(func: Callable) -> Callable:
     async def wrapper(*args: Any, **kwargs: Any) -> Any:
         async with request_context:
             return await func(*args, **kwargs)
+
     return wrapper
 
 
@@ -296,7 +310,7 @@ def copy_current_websocket_context(func: Callable) -> Callable:
 
     """
     if not has_websocket_context():
-        raise RuntimeError('Attempt to copy websocket context outside of a websocket context')
+        raise RuntimeError("Attempt to copy websocket context outside of a websocket context")
 
     websocket_context = _websocket_ctx_stack.top.copy()
 
@@ -304,6 +318,7 @@ def copy_current_websocket_context(func: Callable) -> Callable:
     async def wrapper(*args: Any, **kwargs: Any) -> Any:
         async with websocket_context:
             return await func(*args, **kwargs)
+
     return wrapper
 
 
@@ -361,18 +376,18 @@ _sentinel = object()
 class _AppCtxGlobals:
     """The g class, a plain object with some mapping methods."""
 
-    def get(self, name: str, default: Optional[Any]=None) -> Any:
+    def get(self, name: str, default: Optional[Any] = None) -> Any:
         """Get a named attribute of this instance, or return the default."""
         return self.__dict__.get(name, default)
 
-    def pop(self, name: str, default: Any=_sentinel) -> Any:
+    def pop(self, name: str, default: Any = _sentinel) -> Any:
         """Pop, get and remove the named attribute of this instance."""
         if default is _sentinel:
             return self.__dict__.pop(name)
         else:
             return self.__dict__.pop(name, default)
 
-    def setdefault(self, name: str, default: Any=None) -> Any:
+    def setdefault(self, name: str, default: Any = None) -> Any:
         """Set an attribute with a default value."""
         return self.__dict__.setdefault(name, default)
 

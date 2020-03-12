@@ -1,10 +1,13 @@
+from __future__ import annotations
+
 import mimetypes
 import os
 import pkgutil
 import sys
 from datetime import datetime, timedelta
+from io import BytesIO
 from pathlib import Path
-from typing import AnyStr, IO, Optional
+from typing import AnyStr, IO, Optional, Union
 from zlib import adler32
 
 from jinja2 import FileSystemLoader
@@ -14,19 +17,19 @@ from .globals import current_app, request
 from .typing import FilePath
 from .utils import file_path_to_path
 from .wrappers import Response
+from .wrappers.response import ResponseBody
 
-DEFAULT_MIMETYPE = 'application/octet-stream'
+DEFAULT_MIMETYPE = "application/octet-stream"
 
 
 class PackageStatic:
-
     def __init__(
-            self,
-            import_name: str,
-            template_folder: Optional[str]=None,
-            root_path: Optional[str]=None,
-            static_folder: Optional[str]=None,
-            static_url_path: Optional[str]=None,
+        self,
+        import_name: str,
+        template_folder: Optional[str] = None,
+        root_path: Optional[str] = None,
+        static_folder: Optional[str] = None,
+        static_url_path: Optional[str] = None,
     ) -> None:
         self.import_name = import_name
         self.template_folder = Path(template_folder) if template_folder is not None else None
@@ -35,7 +38,7 @@ class PackageStatic:
 
         self._static_folder: Optional[Path] = None
         self._static_url_path: Optional[str] = None
-        self.static_folder = static_folder
+        self.static_folder = static_folder  # type: ignore
         self.static_url_path = static_url_path
 
     @property
@@ -57,7 +60,7 @@ class PackageStatic:
         if self._static_url_path is not None:
             return self._static_url_path
         if self.static_folder is not None:
-            return '/' + self.static_folder.name
+            return "/" + self.static_folder.name
         else:
             return None
 
@@ -77,14 +80,14 @@ class PackageStatic:
             return None
 
     def get_send_file_max_age(self, filename: str) -> int:
-        return current_app.send_file_max_age_default.total_seconds()
+        return int(current_app.send_file_max_age_default.total_seconds())
 
     async def send_static_file(self, filename: str) -> Response:
         if not self.has_static_folder:
-            raise RuntimeError('No static folder for this object')
+            raise RuntimeError("No static folder for this object")
         return await send_from_directory(self.static_folder, filename)
 
-    def open_resource(self, path: FilePath, mode: str='rb') -> IO[AnyStr]:
+    def open_resource(self, path: FilePath, mode: str = "rb") -> IO[AnyStr]:
         """Open a file for reading.
 
         Use as
@@ -94,20 +97,20 @@ class PackageStatic:
             with app.open_resouce(path) as file_:
                 file_.read()
         """
-        if mode not in {'r', 'rb'}:
-            raise ValueError('Files can only be opened for reading')
+        if mode not in {"r", "rb"}:
+            raise ValueError("Files can only be opened for reading")
         return open(self.root_path / file_path_to_path(path), mode)
 
-    def _find_root_path(self, root_path: Optional[str]=None) -> Path:
+    def _find_root_path(self, root_path: Optional[str] = None) -> Path:
         if root_path is not None:
             return Path(root_path)
         else:
             module = sys.modules.get(self.import_name)
-            if module is not None and hasattr(module, '__file__'):
+            if module is not None and hasattr(module, "__file__"):
                 file_path = module.__file__
             else:
                 loader = pkgutil.get_loader(self.import_name)
-                if loader is None or self.import_name == '__main__':
+                if loader is None or self.import_name == "__main__":
                     return Path.cwd()
                 else:
                     file_path = loader.get_filename(self.import_name)  # type: ignore
@@ -134,16 +137,16 @@ def safe_join(directory: FilePath, *paths: FilePath) -> Path:
 
 
 async def send_from_directory(
-        directory: FilePath,
-        file_name: str,
-        *,
-        mimetype: Optional[str]=None,
-        as_attachment: bool=False,
-        attachment_filename: Optional[str]=None,
-        add_etags: bool=True,
-        cache_timeout: Optional[int]=None,
-        conditional: bool=True,
-        last_modified: Optional[datetime]=None,
+    directory: FilePath,
+    file_name: str,
+    *,
+    mimetype: Optional[str] = None,
+    as_attachment: bool = False,
+    attachment_filename: Optional[str] = None,
+    add_etags: bool = True,
+    cache_timeout: Optional[int] = None,
+    conditional: bool = True,
+    last_modified: Optional[datetime] = None,
 ) -> Response:
     """Send a file from a given directory.
 
@@ -171,19 +174,19 @@ async def send_from_directory(
 
 
 async def send_file(
-        filename: FilePath,
-        mimetype: Optional[str]=None,
-        as_attachment: bool=False,
-        attachment_filename: Optional[str]=None,
-        add_etags: bool=True,
-        cache_timeout: Optional[int]=None,
-        conditional: bool=False,
-        last_modified: Optional[datetime]=None,
+    filename_or_io: Union[FilePath, BytesIO],
+    mimetype: Optional[str] = None,
+    as_attachment: bool = False,
+    attachment_filename: Optional[str] = None,
+    add_etags: bool = True,
+    cache_timeout: Optional[int] = None,
+    conditional: bool = False,
+    last_modified: Optional[datetime] = None,
 ) -> Response:
-    """Return a Reponse to send the filename given.
+    """Return a Response to send the filename given.
 
     Arguments:
-        filename: The filename (path) to send, remember to use
+        filename_or_io: The filename (path) to send, remember to use
             :func:`safe_join`.
         mimetype: Mimetype to use, by default it will be guessed or
             revert to the DEFAULT_MIMETYPE.
@@ -196,35 +199,45 @@ async def send_file(
         cache_timeout: Time in seconds for the response to be cached.
 
     """
-    file_path = file_path_to_path(filename)
-    if attachment_filename is None:
-        attachment_filename = file_path.name
-    if mimetype is None:
+    file_body: ResponseBody
+    etag: Optional[str] = None
+    if isinstance(filename_or_io, BytesIO):
+        file_body = current_app.response_class.io_body_class(filename_or_io)
+    else:
+        file_path = file_path_to_path(filename_or_io)
+        if attachment_filename is None:
+            attachment_filename = file_path.name
+        file_body = current_app.response_class.file_body_class(file_path)
+        if last_modified is None:
+            last_modified = datetime.fromtimestamp(file_path.stat().st_mtime)
+        if cache_timeout is None:
+            cache_timeout = current_app.get_send_file_max_age(file_path)
+        etag = "{}-{}-{}".format(
+            file_path.stat().st_mtime, file_path.stat().st_size, adler32(bytes(file_path))
+        )
+
+    if mimetype is None and attachment_filename is not None:
         mimetype = mimetypes.guess_type(attachment_filename)[0] or DEFAULT_MIMETYPE
-    file_body = current_app.response_class.file_body_class(file_path)
+    if mimetype is None:
+        raise ValueError(
+            "The mime type cannot be infered, please set it manually via the mimetype argument."
+        )
+
     response = current_app.response_class(file_body, mimetype=mimetype)
 
     if as_attachment:
-        response.headers.add('Content-Disposition', 'attachment', filename=attachment_filename)
+        response.headers.add("Content-Disposition", "attachment", filename=attachment_filename)
 
     if last_modified is not None:
         response.last_modified = last_modified
-    else:
-        response.last_modified = datetime.fromtimestamp(file_path.stat().st_mtime)
 
     response.cache_control.public = True
-    cache_timeout = cache_timeout or current_app.get_send_file_max_age(file_path)
     if cache_timeout is not None:
         response.cache_control.max_age = cache_timeout
         response.expires = datetime.utcnow() + timedelta(seconds=cache_timeout)
 
-    if add_etags:
-        response.set_etag(
-            '{}-{}-{}'.format(
-                file_path.stat().st_mtime, file_path.stat().st_size,
-                adler32(bytes(file_path)),
-            ),
-        )
+    if add_etags and etag is not None:
+        response.set_etag(etag)
 
     if conditional:
         await response.make_conditional(request.range)

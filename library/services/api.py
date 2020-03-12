@@ -1,5 +1,8 @@
 from threading import Thread
-from library.utilities.quart import Quart, jsonify, request, session, quart_cors
+from library.utilities.quart import Quart, jsonify, request, session
+# from quart import Quart, jsonify, request, session
+# import quart_cors
+from library.utilities import quart_cors
 
 from library.procedures import webprocedure
 from library.utilities import userhelper
@@ -18,7 +21,7 @@ class API(Thread):
         self.loop = bot.loop
         self.app = Quart(__name__)
         self.app = quart_cors.cors(
-            self.app, allow_origin="https://mctdiscord.azurewebsites.net")  # https://mct.funergydev.com *
+            self.app, allow_origin="https://mctdiscord.azurewebsites.net")  # https://mct.funergydev.com * https://mctdiscord.azurewebsites.net
 
         self.flow = webprocedure.WebProcedure(bot)
         self.userhelper = userhelper.UserHelper(bot)
@@ -66,10 +69,12 @@ class API(Thread):
                     discord.utils.get(self.bot.guilds, name='MCT').members, id=int(uid))
 
                 await self.userhelper.remove_roles(user)
+                print(data)
                 for role in data['roles']:
-                    await self.userhelper.add_role(user, uid=int(role))
+                    if role not in self.userhelper.role_whitelist:
+                        await self.userhelper.add_role(user, uid=int(role))
 
-                message = await user.send('I have given you access to the modules you have requested.')
+                await user.send('I have given you access to the modules you have requested.')
                 await self.flow.end_procedure(userid)
                 return jsonify(roles_given=data['roles']), 200
             elif request.method == 'GET':

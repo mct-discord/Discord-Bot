@@ -1,17 +1,44 @@
+from __future__ import annotations
+
 from http import HTTPStatus
-from typing import Iterable, NoReturn, Optional
+from typing import cast, Iterable, NoReturn, Optional, Union
 
 from .wrappers import Response
 
 # The set of HTTP status errors exposed by Werkzeug by default
 WERKZEUG_EXCEPTION_CODES = [
-    400, 401, 403, 404, 405, 406, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 422, 423, 428,
-    429, 431, 451, 500, 501, 502, 503, 504, 505,
+    400,
+    401,
+    403,
+    404,
+    405,
+    406,
+    408,
+    409,
+    410,
+    411,
+    412,
+    413,
+    414,
+    415,
+    416,
+    417,
+    422,
+    423,
+    428,
+    429,
+    431,
+    451,
+    500,
+    501,
+    502,
+    503,
+    504,
+    505,
 ]
 
 
 class HTTPException(Exception):
-
     def __init__(self, status_code: int, description: str, name: str) -> None:
         self.status_code = status_code
         self.description = description
@@ -27,18 +54,16 @@ class HTTPException(Exception):
         """
 
     def get_response(self) -> Response:
-        return Response(
-            self.get_body(), status=self.status_code, headers=self.get_headers(),
-        )
+        return Response(self.get_body(), status=self.status_code, headers=self.get_headers())
 
     def get_headers(self) -> dict:
-        return {'Content-Type': 'text/html'}
+        return {"Content-Type": "text/html"}
 
 
 class HTTPStatusException(HTTPException):
     status = HTTPStatus.INTERNAL_SERVER_ERROR
 
-    def __init__(self, status: Optional[HTTPStatus]=None) -> None:
+    def __init__(self, status: Optional[HTTPStatus] = None) -> None:
         self.status = status or self.status
         super().__init__(self.status.value, self.status.description, self.status.phrase)
 
@@ -50,8 +75,20 @@ class BadRequest(HTTPStatusException):
     status = HTTPStatus.BAD_REQUEST
 
 
+class Unauthorized(HTTPStatusException):
+    status = HTTPStatus.UNAUTHORIZED
+
+
+class Forbidden(HTTPStatusException):
+    status = HTTPStatus.FORBIDDEN
+
+
 class NotFound(HTTPStatusException):
     status = HTTPStatus.NOT_FOUND
+
+
+class NotAcceptable(HTTPStatusException):
+    status = HTTPStatus.NOT_ACCEPTABLE
 
 
 class RequestTimeout(HTTPStatusException):
@@ -76,15 +113,18 @@ class RequestRangeNotSatisfiable(HTTPStatusException):
         return headers
 
 
-class MethodNotAllowed(HTTPStatusException):
+class TooManyRequests(HTTPStatusException):
+    status = HTTPStatus.TOO_MANY_REQUESTS
 
-    def __init__(self, allowed_methods: Optional[Iterable[str]]=None) -> None:
+
+class MethodNotAllowed(HTTPStatusException):
+    def __init__(self, allowed_methods: Optional[Iterable[str]] = None) -> None:
         super().__init__(HTTPStatus.METHOD_NOT_ALLOWED)
         self.allowed_methods = allowed_methods
 
     def get_headers(self) -> dict:
         headers = super().get_headers()
-        headers.update({'Allow': ", ".join(self.allowed_methods)})
+        headers.update({"Allow": ", ".join(self.allowed_methods)})
         return headers
 
 
@@ -92,15 +132,14 @@ class UnavailableForLegalReasons(HTTPException):
     def __init__(self) -> None:
         super().__init__(
             451,
-            'The server is denying access to the resource as a consequence of a legal demand',
-            'Unavailable for legal reasons',
+            "The server is denying access to the resource as a consequence of a legal demand",
+            "Unavailable for legal reasons",
         )
 
 
 class RedirectRequired(HTTPStatusException):
-
     def __init__(self, redirect_path: str) -> None:
-        super().__init__(HTTPStatus.MOVED_PERMANENTLY)
+        super().__init__(HTTPStatus.PERMANENT_REDIRECT)
         self.redirect_path = redirect_path
 
     def get_body(self) -> str:
@@ -114,47 +153,76 @@ if not please click the link
 
     def get_headers(self) -> dict:
         headers = super().get_headers()
-        headers.update({'Location': self.redirect_path})
+        headers.update({"Location": self.redirect_path})
         return headers
 
 
+class _AbortResponseException(HTTPException):
+    def __init__(self, response: Response) -> None:
+        self.response = response
+
+    def get_response(self) -> Response:
+        return self.response
+
+
 def abort(
-    status_code: int,
+    status_or_response: Union[int, Response],
     description: Optional[str] = None,
     name: Optional[str] = None,
 ) -> NoReturn:
-    error_class = all_http_exceptions.get(status_code)
-    if error_class is None:
-        raise HTTPException(status_code, description or 'Unknown', name or 'Unknown')
+    """Raises a HTTPException with the status code or response given.
+
+    This can be used either with a status code (with optional
+    description and name) or with a Response object. The latter allows
+    for an abort (after response functions etc aren't called) with a
+    custom response.
+
+    .. code-block:: python
+
+        abort(403)
+        abort(Response("Message"))
+
+    """
+    if description is None and name is None and not isinstance(status_or_response, int):
+        raise _AbortResponseException(status_or_response)
     else:
-        error = error_class()
-        if description is not None:
-            error.description = description
-        if name is not None:
-            error.name = name
-        raise error
+        status_or_response = cast(int, status_or_response)
+        error_class = all_http_exceptions.get(status_or_response)
+        if error_class is None:
+            raise HTTPException(status_or_response, description or "Unknown", name or "Unknown")
+        else:
+            error = error_class()
+            if description is not None:
+                error.description = description
+            if name is not None:
+                error.name = name
+            raise error
 
 
 all_http_exceptions = {
-    status.value: type(f"{status.name}Error", (HTTPStatusException,), {'status': status})
+    status.value: type(f"{status.name}Error", (HTTPStatusException,), {"status": status})
     for status in HTTPStatus
 }
 
 # Ensure that the specified exceptions take priority over
 # autogenerated ones
-all_http_exceptions.update({
-    301: RedirectRequired,
-    400: BadRequest,
-    404: NotFound,
-    405: MethodNotAllowed,
-    413: RequestEntityTooLarge,
-    451: UnavailableForLegalReasons,
-})
+all_http_exceptions.update(
+    {
+        301: RedirectRequired,
+        400: BadRequest,
+        401: Unauthorized,
+        403: Forbidden,
+        404: NotFound,
+        405: MethodNotAllowed,
+        406: NotAcceptable,
+        413: RequestEntityTooLarge,
+        429: TooManyRequests,
+        451: UnavailableForLegalReasons,
+    }
+)
 
 default_exceptions = {
-    code: all_http_exceptions[code]
-    for code in WERKZEUG_EXCEPTION_CODES
-    if code != 451
+    code: all_http_exceptions[code] for code in WERKZEUG_EXCEPTION_CODES if code != 451
 }
 
 # Python does not yet have 451, see https://bugs.python.org/issue26589

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import inspect
 import sys
@@ -15,13 +17,15 @@ def _patch_asyncio() -> None:
     # requires the python Task and Future implementations, which
     # invokes some performance cost.
     asyncio.Task = asyncio.tasks._CTask = asyncio.tasks.Task = asyncio.tasks._PyTask  # type: ignore
-    asyncio.Future = asyncio.futures._CFuture = asyncio.futures.Future = asyncio.futures._PyFuture  # type: ignore # noqa
+    asyncio.Future = (  # type: ignore
+        asyncio.futures._CFuture  # type: ignore
+    ) = asyncio.futures.Future = asyncio.futures._PyFuture  # type: ignore # noqa
 
     current_policy = asyncio.get_event_loop_policy()
-    if hasattr(asyncio, 'unix_events'):
-        target_policy = asyncio.unix_events._UnixDefaultEventLoopPolicy  # type: ignore
+    if hasattr(asyncio, "unix_events"):
+        target_policy = asyncio.unix_events._UnixDefaultEventLoopPolicy
     else:
-        target_policy = object
+        target_policy = object  # type: ignore
 
     if not isinstance(current_policy, target_policy):
         raise RuntimeError("Flask Patching only works with the default event loop policy")
@@ -34,11 +38,14 @@ def _patch_loop() -> None:
     def _sync_wait(self, future):  # type: ignore
         preserved_ready = list(self._ready)
         self._ready.clear()
+        current_task = asyncio.tasks._current_tasks.get(self)
         future = asyncio.tasks.ensure_future(future, loop=self)
         while not future.done() and not future.cancelled():
             self._run_once()
             if self._stopping:
                 break
+            if current_task._must_cancel:
+                future.cancel()
         self._ready.extendleft(preserved_ready)
         return future.result()
 
@@ -72,9 +79,9 @@ def _patch_task() -> None:
 
 
 def _context_decorator(func: Callable) -> Callable:
-
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         return sync_with_context(func(*args, **kwargs))
+
     return wrapper
 
 
@@ -85,24 +92,26 @@ def _convert_module(new_name, module):  # type: ignore
             setattr(new_module, name, _context_decorator(member))
         else:
             setattr(new_module, name, member)
+    setattr(new_module, "_QUART_PATCHED", True)
     return new_module
 
 
 def _patch_modules() -> None:
-    if 'flask' in sys.modules:
-        raise ImportError('Cannot mock flask, already imported')
+    if "flask" in sys.modules:
+        raise ImportError("Cannot mock flask, already imported")
 
     # Create a set of Flask modules, prioritising those within the
     # flask_patch namespace over simple references to the Quart
     # versions.
     flask_modules = {}
     for name, module in list(sys.modules.items()):
-        if name.startswith('quart.flask_patch._'):
+        if name.startswith("quart.flask_patch._"):
             continue
-        elif name.startswith('quart.flask_patch'):
-            flask_modules[name.replace('quart.flask_patch', 'flask')] = module
-        elif name.startswith('quart.') and not name.startswith('quart.serving'):
-            flask_name = name.replace('quart.', 'flask.')
+        elif name.startswith("quart.flask_patch"):
+            setattr(module, "_QUART_PATCHED", True)
+            flask_modules[name.replace("quart.flask_patch", "flask")] = module
+        elif name.startswith("quart.") and not name.startswith("quart.serving"):
+            flask_name = name.replace("quart.", "flask.")
             if flask_name not in flask_modules:
                 flask_modules[flask_name] = _convert_module(flask_name, module)
 
