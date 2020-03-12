@@ -32,14 +32,14 @@ class UserHelper:
                     for role_item in name:
                         role = discord.utils.get(discord.utils.get(
                             self.bot.guilds, name=self.guildname).roles, name=role_item)
-                        if role.id not in self.role_whitelist:
+                        if role.id in self.role_whitelist:
                             return
 
                         await usr.add_roles(role_item)
                 elif isinstance(name, str):
                     role = discord.utils.get(discord.utils.get(
                         self.bot.guilds, name=self.guildname).roles, name=name)
-                    if role.id not in self.role_whitelist:
+                    if role.id in self.role_whitelist:
                         return
                     await usr.add_roles(role)
                 else:
@@ -50,13 +50,13 @@ class UserHelper:
                     for role_item in uid:
                         role = discord.utils.get(discord.utils.get(
                             self.bot.guilds, name=self.guildname).roles, id=role_item)
-                        if role.id not in self.role_whitelist:
+                        if role.id in self.role_whitelist:
                             return
                         await usr.add_roles(role_item)
                 elif isinstance(uid, int):
                     role = discord.utils.get(discord.utils.get(
                         self.bot.guilds, name=self.guildname).roles, id=uid)
-                    if role.id not in self.role_whitelist:
+                    if role.id in self.role_whitelist:
                         return
                     await usr.add_roles(role)
                 else:
