@@ -28,11 +28,11 @@ Teachers only have permission to see certain channels, student privacy is respec
         embed.add_field(name=":woman_teacher: Are there teachers on this server?", value=value, inline=False)
         
         
-        value = """When you join this server, after you accepted the rules, you should get a message from our bot, follow its instructions to receive your correct module channels."""
+        value = """When you join this server, after you've read the rules, you should get a message from our bot, follow its instructions to receive your correct module channels."""
         embed.add_field(name=":new: New to the server?", value=value, inline=False)
         
         
-        value = """To update your roles as an existing user send chat for the chat interface or web for the web interface to the MCT-Bot in PM or type the following command anywhere in this server.
+        value = """To update your roles as an existing user send `chat` for the chat interface or `web` for the web interface to the MCT-Bot in PM or type the following command anywhere in this server.
 `!setup`
 """
         embed.add_field(name=":tools: How do you change your modules?", value=value, inline=False)
@@ -56,7 +56,7 @@ Teachers only have permission to see certain channels, student privacy is respec
         value = """After two warnings, the next infraction will result in a ban.  One major infraction also results in a ban."""
         embed.add_field(name=":stop_sign:", value=value, inline=True)
         
-        value = """**Be kind and respect each other.** We're all in this together to create a welcoming community. Let's treat everyone with respect, even if you don't agree with each other's opinions. Keep it a healthy debate, not a war. This does not only apply to everyone who’s a member of this discord but is a general rule. Be respectful about everyone, this includes for example teachers that you might not agree with."""
+        value = """**Be kind and respect each other.** We're all in this together to create a welcoming community. Let's treat everyone with respect, even if you don't agree with each other's opinions. Keep it a healthy debate, not a war. This does not only apply to everyone who’s a member of this discord but is a general rule."""
         embed.add_field(name=":one:", value=value, inline=False)
         
         
@@ -76,7 +76,7 @@ Teachers only have permission to see certain channels, student privacy is respec
         embed.add_field(name=":five:", value=value, inline=False)
         
         
-        value = """**No self-promotion and spam.** The messages you send need to contribute to the conversation."""
+        value = """**No self-promotion and spam.**"""
         embed.add_field(name=":six:", value=value, inline=False)
         
         

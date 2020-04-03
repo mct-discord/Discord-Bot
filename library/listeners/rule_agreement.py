@@ -18,7 +18,7 @@ class RuleAgreement(Listener):
         self.targeted_sources = [TextChannel]
 
     async def on_execute(self, ctx):
-        if ctx.message_id == 695719236554850364:
+        if ctx.message_id == 695727996161622136:
             user = await UserHelper(self.bot).get_user(ctx.user_id)
             await user.send('**Welcome to the MCT server :wave: to get you started send me one of the following words:**\n\t- `chat` for the **chat** interface.\n\t- `web` for the **web** interface (Fastest).\nThis will only take a couple of seconds of your time :).')
 
