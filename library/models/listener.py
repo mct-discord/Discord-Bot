@@ -11,6 +11,7 @@ class Listener(ABC):
         self.name = name
         self.targeted_sources = None
         self.targeted_roles = []
+        self.listen_on_event = "on_message"
 
     async def is_targeted_source(self, source):
         return any(isinstance(source, x) for x in self.targeted_sources)
@@ -25,7 +26,10 @@ class Listener(ABC):
             return any(elem.id in self.targeted_roles for elem in roles)
 
     async def execute(self, ctx):
-        if await self.is_targeted_source(ctx.channel) and await self.is_targeted_role(ctx.author):
+        if self.listen_on_event == "on_message":
+            if await self.is_targeted_source(ctx.channel) and await self.is_targeted_role(ctx.author):
+                await self.on_execute(ctx)
+        elif self.listen_on_event == "on_raw_reaction_add":
             await self.on_execute(ctx)
 
     @abstractmethod

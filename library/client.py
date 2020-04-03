@@ -34,8 +34,8 @@ class Client(discord.Client):
         self.load_custom_commands()
         self.load_listeners()
 
-        self.debug = False
-        self.debug_commands = "mute unmute"
+        self.debug = True
+        self.debug_commands = "rules"
 
     def load_listeners(self):
         for cmd in listeners.__all__:
@@ -100,12 +100,23 @@ class Client(discord.Client):
         signals.Signals(self, self.api)
         await self.change_presence(activity=discord.Game(name="Crunching some data"))
 
+    async def on_raw_reaction_add(self,reaction):
+        listeners = [listener for listener in self.listeners if listener.listen_on_event == "on_raw_reaction_add"]
+        
+        for listener in listeners:
+            try:
+                await listener.execute(reaction)
+            except Exception as ex:
+                print(ex)
+    
     async def on_message(self, message):
         # Don't respond to ourselves
         if message.author == self.user:
             return
 
-        for listener in self.listeners:
+        listeners = [listener for listener in self.listeners if listener.listen_on_event == "on_message"]
+
+        for listener in listeners:
             try:
                 await listener.execute(message)
             except Exception as ex:
@@ -130,5 +141,6 @@ class Client(discord.Client):
                     await message.channel.send(command_obj)
 
     async def on_member_join(self, member):
-        await member.send(
-            '**Welcome to the MCT server to get you started send me one of the following words:**\n\t- `chat` for the **chat** interface.\n\t- `web` for the **web** interface (Fastest).\nThis will only take a couple of seconds of your time :).')
+        pass
+        # await member.send(
+        #    '**Welcome to the MCT server to get you started send me one of the following words:**\n\t- `chat` for the **chat** interface.\n\t- `web` for the **web** interface (Fastest).\nThis will only take a couple of seconds of your time :).')
