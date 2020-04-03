@@ -18,7 +18,7 @@ class Ban(Command):
         if len(params) == 2:
             try:
                 user = await UserHelper(self.bot).get_user(int(re.sub(r"\D", "", params[0])))
-                if any(elem.id in self.allowed_roles for elem in await UserHelper(self.bot).get_roles(user)):
+                if any(elem in self.allowed_roles for elem in await UserHelper(self.bot).get_roles(user)):
                     await ctx.channel.send('Cannot ban a user of an even or higher rank.')
                     return
 

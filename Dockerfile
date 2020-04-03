@@ -8,5 +8,6 @@ ADD config.ini /
 ADD certs /certs
 ADD library /library
 
+RUN pip install quart discord-py tinydb oauth2client gspread sortedcontainers
 
 CMD [ "python", "./app.py" ]
