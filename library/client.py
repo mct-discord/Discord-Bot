@@ -34,7 +34,7 @@ class Client(discord.Client):
         self.load_custom_commands()
         self.load_listeners()
 
-        self.debug = True
+        self.debug = False
         self.debug_commands = "rules"
 
     def load_listeners(self):
