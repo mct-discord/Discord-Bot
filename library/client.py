@@ -1,7 +1,7 @@
 import asyncio
-import re
-from importlib import reload, import_module
 import inspect
+import re
+from importlib import import_module, reload
 
 import discord
 from discord import DMChannel, TextChannel
@@ -9,11 +9,13 @@ from tinydb import Query, TinyDB, where
 
 import library.commands as commands
 import library.listeners as listeners
+import library.loops as loops
 from library.commands import *
-from library.models import command, listener
+from library.models import command, listener, loop
 from library.repositories.db import Db
 from library.services import api
-from library.utilities import signals, gspreadsheets
+from library.utilities import gspreadsheets, signals
+from library.utilities.userhelper import UserHelper
 
 
 class Client(discord.Client):
@@ -22,6 +24,7 @@ class Client(discord.Client):
         super().__init__()
         self.root_path = rootpath
         self.commands = list()
+        self.loops = list()
         self.listeners = list()
         self.command_prefix = "!"
 
@@ -35,14 +38,15 @@ class Client(discord.Client):
         self.load_listeners()
 
         self.debug = False
-        self.debug_commands = "rules"
+        self.debug_commands = "mute"
+        
 
     def load_listeners(self):
         for cmd in listeners.__all__:
             if cmd == "_custom":
                 continue
 
-            print("Loading {}".format(cmd))
+            print("Loading Listener {}".format(cmd))
 
             for name, obj in inspect.getmembers(import_module("library.listeners.{}".format(cmd)), inspect.isclass):
                 if listener.Listener in obj.__bases__:
@@ -53,7 +57,7 @@ class Client(discord.Client):
             if cmd == "_custom":
                 continue
 
-            print("Loading {}".format(cmd))
+            print("Loading Command {}".format(cmd))
 
             for name, obj in inspect.getmembers(import_module("library.commands.{}".format(cmd)), inspect.isclass):
                 if command.Command in obj.__bases__:
@@ -67,7 +71,7 @@ class Client(discord.Client):
             try:
                 custom = _custom.Custom(
                     self, cmd['name'], cmd['type'], cmd['action'], cmd['actionValue'], cmd['returnMessage'])
-                print("Loading {}".format(cmd['name']))
+                print("Loading Command {}".format(cmd['name']))
                 custom.delete_message = cmd['deleteMessage']
 
                 sources = list()
@@ -93,12 +97,28 @@ class Client(discord.Client):
         self.commands.remove(cmd_obj)
         reload(commands)
         self.commands.append(cmd_obj)
+    
+    async def setup_loops(self):
+        for cmd in loops.__all__:
+            if cmd == "_custom":
+                continue
+
+            print("Loading Loop {}".format(cmd))
+
+            for name, obj in inspect.getmembers(import_module("library.loops.{}".format(cmd)), inspect.isclass):
+                if loop.Loop in obj.__bases__:
+                    instance = obj(self)
+                    self.loops.append(instance)
+                    instance.run.start()
+                
+        
 
     async def on_ready(self):
         print('Logged on as', self.user)
-        self.api = api.API(self)
-        signals.Signals(self, self.api)
+        # self.api = api.API(self)
+        # signals.Signals(self, self.api)
         await self.change_presence(activity=discord.Game(name="Crunching some data"))
+        await self.setup_loops()
 
     async def on_raw_reaction_add(self,reaction):
         listeners = [listener for listener in self.listeners if listener.listen_on_event == "on_raw_reaction_add"]
