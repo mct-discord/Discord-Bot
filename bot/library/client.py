@@ -38,7 +38,7 @@ class Client(discord.Client):
         self.load_listeners()
 
         self.debug = False
-        self.debug_commands = "mute"
+        self.debug_commands = ""
         
 
     def load_listeners(self):
@@ -115,8 +115,8 @@ class Client(discord.Client):
 
     async def on_ready(self):
         print('Logged on as', self.user)
-        # self.api = api.API(self)
-        # signals.Signals(self, self.api)
+        self.api = api.API(self)
+        signals.Signals(self, self.api)
         await self.change_presence(activity=discord.Game(name="Crunching some data"))
         await self.setup_loops()
 
@@ -129,6 +129,15 @@ class Client(discord.Client):
             except Exception as ex:
                 print(ex)
     
+    async def on_raw_reaction_remove(self,reaction):
+        listeners = [listener for listener in self.listeners if listener.listen_on_event == "on_raw_reaction_remove"]
+        
+        for listener in listeners:
+            try:
+                await listener.execute(reaction)
+            except Exception as ex:
+                print(ex)
+                
     async def on_message(self, message):
         # Don't respond to ourselves
         if message.author == self.user:

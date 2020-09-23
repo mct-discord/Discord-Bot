@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  mct-bot:
+    build: ./bot
+    restart: unless-stopped
+    ports:
+      - "443:443"
+    volumes:
+        - /etc/letsencrypt/live/mctdiscord.westeurope.cloudapp.azure.com/privkey.pem:/certs/privkey.pem:ro
+        - /etc/letsencrypt/live/mctdiscord.westeurope.cloudapp.azure.com/cert.pem:/certs/cert.pem:ro
+
+
+
+

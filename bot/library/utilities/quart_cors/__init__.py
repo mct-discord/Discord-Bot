@@ -249,7 +249,6 @@ async def _after_request(
     max_age = _sanitise_max_age(max_age, "QUART_CORS_MAX_AGE")
 
     method = request.method
-
     return _apply_cors(
         request.origin,
         request.access_control_request_headers,
@@ -283,10 +282,8 @@ def _apply_cors(
     if "*" in allow_origin and allow_credentials:
         raise ValueError(
             "Cannot allow credentials with wildcard allowed origins")
-
     if getattr(response, "_QUART_CORS_APPLIED", False):
         return response
-
     origin = _get_origin_if_valid(request_origin, allow_origin)
     if origin is not None:
         response.access_control_allow_origin = origin
@@ -295,8 +292,10 @@ def _apply_cors(
         if method == "OPTIONS" and request_method in allow_methods or "*" in allow_methods:
             if request_headers is None:
                 request_headers = HeaderSet()
+                
             if "*" in allow_headers:
                 response.access_control_allow_headers = request_headers
+                
             else:
                 response.access_control_allow_headers = HeaderSet(
                     set(allow_headers).intersection(set(request_headers))
@@ -353,6 +352,7 @@ def _get_config_or_default(config_key: str) -> Any:
 def _get_origin_if_valid(origin: Optional[str], allow_origin: Set[OriginType]) -> Optional[str]:
     if origin is None or origin == "":
         return None
+
 
     for allowed in allow_origin:
         if allowed == "*":

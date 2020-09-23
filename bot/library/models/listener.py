@@ -29,7 +29,7 @@ class Listener(ABC):
         if self.listen_on_event == "on_message":
             if await self.is_targeted_source(ctx.channel) and await self.is_targeted_role(ctx.author):
                 await self.on_execute(ctx)
-        elif self.listen_on_event == "on_raw_reaction_add":
+        elif self.listen_on_event in ["on_raw_reaction_add","on_raw_reaction_remove"]:
             await self.on_execute(ctx)
 
     @abstractmethod

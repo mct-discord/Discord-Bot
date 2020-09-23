@@ -8,6 +8,7 @@ from tinydb import Query, TinyDB, where
 from library.models.listener import Listener
 from library.repositories.db import Db
 from library.utilities.userhelper import UserHelper 
+from library.procedures.webprocedure import WebProcedure
 
 class RuleAgreement(Listener):
 
@@ -18,8 +19,9 @@ class RuleAgreement(Listener):
         self.targeted_sources = [TextChannel]
 
     async def on_execute(self, ctx):
-        if ctx.message_id == 695727996161622136:
+        if ctx.message_id == 754432849616175105:
             user = await UserHelper(self.bot).get_user(ctx.user_id)
-            await user.send('**Welcome to the MCT server :wave: to get you started send me one of the following words:**\n\t- `chat` for the **chat** interface.\n\t- `web` for the **web** interface (Fastest).\nThis will only take a couple of seconds of your time :).')
+            token = await WebProcedure(self.bot).get_procedure(user=user)
+            await user.send('**Welcome to the MCT server :wave:**\nHere\'s your personalized setup url: https://mctdiscord.azurewebsites.net/?token={}'.format(token))
 
         

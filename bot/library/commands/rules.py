@@ -32,7 +32,7 @@ Teachers only have permission to see certain channels, student privacy is respec
         embed.add_field(name=":new: New to the server?", value=value, inline=False)
         
         
-        value = """To update your roles as an existing user send `chat` for the chat interface or `web` for the web interface to the MCT-Bot in PM or type the following command anywhere in this server.
+        value = """To update your roles as an existing user send `setup` to the MCT-Bot in PM or type the following command anywhere in this server.
 `!setup`
 """
         embed.add_field(name=":tools: How do you change your modules?", value=value, inline=False)

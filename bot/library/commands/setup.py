@@ -3,13 +3,13 @@ from discord import DMChannel, TextChannel
 from library.procedures.webprocedure import WebProcedure
 
 
-class Web(Command):
+class Setup(Command):
 
     def __init__(self, bot):
-        super().__init__("web", bot)
+        super().__init__("setup", bot)
         self.bot = bot
         self.delete_message = True
-        self.allowed_sources = [DMChannel]
+        self.allowed_sources = [DMChannel, TextChannel]
 
     async def on_execute(self, ctx, params):
         token = await WebProcedure(self.bot).get_procedure(user=ctx.author)
