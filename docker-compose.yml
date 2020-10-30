@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   mct-bot:
+    image: mctbot
     build: ./bot
     restart: unless-stopped
     ports:
