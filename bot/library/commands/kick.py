@@ -57,4 +57,4 @@ class Kick(Command):
                 await ctx.channel.send('Unable to find the user.')
 
     def __str__(self):
-        return "Syntax: kick [<@User>] <Reason>"
+        return "Syntax: kick <@User> <Reason>"
