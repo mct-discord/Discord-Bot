@@ -34,11 +34,11 @@ class GSpreadsheets:
         # insert on the next available row
         worksheet.update_acell("A{}".format(next_row),
                                str(datetime.datetime.now()))
-        worksheet.update_acell("B{}".format(next_row), to_warn.id)
+        worksheet.update_acell("B{}".format(next_row), str(to_warn.id))
         worksheet.update_acell("C{}".format(next_row), to_warn.name)
         worksheet.update_acell("D{}".format(next_row), reason)
         worksheet.update_acell("E{}".format(next_row), given_by.name)
-        worksheet.update_acell("F{}".format(next_row), given_by.id)
+        worksheet.update_acell("F{}".format(next_row), str(given_by.id))
 
     def add_kick(self, to_kick, reason, given_by):
         self.authorize()
@@ -56,11 +56,11 @@ class GSpreadsheets:
         # insert on the next available row
         worksheet.update_acell("A{}".format(next_row),
                                str(datetime.datetime.now()))
-        worksheet.update_acell("B{}".format(next_row), to_kick.id)
+        worksheet.update_acell("B{}".format(next_row), str(to_kick.id))
         worksheet.update_acell("C{}".format(next_row), to_kick.name)
         worksheet.update_acell("D{}".format(next_row), reason)
         worksheet.update_acell("E{}".format(next_row), given_by.name)
-        worksheet.update_acell("F{}".format(next_row), given_by.id)
+        worksheet.update_acell("F{}".format(next_row), str(given_by.id))
 
     def add_ban(self, to_ban, reason, given_by):
         self.authorize()
@@ -78,11 +78,11 @@ class GSpreadsheets:
         # insert on the next available row
         worksheet.update_acell("A{}".format(next_row),
                                str(datetime.datetime.now()))
-        worksheet.update_acell("B{}".format(next_row), to_ban.id)
+        worksheet.update_acell("B{}".format(next_row), str(to_ban.id))
         worksheet.update_acell("C{}".format(next_row), to_ban.name)
         worksheet.update_acell("D{}".format(next_row), reason)
         worksheet.update_acell("E{}".format(next_row), given_by.name)
-        worksheet.update_acell("F{}".format(next_row), given_by.id)
+        worksheet.update_acell("F{}".format(next_row), str(given_by.id))
 
     def add_mute(self, to_mute, reason, given_by, length=None):
         self.authorize()
@@ -100,7 +100,7 @@ class GSpreadsheets:
         # insert on the next available row
         worksheet.update_acell("A{}".format(next_row),
                                str(datetime.datetime.now()))
-        worksheet.update_acell("B{}".format(next_row), to_mute.id)
+        worksheet.update_acell("B{}".format(next_row), str(to_mute.id))
         worksheet.update_acell("C{}".format(next_row), to_mute.name)
         worksheet.update_acell("D{}".format(next_row), reason)
         if length is not None:
@@ -109,4 +109,4 @@ class GSpreadsheets:
             worksheet.update_acell("E{}".format(next_row), "Infinite")
 
         worksheet.update_acell("F{}".format(next_row), given_by.name)
-        worksheet.update_acell("G{}".format(next_row), given_by.id)
+        worksheet.update_acell("G{}".format(next_row), str(given_by.id))
