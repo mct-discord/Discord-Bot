@@ -19,7 +19,7 @@ class RuleAgreement(Listener):
         self.targeted_sources = [TextChannel]
 
     async def on_execute(self, ctx):
-        if ctx.message_id == 754432849616175105:
+        if ctx.message_id == 777290073963495454:
             user = await UserHelper(self.bot).get_user(ctx.user_id)
             token = await WebProcedure(self.bot).get_procedure(user=user)
             await user.send('**Welcome to the MCT server :wave:**\nHere\'s your personalized setup url: https://mctdiscord.azurewebsites.net/?token={}'.format(token))
