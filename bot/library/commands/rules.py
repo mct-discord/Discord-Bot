@@ -76,7 +76,7 @@ Teachers only have permission to see certain channels, student privacy is respec
         embed.add_field(name=":five:", value=value, inline=False)
         
         
-        value = """**No spam and (self-)promotion*.** No spam, self-promotion and promotion for friends/acquaintances. Please note that you can promote (post) something if it's within context of MCT or the topic at hand. Not sure if your case is allowed? Please contact a mod for that."""
+        value = """**No spam and (self-)promotion.** No spam, self-promotion and promotion for friends/acquaintances. Please note that you can promote (post) something if it's within context of MCT or the topic at hand. Not sure if your case is allowed? Please contact a mod for that."""
         embed.add_field(name=":six:", value=value, inline=False)
         
         
