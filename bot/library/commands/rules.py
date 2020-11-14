@@ -101,7 +101,7 @@ Teachers only have permission to see certain channels, student privacy is respec
         
         embed.description = "By using our server you agree to abide by the rules listed above."
         
-        value = """As we are a part of MCT we also enforce Howest's regulations\n <https://www.howest.be/sites/default/files/studeren/documenten/Education-and-Examination-Regulations-2018-2019.pdf>"""
+        value = """As we are a part of MCT we also enforce Howest's regulations\n <https://www.howest.be/sites/default/files/OND/OER%20Eng%202020-21.pdf>"""
         embed.add_field(name="Howest Regulations", value=value, inline=False)
         
         value = """Upon creating a Discord account you agreed to Discord's terms of service. We'd like to remind you that these rules are also enforced on this server. <https://discordapp.com/terms>"""
