@@ -120,8 +120,8 @@ class UserHelper:
                 return discord.utils.get(discord.utils.get(self.bot.guilds, name=self.guildname).roles, id=uid)
 
     async def get_roles(self, usr):
-        usr = discord.utils.get(discord.utils.get(
-            self.bot.guilds, name=self.guildname).members, id=usr.id)
-
+        if not hasattr(usr, 'roles'):
+            usr = discord.utils.get(self.bot.guilds[0].members, id=usr.id)
+            
         if usr:
             return usr.roles
