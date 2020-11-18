@@ -20,16 +20,17 @@ from library.utilities.userhelper import UserHelper
 
 class Client(discord.Client):
 
-    def __init__(self, guildname, rootpath):
+    def __init__(self, guildname, rootpath, config):
         super().__init__()
         self.root_path = rootpath
         self.commands = list()
         self.loops = list()
         self.listeners = list()
         self.command_prefix = "!"
+        self.runtime_config = config
 
         self.spreadsheet = gspreadsheets.GSpreadsheets(
-            "{}/certs/mct-discord-064e9637a331.json".format(self.root_path))
+            "{}/certs/mct-discord-064e9637a331.json".format(self.root_path),config.get('logging', 'spreadsheetId'))
 
         self.guildname = guildname
         self.guild = self.get_guild(555371544940118016)
@@ -38,7 +39,7 @@ class Client(discord.Client):
         self.load_listeners()
 
         self.debug = False
-        self.debug_commands = ""
+        self.debug_commands = "botsend"
         
 
     def load_listeners(self):

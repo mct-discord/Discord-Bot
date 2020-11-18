@@ -25,6 +25,10 @@ class BotSend(Command):
                     title="Message from the system", color=0x0000ff)
                     embed.add_field(name="Content", value=params[1], inline=False)
                     await user.send(embed=embed)
+                    
+                    self.bot.spreadsheet.add_message(
+                    user, params[1], ctx.author)
+                    
                 elif '#' in params[0]:
                     channel = discord.utils.get(
                         discord.utils.get(self.bot.guilds, name=self.bot.guildname).channels, id=int(re.sub(r"\D", "", params[0])))
