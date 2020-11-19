@@ -9,10 +9,10 @@ root_path = os.path.dirname(os.path.realpath(__file__))
 config = configparser.ConfigParser(allow_no_value=True)
 config.read(os.path.abspath("{}/config.ini".format(root_path)))
 
-guildname = config.get('discord', 'guild')
+guildid = config.get('discord', 'guild')
 
 # Initiate the bot
-bot = Client(guildname, root_path, config)
+bot = Client(guildid, root_path, config)
 
 # Run the bot
 bot.run(config.get('discord', 'token'))
