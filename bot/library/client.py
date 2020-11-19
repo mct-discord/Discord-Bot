@@ -20,8 +20,11 @@ from library.utilities.userhelper import UserHelper
 
 class Client(discord.Client):
 
-    def __init__(self, guildname, rootpath, config):
-        super().__init__()
+    def __init__(self, guild_id, rootpath, config):
+        self.guild_id = int(guild_id)
+        intents = discord.Intents.default()
+        intents.members = True
+        super().__init__(intents=intents)
         self.root_path = rootpath
         self.commands = list()
         self.loops = list()
@@ -32,17 +35,11 @@ class Client(discord.Client):
         self.spreadsheet = gspreadsheets.GSpreadsheets(
             "{}/certs/mct-discord-064e9637a331.json".format(self.root_path),config.get('logging', 'spreadsheetId'))
 
-        self.guildname = guildname
-        self.guild = self.get_guild(555371544940118016)
-        self.load_commands()
-        self.load_custom_commands()
-        self.load_listeners()
-
         self.debug = False
         self.debug_commands = "botsend"
         
 
-    def load_listeners(self):
+    async def load_listeners(self):
         for cmd in listeners.__all__:
             if cmd == "_custom":
                 continue
@@ -53,7 +50,7 @@ class Client(discord.Client):
                 if listener.Listener in obj.__bases__:
                     self.listeners.append(obj(self))
 
-    def load_commands(self):
+    async def load_commands(self):
         for cmd in commands.__all__:
             if cmd == "_custom":
                 continue
@@ -64,7 +61,7 @@ class Client(discord.Client):
                 if command.Command in obj.__bases__:
                     self.commands.append(obj(self))
 
-    def load_custom_commands(self):
+    async def load_custom_commands(self):
         db = Db()
         obj = Query()
         obj = db.get_table('commands').all()
@@ -119,7 +116,14 @@ class Client(discord.Client):
         self.api = api.API(self)
         signals.Signals(self, self.api)
         await self.change_presence(activity=discord.Game(name="Crunching some data"))
+        
+        self.guild = list(filter(lambda x: x.id == self.guild_id,self.guilds))[0]
+        self.guildname = self.guild.name
+        
         await self.setup_loops()
+        await self.load_commands()
+        await self.load_custom_commands()
+        await self.load_listeners()
 
     async def on_raw_reaction_add(self,reaction):
         listeners = [listener for listener in self.listeners if listener.listen_on_event == "on_raw_reaction_add"]
