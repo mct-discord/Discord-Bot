@@ -12,8 +12,13 @@ class PurgeText(Command):
         self.allowed_roles = [555375267275603968]
 
     async def on_execute(self, ctx, params):
-        async for x in ctx.channel.history():
-            await x.delete()
+        if len(params) == 1:
+            async for x in ctx.channel.history():
+                await x.delete()
+        else:
+            channel = discord.utils.get(self.bot.guild.channels, id=int(re.sub(r"\D", "", params[0])))
+            async for x in channel.history():
+                await x.delete()
 
     def __str__(self):
-        return "Syntax: purgetext <#Channel>"
+        return "Syntax: purgetext [<#Channel>]"
