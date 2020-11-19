@@ -1,6 +1,7 @@
 from discord import DMChannel, TextChannel
 from library.models.command import Command
 import discord
+import re
 
 
 class PurgeText(Command):
