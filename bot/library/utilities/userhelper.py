@@ -16,29 +16,24 @@ class UserHelper:
 
     def __init__(self, bot):
         self.bot = bot
-        self.guildname = self.bot.guildname
 
     async def get_user(self, uid):
-        return discord.utils.get(discord.utils.get(
-            self.bot.guilds, name=self.guildname).members, id=uid)
+        return discord.utils.get(self.bot.guild.members, id=uid)
 
     async def add_role(self, usr, name=None, uid=None, bypass_whitelist=False):
-        usr = discord.utils.get(discord.utils.get(
-            self.bot.guilds, name=self.guildname).members, id=usr.id)
+        usr = discord.utils.get(self.bot.guild.members, id=usr.id)
 
         if name or uid:
             if name:
                 if isinstance(name, list):
                     for role_item in name:
-                        role = discord.utils.get(discord.utils.get(
-                            self.bot.guilds, name=self.guildname).roles, name=role_item)
+                        role = discord.utils.get(self.bot.guild.roles, name=role_item)
                         if role.id in self.role_whitelist and not bypass_whitelist:
                             return
 
                         await usr.add_roles(role_item)
                 elif isinstance(name, str):
-                    role = discord.utils.get(discord.utils.get(
-                        self.bot.guilds, name=self.guildname).roles, name=name)
+                    role = discord.utils.get(self.bot.guild.roles, name=name)
                     if role.id in self.role_whitelist and not bypass_whitelist:
                         return
                     await usr.add_roles(role)
@@ -48,14 +43,12 @@ class UserHelper:
             elif uid:
                 if isinstance(uid, list):
                     for role_item in uid:
-                        role = discord.utils.get(discord.utils.get(
-                            self.bot.guilds, name=self.guildname).roles, id=role_item)
+                        role = discord.utils.get(self.bot.guild.roles, id=role_item)
                         if role.id in self.role_whitelist and not bypass_whitelist:
                             return
                         await usr.add_roles(role_item)
                 elif isinstance(uid, int):
-                    role = discord.utils.get(discord.utils.get(
-                        self.bot.guilds, name=self.guildname).roles, id=uid)
+                    role = discord.utils.get(self.bot.guild.roles, id=uid)
                     if role.id in self.role_whitelist and not bypass_whitelist:
                         return
                     await usr.add_roles(role)
@@ -67,18 +60,15 @@ class UserHelper:
                 'add_role function needs to have a name or a id parameter.')
 
     async def remove_role(self, usr, name=None, uid=None, bypass_whitelist=False):
-        usr = discord.utils.get(discord.utils.get(
-            self.bot.guilds, name=self.guildname).members, id=usr.id)
+        usr = discord.utils.get(self.bot.guild.members, id=usr.id)
         if name or uid:
             if name:
                 if isinstance(name, list):
                     for role_item in name:
-                        role = discord.utils.get(discord.utils.get(
-                            self.bot.guilds, name=self.guildname).roles, name=role_item)
+                        role = discord.utils.get(self.bot.guild.roles, name=role_item)
                         await usr.remove_roles(role)
                 elif isinstance(name, str):
-                    role = discord.utils.get(discord.utils.get(
-                        self.bot.guilds, name=self.guildname).roles, name=name)
+                    role = discord.utils.get(self.bot.guild.roles, name=name)
                     await usr.remove_roles(role)
                 else:
                     raise ValueError(
@@ -86,12 +76,10 @@ class UserHelper:
             elif uid:
                 if isinstance(uid, list):
                     for role_item in uid:
-                        role = discord.utils.get(discord.utils.get(
-                            self.bot.guilds, name=self.guildname).roles, id=role_item)
+                        role = discord.utils.get(self.bot.guild.roles, id=role_item)
                         await usr.remove_roles(role)
                 elif isinstance(uid, int):
-                    role = discord.utils.get(discord.utils.get(
-                        self.bot.guilds, name=self.guildname).roles, id=uid)
+                    role = discord.utils.get(self.bot.guild.roles, id=uid)
                     await usr.remove_roles(role)
                 else:
                     raise ValueError(
@@ -112,16 +100,14 @@ class UserHelper:
         if name or uid:
             if name:
                 if isinstance(name, str):
-                    return discord.utils.get(discord.utils.get(self.bot.guilds, name=self.guildname).roles, name=name)
+                    return discord.utils.get(self.bot.guild.roles, name=name)
                 else:
                     raise ValueError(
                         'When getting a role use a string for the name parameter.')
             elif uid:
-                return discord.utils.get(discord.utils.get(self.bot.guilds, name=self.guildname).roles, id=uid)
+                return discord.utils.get(self.bot.guild.roles, id=uid)
 
     async def get_roles(self, usr):
-        if not hasattr(usr, 'roles'):
-            usr = discord.utils.get(self.bot.guilds[0].members, id=usr.id)
-            
+        usr = self.bot.guild.get_member(usr.id)
         if usr:
             return usr.roles
