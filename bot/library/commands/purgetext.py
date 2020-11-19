@@ -12,7 +12,7 @@ class PurgeText(Command):
         self.allowed_roles = [555375267275603968]
 
     async def on_execute(self, ctx, params):
-        if len(params) == 1:
+        if len(params) == 0:
             async for x in ctx.channel.history():
                 await x.delete()
         else:
