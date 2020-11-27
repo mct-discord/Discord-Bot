@@ -88,11 +88,19 @@ class API(Thread):
 
         @self.app.route('/api/v1/user/hash/<userid>')
         async def get_hashed_user(userid):
+            email = jwt.decode(request.headers["authorization"].split(' ')[
+                               1], verify=False)['unique_name']
+            
+            
             uid = await self.flow.get_procedure(userid)
             if not uid:
                 return jsonify(status='Hash not found'), 500
             user = discord.utils.get(
                 discord.utils.get(self.bot.guilds, name='MCT').members, id=int(uid))
+            
+            if email.split('.')[0] not in user.nick.lower(): 
+                 await user.edit(nick=email.split('.')[0].capitalize())
+            
             return jsonify(name=user.name), 200
 
         @self.app.route('/api/v1/user_count')
@@ -106,6 +114,8 @@ class API(Thread):
         @self.app.route('/api/v1/user/hash/<userid>/roles', methods=['POST', 'GET'])
         async def give_user_roles(userid):
             if request.method == 'POST':
+                email = jwt.decode(request.headers["authorization"].split(' ')[
+                               1], verify=False)['unique_name']
                 data = await request.get_json()
                 uid = await self.flow.get_procedure(userid)
                 if not uid:
@@ -113,6 +123,9 @@ class API(Thread):
                 user = discord.utils.get(
                     discord.utils.get(self.bot.guilds, name='MCT').members, id=int(uid))
 
+                if email.split('.')[0] not in user.nick.lower(): 
+                    await user.edit(nick=email.split('.')[0].capitalize())
+                    
                 await self.userhelper.remove_roles(user)
                 for role in data['roles']:
                     if role not in self.userhelper.role_whitelist:
