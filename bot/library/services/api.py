@@ -98,7 +98,7 @@ class API(Thread):
             user = discord.utils.get(
                 discord.utils.get(self.bot.guilds, name='MCT').members, id=int(uid))
             
-            if email.split('.')[0] not in user.nick.lower(): 
+            if not user.nick or email.split('.')[0] not in user.nick.lower(): 
                  await user.edit(nick=email.split('.')[0].capitalize())
             
             return jsonify(name=user.name), 200
@@ -123,7 +123,7 @@ class API(Thread):
                 user = discord.utils.get(
                     discord.utils.get(self.bot.guilds, name='MCT').members, id=int(uid))
 
-                if email.split('.')[0] not in user.nick.lower(): 
+                if not user.nick or email.split('.')[0] not in user.nick.lower():
                     await user.edit(nick=email.split('.')[0].capitalize())
                     
                 await self.userhelper.remove_roles(user)
