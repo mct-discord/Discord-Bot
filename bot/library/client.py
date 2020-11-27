@@ -22,8 +22,10 @@ class Client(discord.Client):
 
     def __init__(self, guild_id, rootpath, config):
         self.guild_id = int(guild_id)
-        intents = discord.Intents.default()
-        intents.members = True
+        intents = discord.Intents.all()
+        # intents.all()
+        # intents.members = True
+        # intents.
         super().__init__(intents=intents)
         self.root_path = rootpath
         self.commands = list()
