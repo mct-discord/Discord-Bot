@@ -36,6 +36,14 @@ class CheckMuted (Loop):
                     await UserHelper(self.bot).remove_role(user, uid=652504589463191552)
                 except Exception as ex:
                     print(ex)
+            else:
+                try:
+                    user = await UserHelper(self.bot).get_user(uid=row['id'])
+                    print('Adding Mute role to {}'.format(user.id))
+
+                    await UserHelper(self.bot).add_role(user, uid=652504589463191552)
+                except Exception as ex:
+                    print(ex)
                 
 
         db.db.close()
