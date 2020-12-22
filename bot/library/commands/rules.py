@@ -12,7 +12,7 @@ class Rules(Command):
         super().__init__("rules", bot)
         self.bot = bot
         self.allowed_sources = [TextChannel]
-        self.allowed_roles = [555375267275603968]
+        self.allowed_roles = [555375267275603968,791046197300297729]
 
     async def on_execute(self, ctx, params):
         content = """Welcome to the official MCT server. :wave:

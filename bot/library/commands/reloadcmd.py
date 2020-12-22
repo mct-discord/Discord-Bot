@@ -11,7 +11,7 @@ class ReloadCMD(Command):
         super().__init__("reloadcmd", bot)
         self.bot = bot
         self.allowed_sources = [TextChannel, DMChannel]
-        self.allowed_roles = [555375267275603968]
+        self.allowed_roles = [555375267275603968,791046197300297729]
 
     async def on_execute(self, ctx, params):
         await self.bot.reloadCommand(params[0])

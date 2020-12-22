@@ -15,7 +15,7 @@ class RemoveCommand(Command):
         super().__init__("removecommand", bot)
         self.bot = bot
         self.allowed_sources = [DMChannel, TextChannel]
-        self.allowed_roles = [555375267275603968]
+        self.allowed_roles = [555375267275603968,791046197300297729]
 
     async def on_execute(self, ctx, params):
         db = Db()
