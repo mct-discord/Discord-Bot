@@ -10,6 +10,8 @@ class AddModule(Command):
         self.bot = bot
         self.delete_message = True
         self.allowed_sources = [DMChannel]
+        self.allowed_roles = [555375267275603968,791046197300297729]
+
 
     async def on_execute(self, ctx, params):
         await ChatProcedure(self.bot).add_module(ctx)

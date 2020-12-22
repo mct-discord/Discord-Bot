@@ -16,7 +16,7 @@ class Mute(Command):
         super().__init__("unmute", bot)
         self.bot = bot
         self.allowed_sources = [TextChannel]
-        self.allowed_roles = [555375267275603968, 591659288053940272, 770937785544474624]
+        self.allowed_roles = [555375267275603968, 591659288053940272, 770937785544474624,791046197300297729]
 
     async def on_execute(self, ctx, params):
         print(params)
