@@ -95,7 +95,7 @@ class Mute(Command):
                 )
                 db.db.close()
 
-                await UserHelper(self.bot).add_role(user, uid=652504589463191552)
+                await UserHelper(self.bot).add_role(user, uid=652504589463191552, bypass_blacklist=True)
 
                 self.bot.spreadsheet.add_mute(
                     user, params[1], ctx.author, params[2])
