@@ -61,29 +61,19 @@ class UserHelper:
 
     async def remove_role(self, usr, name=None, uid=None, bypass_blacklist=False):
         usr = discord.utils.get(self.bot.guild.members, id=usr.id)
-        if name or uid:
-            if name:
-                if isinstance(name, list):
-                    for role_item in name:
-                        role = discord.utils.get(self.bot.guild.roles, name=role_item)
-                        await usr.remove_roles(role,bypass_blacklist=bypass_blacklist)
-                elif isinstance(name, str):
-                    role = discord.utils.get(self.bot.guild.roles, name=name)
-                    await usr.remove_roles(role,bypass_blacklist=bypass_blacklist)
-                else:
-                    raise ValueError(
-                        'When adding a role to a user use a list or a string for the name parameter.')
-            elif uid:
-                if isinstance(uid, list):
-                    for role_item in uid:
+        if uid:
+            if isinstance(uid, list):
+                for role_item in uid:
+                    if role_item not in bypass_blacklist or bypass_blacklist:
                         role = discord.utils.get(self.bot.guild.roles, id=role_item)
-                        await usr.remove_roles(rolebypass_blacklist=bypass_blacklist)
-                elif isinstance(uid, int):
+                        await usr.remove_roles(role)
+            elif isinstance(uid, int):
+                if uid not in bypass_blacklist or bypass_blacklist:
                     role = discord.utils.get(self.bot.guild.roles, id=uid)
-                    await usr.remove_roles(rolebypass_blacklist=bypass_blacklist)
-                else:
-                    raise ValueError(
-                        'When adding a role to a user use a list or a int for the id parameter.')
+                    await usr.remove_roles(role)
+            else:
+                raise ValueError(
+                    'When adding a role to a user use a list or a int for the id parameter.')
         else:
             raise ValueError(
                 'add_role function needs to have a name or a id parameter.')
@@ -92,7 +82,7 @@ class UserHelper:
         for role in usr.roles[1:]:
             if role.id not in self.role_blacklist or bypass_blacklist:
                 try:
-                    await usr.remove_roles(role,bypass_blacklist=bypass_blacklist)
+                    await usr.remove_roles(role)
                 except:
                     pass
 
