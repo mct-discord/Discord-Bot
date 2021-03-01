@@ -134,7 +134,7 @@ class API(Thread):
                     
                 await self.userhelper.remove_roles(user)
                 for role in data['roles']:
-                    if role not in self.userhelper.role_whitelist:
+                    if role not in self.userhelper.role_blacklist:
                         await self.userhelper.add_role(user, uid=int(role))
 
                 await user.send('I have given you access to the modules you have requested.')

@@ -35,7 +35,7 @@ class Mute(Command):
                 )
                 db.db.close()
 
-                await UserHelper(self.bot).add_role(user, uid=652504589463191552)
+                await UserHelper(self.bot).add_role(user, uid=652504589463191552, bypass_blacklist=True)
 
                 embed = discord.Embed(
                     title="You've been muted", color=0xff8000)
