@@ -64,11 +64,11 @@ class UserHelper:
         if uid:
             if isinstance(uid, list):
                 for role_item in uid:
-                    if role_item not in bypass_blacklist or bypass_blacklist:
+                    if role_item not in self.role_blacklist or bypass_blacklist:
                         role = discord.utils.get(self.bot.guild.roles, id=role_item)
                         await usr.remove_roles(role)
             elif isinstance(uid, int):
-                if uid not in bypass_blacklist or bypass_blacklist:
+                if uid not in self.role_blacklist or bypass_blacklist:
                     role = discord.utils.get(self.bot.guild.roles, id=uid)
                     await usr.remove_roles(role)
             else:
