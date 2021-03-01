@@ -11,7 +11,7 @@ import uuid
 
 
 class UserHelper:
-    role_whitelist = [591659288053940272, 770937785544474624, 791046197300297729,
+    role_blacklist = [591659288053940272, 770937785544474624, 791046197300297729,
                       591653678776057882, 597790918736740363, 652504589463191552, 635808694554329089, 635808575108677654, 652594207051218955, 635813651554500628, 639608778655924227, 624245270393389068, 597790918736740363]
 
     def __init__(self, bot):
@@ -20,7 +20,7 @@ class UserHelper:
     async def get_user(self, uid):
         return discord.utils.get(self.bot.guild.members, id=uid)
 
-    async def add_role(self, usr, name=None, uid=None, bypass_whitelist=False):
+    async def add_role(self, usr, name=None, uid=None, bypass_blacklist=False):
         usr = discord.utils.get(self.bot.guild.members, id=usr.id)
 
         if name or uid:
@@ -28,13 +28,13 @@ class UserHelper:
                 if isinstance(name, list):
                     for role_item in name:
                         role = discord.utils.get(self.bot.guild.roles, name=role_item)
-                        if role.id in self.role_whitelist and not bypass_whitelist:
+                        if role.id in self.role_blacklist and not bypass_blacklist:
                             return
 
                         await usr.add_roles(role_item)
                 elif isinstance(name, str):
                     role = discord.utils.get(self.bot.guild.roles, name=name)
-                    if role.id in self.role_whitelist and not bypass_whitelist:
+                    if role.id in self.role_blacklist and not bypass_blacklist:
                         return
                     await usr.add_roles(role)
                 else:
@@ -44,12 +44,12 @@ class UserHelper:
                 if isinstance(uid, list):
                     for role_item in uid:
                         role = discord.utils.get(self.bot.guild.roles, id=role_item)
-                        if role.id in self.role_whitelist and not bypass_whitelist:
+                        if role.id in self.role_blacklist and not bypass_blacklist:
                             return
                         await usr.add_roles(role_item)
                 elif isinstance(uid, int):
                     role = discord.utils.get(self.bot.guild.roles, id=uid)
-                    if role.id in self.role_whitelist and not bypass_whitelist:
+                    if role.id in self.role_blacklist and not bypass_blacklist:
                         return
                     await usr.add_roles(role)
                 else:
@@ -59,17 +59,17 @@ class UserHelper:
             raise ValueError(
                 'add_role function needs to have a name or a id parameter.')
 
-    async def remove_role(self, usr, name=None, uid=None, bypass_whitelist=False):
+    async def remove_role(self, usr, name=None, uid=None, bypass_blacklist=False):
         usr = discord.utils.get(self.bot.guild.members, id=usr.id)
         if name or uid:
             if name:
                 if isinstance(name, list):
                     for role_item in name:
                         role = discord.utils.get(self.bot.guild.roles, name=role_item)
-                        await usr.remove_roles(role)
+                        await usr.remove_roles(role,bypass_blacklist=bypass_blacklist)
                 elif isinstance(name, str):
                     role = discord.utils.get(self.bot.guild.roles, name=name)
-                    await usr.remove_roles(role)
+                    await usr.remove_roles(role,bypass_blacklist=bypass_blacklist)
                 else:
                     raise ValueError(
                         'When adding a role to a user use a list or a string for the name parameter.')
@@ -77,10 +77,10 @@ class UserHelper:
                 if isinstance(uid, list):
                     for role_item in uid:
                         role = discord.utils.get(self.bot.guild.roles, id=role_item)
-                        await usr.remove_roles(role)
+                        await usr.remove_roles(rolebypass_blacklist=bypass_blacklist)
                 elif isinstance(uid, int):
                     role = discord.utils.get(self.bot.guild.roles, id=uid)
-                    await usr.remove_roles(role)
+                    await usr.remove_roles(rolebypass_blacklist=bypass_blacklist)
                 else:
                     raise ValueError(
                         'When adding a role to a user use a list or a int for the id parameter.')
@@ -88,11 +88,11 @@ class UserHelper:
             raise ValueError(
                 'add_role function needs to have a name or a id parameter.')
 
-    async def remove_roles(self, usr, name=None, uid=None):
+    async def remove_roles(self, usr, name=None, uid=None, bypass_blacklist=False):
         for role in usr.roles[1:]:
-            if role.id not in self.role_whitelist:
+            if role.id not in self.role_blacklist or bypass_blacklist:
                 try:
-                    await usr.remove_roles(role)
+                    await usr.remove_roles(role,bypass_blacklist=bypass_blacklist)
                 except:
                     pass
 
