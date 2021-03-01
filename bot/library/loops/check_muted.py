@@ -17,7 +17,7 @@ class CheckMuted (Loop):
         super().__init__('CheckMuted',bot)
         self.bot = bot
     
-    @loop(seconds=2)
+    @loop(seconds=10)
     async def run(self):
         
         db = Db()
@@ -30,18 +30,19 @@ class CheckMuted (Loop):
                 try:
                     obj_b = Query()
                     user = await UserHelper(self.bot).get_user(uid=row['id'])
-                    print('Removing Mute of {}'.format(user.id))
+                    if user != None:
+                        await UserHelper(self.bot).remove_role(user, uid=652504589463191552, bypass_blacklist=True)
+                        print('Removing Mute of {}'.format(user.id))
 
                     table.remove(obj_b.id == row['id'])
-                    await UserHelper(self.bot).remove_role(user, uid=652504589463191552)
                 except Exception as ex:
                     print(ex)
             else:
                 try:
                     user = await UserHelper(self.bot).get_user(uid=row['id'])
-                    print('Adding Mute role to {}'.format(user.id))
-
-                    await UserHelper(self.bot).add_role(user, uid=652504589463191552)
+                    if user != None:
+                        print('Adding Mute role to {}'.format(user.id))
+                        await UserHelper(self.bot).add_role(user, uid=652504589463191552, bypass_blacklist=True)
                 except Exception as ex:
                     print(ex)
                 

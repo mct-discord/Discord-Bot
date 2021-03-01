@@ -29,7 +29,7 @@ class Mute(Command):
                 table = db.get_table('muted')
                 obj = Query()
                 table.remove(obj.id == user.id)
-                await UserHelper(self.bot).remove_role(user, uid=652504589463191552)
+                await UserHelper(self.bot).remove_role(user, uid=652504589463191552, bypass_blacklist=True)
                 db.db.close()
 
                 embed = discord.Embed(
