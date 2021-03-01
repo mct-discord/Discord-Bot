@@ -31,8 +31,8 @@ class CheckMuted (Loop):
                     obj_b = Query()
                     user = await UserHelper(self.bot).get_user(uid=row['id'])
                     if user is not None:
-                        await UserHelper(self.bot).remove_role(user, uid=652504589463191552, bypass_blacklist=True)
                         print('Removing Mute of {}'.format(user.id))
+                        await UserHelper(self.bot).remove_role(user, uid=652504589463191552, bypass_blacklist=True)
 
                     table.remove(obj_b.id == row['id'])
                 except Exception as ex:
