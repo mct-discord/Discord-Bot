@@ -25,15 +25,17 @@ class Listener(ABC):
         else:
             return any(elem.id in self.targeted_roles for elem in roles)
 
-    async def execute(self, ctx):
+    async def execute(self, *args):
         if self.listen_on_event == "on_message":
-            if await self.is_targeted_source(ctx.channel) and await self.is_targeted_role(ctx.author):
-                await self.on_execute(ctx)
+            if await self.is_targeted_source(args[0].channel) and await self.is_targeted_role(args[0].author):
+                await self.on_execute(args[0])
         elif self.listen_on_event in ["on_raw_reaction_add","on_raw_reaction_remove"]:
-            await self.on_execute(ctx)
+            await self.on_execute(args[0])
+        elif self.listen_on_event in ["on_member_update"]:
+            await self.on_execute(args[0],args[1])
 
     @abstractmethod
-    async def on_execute(self, ctx):
+    async def on_execute(self, *args):
         pass
 
     def __str__(self):
