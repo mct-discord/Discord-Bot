@@ -136,6 +136,15 @@ class Client(discord.Client):
             except Exception as ex:
                 print(ex)
     
+    # async def on_member_update(self,before,after):
+    #     listeners = [listener for listener in self.listeners if listener.listen_on_event == "on_member_update"]
+        
+    #     for listener in listeners:
+    #         try:
+    #             await listener.execute(before,after)
+    #         except Exception as ex:
+    #             print(ex)
+    
     async def on_raw_reaction_remove(self,reaction):
         listeners = [listener for listener in self.listeners if listener.listen_on_event == "on_raw_reaction_remove"]
         

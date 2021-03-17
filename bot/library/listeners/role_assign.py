@@ -17,19 +17,20 @@ class RoleAssign(Listener):
         self.listen_on_event = "on_raw_reaction_add"
         self.targeted_sources = [TextChannel]
 
-    async def on_execute(self, ctx):
+    async def on_execute(self, *args):
+        ctx = args[0]
         if ctx.message_id == 727298026481385512:
             user = await UserHelper(self.bot).get_user(ctx.user_id)
             if str(ctx.emoji) == '🌎':
-                await UserHelper(self.bot).add_role(user,uid=624245270393389068, bypass_whitelist=True)
+                await UserHelper(self.bot).add_role(user,uid=624245270393389068, bypass_blacklist=True)
             elif str(ctx.emoji) == '🎙':
-                await UserHelper(self.bot).add_role(user,uid=639608778655924227, bypass_whitelist=True)
+                await UserHelper(self.bot).add_role(user,uid=639608778655924227, bypass_blacklist=True)
             elif str(ctx.emoji) == '⛩':
-                await UserHelper(self.bot).add_role(user,uid=635808575108677654, bypass_whitelist=True)
+                await UserHelper(self.bot).add_role(user,uid=635808575108677654, bypass_blacklist=True)
             elif str(ctx.emoji) == '🕹':
-                await UserHelper(self.bot).add_role(user,uid=635808694554329089, bypass_whitelist=True)
+                await UserHelper(self.bot).add_role(user,uid=635808694554329089, bypass_blacklist=True)
             elif str(ctx.emoji) == '🎬':
-                await UserHelper(self.bot).add_role(user,uid=652594207051218955, bypass_whitelist=True)
+                await UserHelper(self.bot).add_role(user,uid=652594207051218955, bypass_blacklist=True)
             
 
         

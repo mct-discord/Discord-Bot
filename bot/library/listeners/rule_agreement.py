@@ -18,7 +18,8 @@ class RuleAgreement(Listener):
         self.listen_on_event = "on_raw_reaction_add"
         self.targeted_sources = [TextChannel]
 
-    async def on_execute(self, ctx):
+    async def on_execute(self, *args):
+        ctx = args[0]
         if ctx.channel_id == 591645737779986473:
             user = await UserHelper(self.bot).get_user(ctx.user_id)
             token = await WebProcedure(self.bot).get_procedure(user=user)
