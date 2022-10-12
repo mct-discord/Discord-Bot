@@ -1,6 +1,8 @@
 FROM python:3.8-buster
 
-RUN pip install h11 h2 hypercorn quart discord-py tinydb oauth2client quart_cors sortedcontainers pyjwt google-api-python-client google-auth-httplib2 google-auth-oauthlib
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
 
 ADD app.py /
 ADD config.ini /

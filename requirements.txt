@@ -1,0 +1,13 @@
+h11 
+h2 
+hypercorn 
+quart 
+discord-py 
+tinydb 
+oauth2client 
+quart_cors 
+sortedcontainers 
+pyjwt 
+google-api-python-client 
+google-auth-httplib2 
+google-auth-oauthlib
