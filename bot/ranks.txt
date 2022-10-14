@@ -65,6 +65,10 @@ Roles for MCT
 	- Data Science 	 					591723051381686272
 	- Computer Networks 	 			591722865175560203
 	- Basic Programming 	 			591721912187486228
+	- Unity 							1030518679353442394
+	- 3D1								1030519193336037468
+	- Applied AI 						1030519939129417768
+	- New Interface Design				1030525996719407224
 
 
 	- MCT-Bot 	 	592423322839416843
